@@ -4,16 +4,19 @@
 // @Component
 // struct VideoDemo {
 //   private controller: VideoController = new VideoController()
+import { unifiedDataChannel, uniformTypeDescriptor } from '@kit.ArkData';
 @Entry
 @Component
 struct VideoCreateComponent {
-  @State videoSrc: Resource = $rawfile('a.mp4')
+  @State videoSrc: Resource | string = $rawfile('a.mp4');
   @State previewUri: Resource = $rawfile('a.jpg')
   @State curRate: PlaybackSpeed = PlaybackSpeed.Speed_Forward_1_00_X
-  @State isAutoPlay: boolean = false
+  @State isAutoPlay: boolean = true
   @State showControls: boolean = true
   @State isShortcutKeyEnabled: boolean = false
-  controller: VideoController = new VideoController()
+  @State isMuted: boolean = true
+  private controller: VideoController = new VideoController();
+  //controller: VideoController = new VideoController()
   build() {
     Column() {
       Video({
@@ -67,6 +70,19 @@ struct VideoCreateComponent {
             console.info('onFullscreenChange is ' + e.fullscreen)
           }
         })
+        .onPrepared(() => {
+          // 在onPrepared回调中执行controller的start方法，确保视频源更换后直接开始播放。
+          this.controller.start();
+        })
+        .onDrop((e: DragEvent) => {
+          // 外部视频拖入应用Video组件范围，松手后触发通过onDrop注册的回调。
+          // 在DragEvent中会包含拖入的视频源信息，取出后赋值给状态变量videoSrc即可改变Video的视频源。
+          let record = e.getData().getRecords()[0];
+          if (record.getType() == uniformTypeDescriptor.UniformDataType.VIDEO) {
+            let videoInfo = record as unifiedDataChannel.Video;
+            this.videoSrc = videoInfo.videoUri;
+          }
+        })
 
       Row() {
         Button('视频换第一个').onClick(() => {
@@ -110,6 +126,9 @@ struct VideoCreateComponent {
         Button('精准跳转到视频的10s位置').onClick(() => {
           this.controller.setCurrentTime(10, SeekMode.Accurate) // 精准跳转到视频的10s位置
         }).margin(2)
+        Button('退出全屏播放').onClick(() => {
+          this.controller.exitFullscreen() // 退出全屏播放
+        }).margin(2)
       }
       Row() {
         Button('0.75倍速播放').onClick(() => {
@@ -117,6 +136,12 @@ struct VideoCreateComponent {
         }).margin(5)
         Button('1倍速播放').onClick(() => {
           this.curRate = PlaybackSpeed.Speed_Forward_1_00_X // 原倍速播放
+        }).margin(5)
+        Button('1.25倍速播放').onClick(() => {
+          this.curRate = PlaybackSpeed.Speed_Forward_1_25_X // 1.25倍速播放
+        }).margin(5)
+        Button('1.75倍速播放').onClick(() => {
+          this.curRate = PlaybackSpeed.Speed_Forward_1_75_X // 1.75倍速播放
         }).margin(5)
         Button('2倍速播放').onClick(() => {
           this.curRate = PlaybackSpeed.Speed_Forward_2_00_X // 2倍速播放
