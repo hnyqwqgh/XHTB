@@ -69,20 +69,20 @@ struct VideoCreateComponent {
         })
 
       Row() {
-        Button('视频换2').onClick(() => {
-          this.videoSrc = $rawfile('b.mp4') // 切换视频源
+        Button('视频换第一个').onClick(() => {
+          this.videoSrc = $rawfile('a.mp4') // 切换视频源
         }).margin(5)
-        Button('封面换2').onClick(() => {
-          this.previewUri = $rawfile('b.jpg') // 切换视频预览海报
+        Button('封面换第一个').onClick(() => {
+          this.previewUri = $rawfile('a.jpg') // 切换视频预览海报
         }).margin(5)
       }
 
       Row() {
-        Button('视频换1').onClick(() => {
-          this.videoSrc = $rawfile('a.mp4') // 切换视频源
+        Button('视频换第二个').onClick(() => {
+          this.videoSrc = $rawfile('b.mp4') // 切换视频源
         }).margin(5)
-        Button('封面换1').onClick(() => {
-          this.previewUri = $rawfile('a.jpg') // 切换视频预览海报
+        Button('封面换第二个').onClick(() => {
+          this.previewUri = $rawfile('b.jpg') // 切换视频预览海报
         }).margin(5)
       }
 
