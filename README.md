@@ -36,8 +36,10 @@ entry/src/main/ets/
 
 
 # 链接
+[![HarmonyOS 5](https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/harmonyos-next/images/update/harmonyos-next-update-2x.webp)](https://consumer.huawei.com/cn/harmonyos-next/)
 
-[HarmonyOS 5](https://consumer.huawei.com/cn/harmonyos-next/)
+
 [R](https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/harmonyos-next/videos/1025/harmonyos-next-huawei-share-video.mp4)
+
 ![](https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/harmonyos-next/images/interconnection/harmonyos-next-collaboration-2x.webp)
 
