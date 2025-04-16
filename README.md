@@ -14,16 +14,16 @@
 
 # 参考项目
 
-[video-demo](https://gitee.com/scenario-samples/video-demo)
+### [video-demo](https://gitee.com/scenario-samples/video-demo)
 
-[avplayer-video](https://gitee.com/scenario-samples/avplayer-video)
+### [avplayer-video](https://gitee.com/scenario-samples/avplayer-video)
 
-[scenario-samples](https://gitee.com/scenario-samples) & [鸿蒙场景化示例合集](https://gitee.com/scenario-samples/demo-index)
+### [scenario-samples](https://gitee.com/scenario-samples) & [鸿蒙场景化示例合集](https://gitee.com/scenario-samples/demo-index)
 
     
 
 
-## [工程目录 entry/src/main/ets/](https://gitee.com/hnyqwq/video/tree/master/entry/src/main/ets)
+# [工程目录 entry/src/main/ets/](https://gitee.com/hnyqwq/video/tree/master/entry/src/main/ets)
 ```
 entry/src/main/ets/
 |---entryability
