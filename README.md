@@ -1,4 +1,4 @@
-# 快读跳转 
+# 快速跳转 
 
 ## [视频播放 (Video)](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-common-components-video-player)
 
