@@ -42,9 +42,6 @@ entry/src/main/ets/
 
 # 链接
 
-## [AppGallery Connect](https://developer.huawei.com/consumer/cn/service/josp/agc/index.html#/)
-[![AppGallery Connect](https://developer.huawei.com/consumer/cn/service/josp/agc/static/img/logo.dd58f71c.png)](https://developer.huawei.com/consumer/cn/service/josp/agc/index.html#/)
-
 ## [DEVELOPERS](https://developer.huawei.com/consumer/cn/)
 [![DEVELOPERS](https://developer.huawei.com/allianceCmsResource/resource/HUAWEI_Developer_VUE/images/home-1223/pc-0116.jpeg)](https://developer.huawei.com/consumer/cn/)
 
