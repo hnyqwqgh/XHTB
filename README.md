@@ -14,7 +14,7 @@
 
 # 参考项目
 
-[参考项目](https://gitee.com/scenario-samples/video-demo)
+[video-demo](https://gitee.com/scenario-samples/video-demo)
 
 [avplayer-video](https://gitee.com/scenario-samples/avplayer-video)
 
@@ -23,7 +23,7 @@
     
 
 
-## 工程目录
+## [工程目录 entry/src/main/ets/](https://gitee.com/hnyqwq/video/tree/master/entry/src/main/ets)
 ```
 entry/src/main/ets/
 |---entryability
