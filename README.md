@@ -26,6 +26,13 @@
 
 ---
 
+# 额外参考项目
+
+### [用户认证、指纹认证、锁屏密码认证](https://gitee.com/scenario-samples/user-auth-demo)
+
+
+
+
 # 工程目录
 ### [entry/src/main/ets/](https://gitee.com/hnyqwq/video/tree/master/entry/src/main/ets)
 ```
