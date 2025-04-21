@@ -7,10 +7,10 @@
 import { unifiedDataChannel, uniformTypeDescriptor } from '@kit.ArkData';
 //import { LengthMetrics } from '@kit.ArkUI'
 import { curves } from '@kit.ArkUI' // 导入ArkUI动画曲线库
-//import userAuth from '@ohos.userIAM.userAuth'
-//import { promptAction } from '@kit.ArkUI';
+import userAuth from '@ohos.userIAM.userAuth'
+import { promptAction } from '@kit.ArkUI';
 
-//const TAG = 'User_Auth';
+const TAG = 'User_Auth';
 
 @Entry
 @Component
@@ -22,8 +22,8 @@ struct VideoCreateComponent {// 创建滚动控制器实例
   @State isAutoPlay: boolean = false
   @State showControls: boolean = true
   @State isShortcutKeyEnabled: boolean = false
-//  @State message: string = '用户认证'
-//  @State userAuthResult?: userAuth.UserAuthResult = undefined
+  @State message: string = '用户认证'
+  @State userAuthResult?: userAuth.UserAuthResult = undefined
 
   scroller: Scroller = new Scroller()// 初始化数据数组（用于生成滚动内容）
   private arr: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -215,35 +215,9 @@ struct VideoCreateComponent {// 创建滚动控制器实例
           .margin({ bottom: 20 })
           .onClick(() => {
             this.checkAvailableStatus(userAuth.UserAuthType.PIN, userAuth.AuthTrustLevel.ATL1)
-          })
-
-        Button('拉起指纹认证')
-          .margin({ bottom: 20 })
-          .onClick(() => {
-            const authParam : userAuth.AuthParam = {
-              challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
-              authType: [userAuth.UserAuthType.FINGERPRINT],
-              authTrustLevel: userAuth.AuthTrustLevel.ATL1,
-            }
-            const widgetParam :userAuth.WidgetParam = {
-              title: '请认证指纹'
-            }
-            this.startUserAuth(authParam, widgetParam)
-          })
-
-        Button('拉起锁屏认证')
-          .margin({ bottom: 20 })
-          .onClick(() => {
-            const authParam : userAuth.AuthParam = {
-              challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
-              authType: [userAuth.UserAuthType.PIN],
-              authTrustLevel: userAuth.AuthTrustLevel.ATL2,
-            }
-            const widgetParam :userAuth.WidgetParam = {
-              title: '请输入密码'
-            }
-            this.startUserAuth(authParam, widgetParam)
           })*/
+
+
 
         Button('2025新春愿照九天视频')
           .height('5%')
@@ -276,8 +250,35 @@ struct VideoCreateComponent {// 创建滚动控制器实例
             let curve = curves.interpolatingSpring(10, 1, 228, 30) //创建一个阶梯曲线
             const yOffset: number = this.scroller.currentOffset().yOffset;
             this.scroller.scrollTo({ xOffset: 0, yOffset: yOffset + 100, animation: { duration: 1000, curve: curve } })
-          })
-          .margin({ top: 10, left: 20 })
+          }).margin({ top: 10, left: 20 })
+
+        Button('拉起指纹认证')
+          .margin({ bottom: 20 })
+          .onClick(() => {
+            const authParam : userAuth.AuthParam = {
+              challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
+              authType: [userAuth.UserAuthType.FINGERPRINT],
+              authTrustLevel: userAuth.AuthTrustLevel.ATL1,
+            }
+            const widgetParam :userAuth.WidgetParam = {
+              title: '请认证指纹'
+            }
+            this.startUserAuth(authParam, widgetParam)
+          }).margin({ top: 210, left: 20 })
+
+        Button('拉起锁屏认证')
+          .margin({ bottom: 20 })
+          .onClick(() => {
+            const authParam : userAuth.AuthParam = {
+              challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
+              authType: [userAuth.UserAuthType.PIN],
+              authTrustLevel: userAuth.AuthTrustLevel.ATL2,
+            }
+            const widgetParam :userAuth.WidgetParam = {
+              title: '请输入密码'
+            }
+            this.startUserAuth(authParam, widgetParam)
+          }).margin({ top: 260, left: 20 })
         /*Button('下滑 150  →切换视频')
           .height('5%')
           .onClick(() => { // 点击后下滑指定距离150.0vp
@@ -311,7 +312,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
             this.scroller.scrollPage({ next: true ,animation: true })
           })
           .margin({ top: 160, left: 20 })
-        Button('触发初始速度为-3000vp/s的惯性滚动')
+        /*Button('触发初始速度为-3000vp/s的惯性滚动')
           .height('5%')
           .onClick(() => { // 点击后触发初始速度为-3000vp/s的惯性滚动 fling -3000
             this.scroller.fling(-3000)
@@ -322,12 +323,11 @@ struct VideoCreateComponent {// 创建滚动控制器实例
           .onClick(() => { // 点击后滑到下边缘，速度值是700vp/s scroll to bottom 700
             this.scroller.scrollEdge(Edge.Bottom, { velocity: 700 })
           })
-          .margin({ top: 260, left: 20 })
+          .margin({ top: 260, left: 20 })*/
       }.width('100%').height('100%').backgroundColor(0xDCDCDC)
     }
   }
-}
-  /*checkAvailableStatus (authType: number, trustLevel: number) {
+  checkAvailableStatus (authType: number, trustLevel: number) {
     try {
       userAuth.getAvailableStatus(authType, trustLevel);
       promptAction.showToast({
@@ -357,8 +357,10 @@ struct VideoCreateComponent {// 创建滚动控制器实例
         message: `拉起用户认证失败 ${e.code} ${e.message}`
       })
     }
+  }
 }
-*/
+
+
 //   build() {
 //     Column({ space: 10 }) {
 //       Text('Video演示')

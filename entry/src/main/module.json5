@@ -1,9 +1,12 @@
-{
+  {
   "module": {
     "name": "entry",
     "type": "entry",
     "description": "$string:module_desc",
     "mainElement": "EntryAbility",
+    "requestPermissions": [{
+      "name": "ohos.permission.ACCESS_BIOMETRIC"
+    }],
     "deviceTypes": [
       "phone",
       "tablet",
