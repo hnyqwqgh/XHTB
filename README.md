@@ -90,6 +90,10 @@ entry/src/main/ets/
 
 # 链接
 
+> ##  [OpenHarmony 组件库](https://gitee.com/explore/harmony)
+> ##  [OpenHarmony 教程指南](https://gitee.com/explore/harmonyos-guide)
+> ##  [HarmonyOS NEXT开源组件市场](https://gitee.com/harmonyos-cases/cases)
+
 > ## [DEVELOPERS](https://developer.huawei.com/consumer/cn/)
 [![DEVELOPERS](https://developer.huawei.com/allianceCmsResource/resource/HUAWEI_Developer_VUE/images/home-1223/pc-0116.jpeg)](https://developer.huawei.com/consumer/cn/)
 

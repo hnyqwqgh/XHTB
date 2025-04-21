@@ -26,7 +26,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
   @State userAuthResult?: userAuth.UserAuthResult = undefined
 
   scroller: Scroller = new Scroller()// 初始化数据数组（用于生成滚动内容）
-  private arr: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  //private arr: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
   /*@State listPosition: number = 0; // 0代表滚动到List顶部，1代表中间值，2代表滚动到List底部。
   private arr: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -243,12 +243,12 @@ struct VideoCreateComponent {// 创建滚动控制器实例
                   title: '请认证人脸'
                 }
                 this.startUserAuth(authParam, widgetParam)
-              }).width('90%')
+              }).width('80%')
               .height(150)
               .backgroundColor(0x99CCFF)  // 白色背景
               .borderRadius(15)           // 圆角半径
               .margin({ top: 10 })         // 顶部间距
-          }
+          }.width('100%')
         }
         .scrollable(ScrollDirection.Vertical) // 滚动方向纵向
         .scrollBar(BarState.On) // 滚动条常驻显示
@@ -305,7 +305,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
           this.previewUri = $rawfile('b.jpg') // 切换视频预览海报
         }).margin({ top: 160, left: 200 })
 
-        Button('test')
+        /*Button('test')
           .onClick(() => {
             this.previewUri = $rawfile('b.jpg') // 切换视频预览海报
           }).margin({ top: 160, left: 380 })
@@ -316,7 +316,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
             let curve = curves.interpolatingSpring(10, 1, 228, 30) //创建一个阶梯曲线
             const yOffset: number = this.scroller.currentOffset().yOffset;
             this.scroller.scrollTo({ xOffset: 0, yOffset: yOffset + 100, animation: { duration: 1000, curve: curve } })
-          }).margin({ top: 10, left: 20 })
+          }).margin({ top: 10, left: 20 })*/
 
         Button('想看看你的小脸')
           .margin({ bottom: 20 })
