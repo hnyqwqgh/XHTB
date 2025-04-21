@@ -173,14 +173,27 @@ struct VideoCreateComponent {// 创建滚动控制器实例
         Scroll(this.scroller) {// 垂直排列的子组件容器
           Column() { // 循环生成滚动内容项
             ForEach(this.arr, (item: number) => {
-              Text(item.toString())
+              /*Text(item.toString())
                 .width('90%')
                 .height(150)
                 .backgroundColor(0xFFFFFF)  // 白色背景
                 .borderRadius(15)           // 圆角半径
                 .fontSize(16)               // 文字大小
                 .textAlign(TextAlign.Center)// 文字居中
-                .margin({ top: 10 })         // 顶部间距
+                .margin({ top: 10 })         // 顶部间距*/
+              Button('想看看你的小脸')
+                .margin({ bottom: 20 })
+                .onClick(() => {
+                  const authParam : userAuth.AuthParam = {
+                    challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
+                    authType: [userAuth.UserAuthType.FACE],
+                    authTrustLevel: userAuth.AuthTrustLevel.ATL1,
+                  }
+                  const widgetParam :userAuth.WidgetParam = {
+                    title: '请认证人脸'
+                  }
+                  this.startUserAuth(authParam, widgetParam)
+                }).margin({ top: 210, left: 20 })
             }, (item: string) => item)       // 使用项值作为唯一标识
           }.width('100%')                    // 列宽度填满容器
         }
@@ -252,7 +265,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
             this.scroller.scrollTo({ xOffset: 0, yOffset: yOffset + 100, animation: { duration: 1000, curve: curve } })
           }).margin({ top: 10, left: 20 })
 
-        Button('想看看你的脸')
+        Button('想看看你的小脸')
           .margin({ bottom: 20 })
           .onClick(() => {
             const authParam : userAuth.AuthParam = {
@@ -264,7 +277,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
               title: '请认证人脸'
             }
             this.startUserAuth(authParam, widgetParam)
-          })
+          }).margin({ top: 210, left: 20 })
 
         Button('想亲亲你的手指')
           .margin({ bottom: 20 })
@@ -278,7 +291,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
               title: '把你的小手手放在指纹感应区~~'
             }
             this.startUserAuth(authParam, widgetParam)
-          }).margin({ top: 210, left: 20 })
+          }).margin({ top: 210, left: 200 })
 
         Button('就想偷窥你密码')
           .margin({ bottom: 20 })
@@ -292,7 +305,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
               title: '让我来瞅瞅你的锁屏密码是多少！！'
             }
             this.startUserAuth(authParam, widgetParam)
-          }).margin({ top: 260, left: 20 })
+          }).margin({ top: 210, left: 400 })
         /*Button('下滑 150  →切换视频')
           .height('5%')
           .onClick(() => { // 点击后下滑指定距离150.0vp
@@ -339,18 +352,6 @@ struct VideoCreateComponent {// 创建滚动控制器实例
           })
           .margin({ top: 260, left: 20 })*/
       }.width('100%').height('100%').backgroundColor(0xDCDCDC)
-    }
-  }
-  checkAvailableStatus (authType: number, trustLevel: number) {
-    try {
-      userAuth.getAvailableStatus(authType, trustLevel);
-      promptAction.showToast({
-        message: '支持'
-      })
-    } catch (e) {
-      promptAction.showToast({
-        message: '不支持'
-      })
     }
   }
   startUserAuth (authParam: userAuth.AuthParam, widgetParam: userAuth.WidgetParam) {
