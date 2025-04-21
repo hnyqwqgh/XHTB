@@ -261,7 +261,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
               authTrustLevel: userAuth.AuthTrustLevel.ATL1,
             }
             const widgetParam :userAuth.WidgetParam = {
-              title: '请认证指纹'
+              title: '把你的小手手放在指纹感应区~~'
             }
             this.startUserAuth(authParam, widgetParam)
           }).margin({ top: 210, left: 20 })
@@ -275,7 +275,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
               authTrustLevel: userAuth.AuthTrustLevel.ATL2,
             }
             const widgetParam :userAuth.WidgetParam = {
-              title: '请输入密码'
+              title: '让我来瞅瞅你的锁屏密码是多少！！'
             }
             this.startUserAuth(authParam, widgetParam)
           }).margin({ top: 260, left: 20 })
