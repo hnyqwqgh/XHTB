@@ -12,6 +12,14 @@ import { promptAction } from '@kit.ArkUI';
 
 const TAG = 'User_Auth';
 
+@Extend(Button) function globalButtonStyle() {
+  .width('90%')
+  .height(150)
+  .backgroundColor(0x99CCFF)  // 白色背景
+  .borderRadius(15)           // 圆角半径
+  .margin({ top: 10 })         // 顶部间距
+}
+
 @Entry
 @Component
 // 使用@Entry装饰器标记为入口组件，@Component表示自定义组件
@@ -175,23 +183,20 @@ struct VideoCreateComponent {// 创建滚动控制器实例
             //ForEach(this.arr, (item: number) => {
               //Text(item.toString())
             Button('想看看你的小脸')
-                .onClick(() => {
-                  const authParam : userAuth.AuthParam = {
-                    challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
-                    authType: [userAuth.UserAuthType.FACE],
-                    authTrustLevel: userAuth.AuthTrustLevel.ATL1,
-                  }
-                  const widgetParam :userAuth.WidgetParam = {
-                    title: '请认证人脸'
-                  }
-                  this.startUserAuth(authParam, widgetParam)
-                })
-              .width('90%')
-              .height(150)
-              .backgroundColor(0x99CCFF)  // 白色背景
-              .borderRadius(15)           // 圆角半径
-              .margin({ top: 10 })         // 顶部间距
+              .globalButtonStyle()
+              .onClick(() => {
+                const authParam : userAuth.AuthParam = {
+                  challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
+                  authType: [userAuth.UserAuthType.FACE],
+                  authTrustLevel: userAuth.AuthTrustLevel.ATL1,
+                }
+                const widgetParam :userAuth.WidgetParam = {
+                  title: '请认证人脸'
+                }
+                this.startUserAuth(authParam, widgetParam)
+              })
             Button('想亲亲你的手指')
+              .globalButtonStyle()
               .onClick(() => {
                 const authParam : userAuth.AuthParam = {
                   challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
@@ -202,17 +207,12 @@ struct VideoCreateComponent {// 创建滚动控制器实例
                   title: '把你的小手手放在指纹感应区~~'
                 }
                 this.startUserAuth(authParam, widgetParam)
-              })//margin({ top: 210, left: 200 })
-                  //.margin({ top: 210, left: 20 })
-              .width('90%')
-              .height(150)
-              .backgroundColor(0x99CCFF)  // 白色背景
-              .borderRadius(15)           // 圆角半径
-              .margin({ top: 10 })         // 顶部间距
-              //.fontSize(16)               // 文字大小
+              })
+            //.fontSize(16)               // 文字大小
               // .textAlign(TextAlign.Center)// 文字居中
               //}, (item: string) => item)       // 使用项值作为唯一标识
             Button('就想偷窥你密码')
+              .globalButtonStyle()
               .onClick(() => {
                 const authParam : userAuth.AuthParam = {
                   challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
@@ -224,49 +224,28 @@ struct VideoCreateComponent {// 创建滚动控制器实例
                 }
                 this.startUserAuth(authParam, widgetParam)
               })
-              .width('90%')
-              .height(150)
-              .backgroundColor(0x99CCFF)  // 白色背景
-              .borderRadius(15)           // 圆角半径
-              .margin({ top: 10 })         // 顶部间距
             Button('2025新春愿照九天视频')
+              .globalButtonStyle()
               .height('5%')
               .onClick(() => {
                 this.videoSrc = $rawfile('a.mp4') // 切换视频源
               })
-              .width('90%')
-              .height(150)
-              .backgroundColor(0x99CCFF)  // 白色背景
-              .borderRadius(15)           // 圆角半径
-              .margin({ top: 10 })         // 顶部间距
             Button('2025新春愿照九天封面')
+              .globalButtonStyle()
               .height('5%')
               .onClick(() => {
                 this.previewUri = $rawfile('a.jpg') // 切换视频预览海报
               })
-              .width('90%')
-              .height(150)
-              .backgroundColor(0x99CCFF)  // 白色背景
-              .borderRadius(15)           // 圆角半径
-              .margin({ top: 10 })         // 顶部间距
             Button('视频换第二个')
+              .globalButtonStyle()
               .onClick(() => {
                 this.videoSrc = $rawfile('b.mp4') // 切换视频源
               })
-              .width('90%')
-              .height(150)
-              .backgroundColor(0x99CCFF)  // 白色背景
-              .borderRadius(15)           // 圆角半径
-              .margin({ top: 10 })         // 顶部间距
             Button('封面换第二个')
+              .globalButtonStyle()
               .onClick(() => {
                 this.previewUri = $rawfile('b.jpg') // 切换视频预览海报
               })
-              .width('90%')
-              .height(150)
-              .backgroundColor(0x99CCFF)  // 白色背景
-              .borderRadius(15)           // 圆角半径
-              .margin({ top: 10 })         // 顶部间距
           }
           //.height('80%') // 明确设置可滚动区域高度
           .width('100%')
