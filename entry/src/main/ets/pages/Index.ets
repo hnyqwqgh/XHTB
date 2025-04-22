@@ -27,7 +27,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
   @State videoSrc: Resource | string = $rawfile('a.mp4');
   @State previewUri: Resource = $rawfile('a.jpg')
   @State curRate: PlaybackSpeed = PlaybackSpeed.Speed_Forward_1_00_X
-  @State isAutoPlay: boolean = false
+  @State isAutoPlay: boolean = true
   @State showControls: boolean = true
   @State isShortcutKeyEnabled: boolean = false
   @State message: string = '用户认证'
@@ -55,7 +55,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
         controller: this.controller
       })
         .width('100%')
-        .height(500)
+        .height('60%')
         .autoPlay(this.isAutoPlay)
         .controls(this.showControls)
         .enableShortcutKey(this.isShortcutKeyEnabled)
@@ -226,13 +226,11 @@ struct VideoCreateComponent {// 创建滚动控制器实例
               })
             Button('2025新春愿照九天视频')
               .globalButtonStyle()
-              .height('5%')
               .onClick(() => {
                 this.videoSrc = $rawfile('a.mp4') // 切换视频源
               })
             Button('2025新春愿照九天封面')
               .globalButtonStyle()
-              .height('5%')
               .onClick(() => {
                 this.previewUri = $rawfile('a.jpg') // 切换视频预览海报
               })
@@ -247,7 +245,6 @@ struct VideoCreateComponent {// 创建滚动控制器实例
                 this.previewUri = $rawfile('b.jpg') // 切换视频预览海报
               })
           }
-          //.height('80%') // 明确设置可滚动区域高度
           .width('100%')
 
         }
@@ -255,11 +252,11 @@ struct VideoCreateComponent {// 创建滚动控制器实例
         .scrollBar(BarState.On) // 滚动条常驻显示
         .scrollBarColor(Color.Gray) // 滚动条颜色
         .scrollBarWidth(10) // 滚动条宽度
-        .height('70%') // 关键高度设置
+        .height('50%') // 关键高度设置
         .backgroundColor(Color.White)
         .friction(0.6)                      // 设置滚动摩擦系数（影响滚动惯性）
         .edgeEffect(EdgeEffect.None)
-        .onWillScroll((xOffset: number, yOffset: number, scrollState: ScrollState) => {
+        /*.onWillScroll((xOffset: number, yOffset: number, scrollState: ScrollState) => {
           console.info(xOffset + ' ' + yOffset) // 滚动即将发生时触发
         })
         .onScrollEdge((side: Edge) => {       // 滚动到边缘时触发
@@ -267,7 +264,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
         })
         .onScrollStop(() => {                // 滚动停止时触发
           console.info('Scroll Stop')
-        })
+        })*/
 
         /*Button('查询是否支持面容识别和ATL4认证')
           .margin({ bottom: 20 })
