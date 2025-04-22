@@ -175,7 +175,6 @@ struct VideoCreateComponent {// 创建滚动控制器实例
             //ForEach(this.arr, (item: number) => {
               //Text(item.toString())
             Button('想看看你的小脸')
-              .margin({ bottom: 20 })
                 .onClick(() => {
                   const authParam : userAuth.AuthParam = {
                     challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
@@ -192,7 +191,6 @@ struct VideoCreateComponent {// 创建滚动控制器实例
               .borderRadius(15)           // 圆角半径
               .margin({ top: 10 })         // 顶部间距
             Button('想亲亲你的手指')
-              .margin({ bottom: 20 })
               .onClick(() => {
                 const authParam : userAuth.AuthParam = {
                   challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
@@ -213,7 +211,6 @@ struct VideoCreateComponent {// 创建滚动控制器实例
               //.fontSize(16)               // 文字大小
                 // .textAlign(TextAlign.Center)// 文字居中
             Button('想亲亲你的手指')
-              .margin({ bottom: 20 })
               .onClick(() => {
                 const authParam : userAuth.AuthParam = {
                   challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
@@ -232,7 +229,6 @@ struct VideoCreateComponent {// 创建滚动控制器实例
               .margin({ top: 10 })         // 顶部间距
             //}, (item: string) => item)       // 使用项值作为唯一标识
             Button('想看看你的小脸')
-              .margin({ bottom: 20 })
               .onClick(() => {
                 const authParam : userAuth.AuthParam = {
                   challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
