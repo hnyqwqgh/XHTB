@@ -56,7 +56,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
         controller: this.controller
       })
         .width('100%')
-        .height('60%')
+        .height('30%')
         .autoPlay(this.isAutoPlay)
         .controls(this.showControls)
         .enableShortcutKey(this.isShortcutKeyEnabled)
