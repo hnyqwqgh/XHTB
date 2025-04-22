@@ -185,7 +185,8 @@ struct VideoCreateComponent {// 创建滚动控制器实例
                     title: '请认证人脸'
                   }
                   this.startUserAuth(authParam, widgetParam)
-                }).width('90%')
+                })
+              .width('90%')
               .height(150)
               .backgroundColor(0x99CCFF)  // 白色背景
               .borderRadius(15)           // 圆角半径
@@ -209,7 +210,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
               .borderRadius(15)           // 圆角半径
               .margin({ top: 10 })         // 顶部间距
               //.fontSize(16)               // 文字大小
-                // .textAlign(TextAlign.Center)// 文字居中
+              // .textAlign(TextAlign.Center)// 文字居中
             Button('想亲亲你的手指')
               .onClick(() => {
                 const authParam : userAuth.AuthParam = {
@@ -228,18 +229,57 @@ struct VideoCreateComponent {// 创建滚动控制器实例
               .borderRadius(15)           // 圆角半径
               .margin({ top: 10 })         // 顶部间距
             //}, (item: string) => item)       // 使用项值作为唯一标识
-            Button('想看看你的小脸')
+            Button('就想偷窥你密码')
               .onClick(() => {
                 const authParam : userAuth.AuthParam = {
                   challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
-                  authType: [userAuth.UserAuthType.FACE],
-                  authTrustLevel: userAuth.AuthTrustLevel.ATL1,
+                  authType: [userAuth.UserAuthType.PIN],
+                  authTrustLevel: userAuth.AuthTrustLevel.ATL2,
                 }
                 const widgetParam :userAuth.WidgetParam = {
-                  title: '请认证人脸'
+                  title: '让我来瞅瞅你的锁屏密码是多少！！'
                 }
                 this.startUserAuth(authParam, widgetParam)
-              }).width('80%')
+              })
+              .width('90%')
+              .height(150)
+              .backgroundColor(0x99CCFF)  // 白色背景
+              .borderRadius(15)           // 圆角半径
+              .margin({ top: 10 })         // 顶部间距
+            Button('2025新春愿照九天视频')
+              .height('5%')
+              .onClick(() => {
+                this.videoSrc = $rawfile('a.mp4') // 切换视频源
+              })
+              .width('90%')
+              .height(150)
+              .backgroundColor(0x99CCFF)  // 白色背景
+              .borderRadius(15)           // 圆角半径
+              .margin({ top: 10 })         // 顶部间距
+            Button('2025新春愿照九天封面')
+              .height('5%')
+              .onClick(() => {
+                this.previewUri = $rawfile('a.jpg') // 切换视频预览海报
+              })
+              .width('90%')
+              .height(150)
+              .backgroundColor(0x99CCFF)  // 白色背景
+              .borderRadius(15)           // 圆角半径
+              .margin({ top: 10 })         // 顶部间距
+            Button('视频换第二个')
+              .onClick(() => {
+                this.videoSrc = $rawfile('b.mp4') // 切换视频源
+              })
+              .width('90%')
+              .height(150)
+              .backgroundColor(0x99CCFF)  // 白色背景
+              .borderRadius(15)           // 圆角半径
+              .margin({ top: 10 })         // 顶部间距
+            Button('封面换第二个')
+              .onClick(() => {
+                this.previewUri = $rawfile('b.jpg') // 切换视频预览海报
+              })
+              .width('90%')
               .height(150)
               .backgroundColor(0x99CCFF)  // 白色背景
               .borderRadius(15)           // 圆角半径
@@ -282,34 +322,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
           .onClick(() => {
             this.checkAvailableStatus(userAuth.UserAuthType.PIN, userAuth.AuthTrustLevel.ATL1)
           })*/
-
-
-
-        Button('2025新春愿照九天视频')
-          .height('5%')
-          .onClick(() => {
-          this.videoSrc = $rawfile('a.mp4') // 切换视频源
-        }).margin({ top: 10, left: 200 })
-        Button('2025新春愿照九天封面')
-          .height('5%')
-          .onClick(() => {
-          this.previewUri = $rawfile('a.jpg') // 切换视频预览海报
-        }).margin({ top: 60, left: 200 })
-
-        Button('视频换第二个')
-          .onClick(() => {
-          this.videoSrc = $rawfile('b.mp4') // 切换视频源
-        }).margin({ top: 110, left: 200 })
-          Button('封面换第二个')
-          .onClick(() => {
-          this.previewUri = $rawfile('b.jpg') // 切换视频预览海报
-        }).margin({ top: 160, left: 200 })
-
-        /*Button('test')
-          .onClick(() => {
-            this.previewUri = $rawfile('b.jpg') // 切换视频预览海报
-          }).margin({ top: 160, left: 380 })
-
+        /*
         Button('下滑 100 →切换视频')
           .height('5%')
           .onClick(() => { // 点击后滑动到指定位置，即下滑100.0vp的距离，滑动过程配置有动画
@@ -318,52 +331,14 @@ struct VideoCreateComponent {// 创建滚动控制器实例
             this.scroller.scrollTo({ xOffset: 0, yOffset: yOffset + 100, animation: { duration: 1000, curve: curve } })
           }).margin({ top: 10, left: 20 })*/
 
-        Button('想看看你的小脸')
-          .onClick(() => {
-            const authParam : userAuth.AuthParam = {
-              challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
-              authType: [userAuth.UserAuthType.FACE],
-              authTrustLevel: userAuth.AuthTrustLevel.ATL1,
-            }
-            const widgetParam :userAuth.WidgetParam = {
-              title: '请认证人脸'
-            }
-            this.startUserAuth(authParam, widgetParam)
-          }).margin({ top: 210, left: 20 })
 
-        Button('想亲亲你的手指')
-          .margin({ bottom: 20 })
-          .onClick(() => {
-            const authParam : userAuth.AuthParam = {
-              challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
-              authType: [userAuth.UserAuthType.FINGERPRINT],
-              authTrustLevel: userAuth.AuthTrustLevel.ATL1,
-            }
-            const widgetParam :userAuth.WidgetParam = {
-              title: '把你的小手手放在指纹感应区~~'
-            }
-            this.startUserAuth(authParam, widgetParam)
-          }).margin({ top: 210, left: 200 })
 
-        Button('就想偷窥你密码')
-          .margin({ bottom: 20 })
-          .onClick(() => {
-            const authParam : userAuth.AuthParam = {
-              challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
-              authType: [userAuth.UserAuthType.PIN],
-              authTrustLevel: userAuth.AuthTrustLevel.ATL2,
-            }
-            const widgetParam :userAuth.WidgetParam = {
-              title: '让我来瞅瞅你的锁屏密码是多少！！'
-            }
-            this.startUserAuth(authParam, widgetParam)
-          }).margin({ top: 210, left: 400 })
-        /*Button('下滑 150  →切换视频')
+        Button('下滑 150')
           .height('5%')
           .onClick(() => { // 点击后下滑指定距离150.0vp
             this.scroller.scrollBy(0, 150)
           })
-          .margin({ top: 10, left: 20 })*/
+          .margin({ top: 10, left: 20 })
         /*Button('下滑100.0vp')
           .height('5%')
           .onClick(() => { // 点击后滑动到指定位置，即下滑100.0vp的距离
@@ -371,7 +346,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
             this.scroller.scrollTo({ xOffset: 0, yOffset: yOffset + 100 })
           })
           .margin({ top: 60, left: 20 })*/
-        Button('下滑 150 →切换封面')
+        Button('下滑 150')
           .height('5%')
           .onClick(() => { // 点击后滑动到指定位置，即下滑100.0vp的距离，滑动过程配置有动画
             let curve = curves.interpolatingSpring(10, 1, 228, 30) //创建一个阶梯曲线
