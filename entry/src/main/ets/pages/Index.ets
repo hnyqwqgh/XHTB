@@ -319,7 +319,6 @@ struct VideoCreateComponent {// 创建滚动控制器实例
           }).margin({ top: 10, left: 20 })*/
 
         Button('想看看你的小脸')
-          .margin({ bottom: 20 })
           .onClick(() => {
             const authParam : userAuth.AuthParam = {
               challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
