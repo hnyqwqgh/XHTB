@@ -59,9 +59,9 @@ struct VideoCreateComponent {// 创建滚动控制器实例
         .loop(true) // 设置是否循环播放
         .objectFit(ImageFit.Contain) // 设置视频适配模式
         .width('100%')
-        .height('30%')
+        .height('50%')
         //.autoPlay(this.isAutoPlay)
-        .controls(this.showControls)
+        //.controls(this.showControls)
         .enableShortcutKey(this.isShortcutKeyEnabled)
         .onStart(() => {
           console.info('onStart')
@@ -186,13 +186,91 @@ struct VideoCreateComponent {// 创建滚动控制器实例
           Column() { // 循环生成滚动内容项
             //ForEach(this.arr, (item: number) => {
               //Text(item.toString())
-            Button('网络视频测试')
+            Button('空空儿')
               .globalButtonStyle()
               .onClick(() => {
                 // 设置网络视频源（请替换为实际的视频URL）
-                this.networkVideoSrc = 'https://media.yitulu.com/videotulu/column/20250424/rXC7vvxE/tutxCnOn_8668_0.mp4?sign=7f4d5058eafd7ef6ae899b6592a83093&t=68092c87';
+                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/tutxCnOn_8668_0.mp4?sign=dcb74283b19587782014ce7372a6f93f&t=68093ae0';
 
                 // 启动视频播放（假设Video组件的controller已经正确初始化）
+                this.controller.start();
+              })
+            Button('蛇年限定 愿照九天')
+              .globalButtonStyle()
+              .onClick(() => {
+                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_0.mp4?sign=58d6ae8fe07561bf0c81fc45ea9c8e59&t=68093ae0';
+                this.controller.start();
+              })
+            Button('影')
+              .globalButtonStyle()
+              .onClick(() => {
+                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_8.mp4?sign=a235f10374fdecd1a9bd5cd0b0f5bdbd&t=68093ae0';
+                this.controller.start();
+              })
+            Button('群星魔术团')
+              .globalButtonStyle()
+              .onClick(() => {
+                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_9.mp4?sign=b1c79f5595a3ecf321a90978b6eda63b&t=68093ae0';
+                this.controller.start();
+              })
+            Button('少司缘')
+              .globalButtonStyle()
+              .onClick(() => {
+                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_1.mp4?sign=6ebcb9b0e2a92b9b53dd3174f8218cdc&t=68093ae0';
+                this.controller.start();
+              })
+            Button('柯南')
+              .globalButtonStyle()
+              .onClick(() => {
+                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_2.mp4?sign=b43ce56b150c4183d9d6f8a61f9b0d67&t=68093ae0';
+                this.controller.start();
+              })
+            Button('穿透信念')
+              .globalButtonStyle()
+              .onClick(() => {
+                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_3.mp4?sign=d3632d70818b6bb0bdf2fba59a570687&t=68093ae0';
+                this.controller.start();
+              })
+            Button('朵莉亚')
+              .globalButtonStyle()
+              .onClick(() => {
+                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_5.mp4?sign=35c1730b009a54a26909ef7080be7c92&t=68093ae0';
+                this.controller.start();
+              })
+            Button('云梦有灵')
+              .globalButtonStyle()
+              .onClick(() => {
+                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_4.mp4?sign=5d4abfea526125358b8fd3dcdfb12df3&t=68093ae0';
+                this.controller.start();
+              })
+            Button('冰雪奇缘')
+              .globalButtonStyle()
+              .onClick(() => {
+                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_6.mp4?sign=56ea4c7af392532f2a1831f9224f6d7e&t=68093ae0';
+                this.controller.start();
+              })
+            Button('元流之子')
+              .globalButtonStyle()
+              .onClick(() => {
+                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_7.mp4?sign=f8770b93df9bb7411b3f8d79ae4fd2e0&t=68093ae0';
+                this.controller.start();
+              })
+            Button('大司命')
+              .globalButtonStyle()
+              .onClick(() => {
+                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_10.mp4?sign=fae06a205bcc904385e2cb73ccc3f632&t=68093ae0';
+                this.controller.start();
+              })
+            Button('熬隐')
+              .globalButtonStyle()
+              .onClick(() => {
+                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/Ac70o9V0_8668_11.mp4?sign=9310b7b41fa3d5018799414d8a3f2b51&t=68093ae0';
+                this.controller.start();
+              })
+            Button('九周年限定 鸣野蒿 桑启')
+              .globalButtonStyle()
+              .onClick(() => {
+                this.networkVideoSrc = 'https://media.yitulu.com/vdo/videotulu/column/20250424/rXC7vvxE/40gHHiSw_8668_0.mp4?sign=444a587e5f8e2e3b6d81adb1465bab8d&t=68093ae0';
                 this.controller.start();
               })
             Button('想看看你的小脸')
@@ -237,7 +315,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
                 }
                 this.startUserAuth(authParam, widgetParam)
               })
-            Button('2025新春愿照九天视频')
+            /*Button('2025新春愿照九天视频')
               .globalButtonStyle()
               .onClick(() => {
                 this.videoSrc = $rawfile('a.mp4') // 切换视频源
@@ -256,7 +334,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
               .globalButtonStyle()
               .onClick(() => {
                 this.previewUri = $rawfile('b.jpg') // 切换视频预览海报
-              })
+              })*/
           }
           .width('100%')
         }
@@ -339,6 +417,10 @@ struct VideoCreateComponent {// 创建滚动控制器实例
             this.scroller.scrollPage({ next: true ,animation: true })
           })
           .margin({ top: 110, left: 20 })
+        Button('全屏播放视频')
+          .onClick(() => {
+            this.controller.requestFullscreen(true)
+          }).margin({ top: 160, left: 20 })
         /*Button('触发初始速度为-3000vp/s的惯性滚动')
           .height('5%')
           .onClick(() => { // 点击后触发初始速度为-3000vp/s的惯性滚动 fling -3000

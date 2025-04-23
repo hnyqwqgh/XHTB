@@ -40,7 +40,7 @@
 
 >>> 更新时间: 2025-04-21 17:01
 
-> Ready
+> # Ready
 
 >> ## [开发应用沉浸式效果](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-develop-apply-immersive-effects)
 
