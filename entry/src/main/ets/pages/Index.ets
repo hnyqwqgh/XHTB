@@ -35,7 +35,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
   @State isShortcutKeyEnabled: boolean = false
   @State message: string = '用户认证'
   @State userAuthResult?: userAuth.UserAuthResult = undefined
-
+  @State networkVideoSrc: string = '';
 
 
 
@@ -193,6 +193,19 @@ struct VideoCreateComponent {// 创建滚动控制器实例
           Column() { // 循环生成滚动内容项
             //ForEach(this.arr, (item: number) => {
               //Text(item.toString())
+            Button('网络')
+              .globalButtonStyle()
+              .onClick(() => {
+                const authParam : userAuth.AuthParam = {
+                  challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
+                  authType: [userAuth.UserAuthType.FACE],
+                  authTrustLevel: userAuth.AuthTrustLevel.ATL1,
+                }
+                const widgetParam :userAuth.WidgetParam = {
+                  title: '请认证人脸'
+                }
+                this.startUserAuth(authParam, widgetParam)
+              })
             Button('想看看你的小脸')
               .globalButtonStyle()
               .onClick(() => {
