@@ -342,7 +342,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
         .scrollBar(BarState.On) // 滚动条常驻显示
         .scrollBarColor(Color.Gray) // 滚动条颜色
         .scrollBarWidth(10) // 滚动条宽度
-        .height('50%') // 关键高度设置
+        .height('54%') // 关键高度设置
         .backgroundColor(Color.White)
         .friction(0.6)                      // 设置滚动摩擦系数（影响滚动惯性）
         .edgeEffect(EdgeEffect.None)
@@ -417,7 +417,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
             this.scroller.scrollPage({ next: true ,animation: true })
           })
           .margin({ top: 110, left: 20 })
-        Button('全屏播放视频')
+        Button('全屏')
           .onClick(() => {
             this.controller.requestFullscreen(true)
           }).margin({ top: 160, left: 20 })
