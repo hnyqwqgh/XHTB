@@ -55,9 +55,12 @@ struct VideoCreateComponent {// 创建滚动控制器实例
   build() {
     Column() {
       Video({
-        src: this.videoSrc,
+        //src: this.videoSrc,
         previewUri: this.previewUri,
         currentProgressRate: this.curRate,
+        //controller: this.controller,
+        src: this.networkVideoSrc, // 绑定网络视频源状态变量
+        // ... 其他视频属性保持不变 ...
         controller: this.controller
       })
         .muted(false) // 设置是否静音
@@ -193,18 +196,14 @@ struct VideoCreateComponent {// 创建滚动控制器实例
           Column() { // 循环生成滚动内容项
             //ForEach(this.arr, (item: number) => {
               //Text(item.toString())
-            Button('网络')
+            Button('网络视频测试')
               .globalButtonStyle()
               .onClick(() => {
-                const authParam : userAuth.AuthParam = {
-                  challenge: new Uint8Array([49, 49, 49, 49, 49, 49]),
-                  authType: [userAuth.UserAuthType.FACE],
-                  authTrustLevel: userAuth.AuthTrustLevel.ATL1,
-                }
-                const widgetParam :userAuth.WidgetParam = {
-                  title: '请认证人脸'
-                }
-                this.startUserAuth(authParam, widgetParam)
+                // 设置网络视频源（请替换为实际的视频URL）
+                this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/test/LoginBg53%20(2).mp4';
+
+                // 启动视频播放（假设Video组件的controller已经正确初始化）
+                this.controller.start();
               })
             Button('想看看你的小脸')
               .globalButtonStyle()
