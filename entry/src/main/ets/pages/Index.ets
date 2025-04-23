@@ -10,6 +10,8 @@ import { curves } from '@kit.ArkUI' // 导入ArkUI动画曲线库
 import userAuth from '@ohos.userIAM.userAuth'
 import { promptAction } from '@kit.ArkUI';
 
+
+
 const TAG = 'User_Auth';
 
 @Extend(Button) function globalButtonStyle() {
@@ -19,6 +21,7 @@ const TAG = 'User_Auth';
   .borderRadius(15)           // 圆角半径
   .margin({ top: 10 })         // 顶部间距
 }
+
 
 @Entry
 @Component
@@ -32,6 +35,8 @@ struct VideoCreateComponent {// 创建滚动控制器实例
   @State isShortcutKeyEnabled: boolean = false
   @State message: string = '用户认证'
   @State userAuthResult?: userAuth.UserAuthResult = undefined
+
+
 
 
   scroller: Scroller = new Scroller()// 初始化数据数组（用于生成滚动内容）
@@ -55,9 +60,14 @@ struct VideoCreateComponent {// 创建滚动控制器实例
         currentProgressRate: this.curRate,
         controller: this.controller
       })
+        .muted(false) // 设置是否静音
+        .controls(false) // 设置是否显示默认控制条
+        .autoPlay(true) // 设置是否自动播放
+        .loop(true) // 设置是否循环播放
+        .objectFit(ImageFit.Contain) // 设置视频适配模式
         .width('100%')
-        .height('60%')
-        .autoPlay(this.isAutoPlay)
+        .height('50%')
+        //.autoPlay(this.isAutoPlay)
         .controls(this.showControls)
         .enableShortcutKey(this.isShortcutKeyEnabled)
         .onStart(() => {
@@ -235,12 +245,12 @@ struct VideoCreateComponent {// 创建滚动控制器实例
               .onClick(() => {
                 this.previewUri = $rawfile('a.jpg') // 切换视频预览海报
               })
-            Button('视频换第二个')
+            Button('空空儿视频')
               .globalButtonStyle()
               .onClick(() => {
                 this.videoSrc = $rawfile('b.mp4') // 切换视频源
               })
-            Button('封面换第二个')
+            Button('空空儿封面')
               .globalButtonStyle()
               .onClick(() => {
                 this.previewUri = $rawfile('b.jpg') // 切换视频预览海报
