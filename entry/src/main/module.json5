@@ -4,9 +4,9 @@
     "type": "entry",
     "description": "$string:module_desc",
     "mainElement": "EntryAbility",
-    "requestPermissions": [/*{
+    "requestPermissions": [{
       "name": "ohos.permission.ACCESS_BIOMETRIC",
-    },*/
+    },
     {
       "name": "ohos.permission.INTERNET",
     }],
