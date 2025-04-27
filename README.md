@@ -24,27 +24,21 @@
 
 >>> 指南>应用框架>ArkUI（方舟UI框架）>UI开发 (ArkTS声明式开发范式)>添加组件>视频播放 (Video)
 
->>> 更新时间: 2025-04-21 17:01
-
 >> ## [按钮 (Button)](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-common-components-button)
 
 >>> 指南>应用框架>ArkUI（方舟UI框架）>UI开发 (ArkTS声明式开发范式)>添加组件>按钮 (Button)
-
->>> 更新时间: 2025-04-08 14:22
-
->>> 更新时间: 2025-04-21 17:01
  
 >> ## [Scroll](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/ts-container-scroll)
 
 >>> API参考>应用框架>ArkUI（方舟UI框架）>ArkTS组件>滚动与滑动>Scroll
 
->>> 更新时间: 2025-04-21 17:01
-
 >> ## [开发应用沉浸式效果](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/arkts-develop-apply-immersive-effects)
 
 >>> API参考>应用框架>ArkUI（方舟UI框架）>UI开发 (ArkTS声明式开发范式)>开发布局>开发应用沉浸式效果
 
->>> 更新时间: 2025-04-21 17:01
+>> ## [app.json5配置文件](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/app-configuration-file#%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E7%A4%BA%E4%BE%8B)
+
+>>> 指南>基础入门>开发基础知识>应用配置文件（Stage模型）>app.json5配置文件
 
 > # Ready
 
@@ -52,25 +46,18 @@
 
 >>> 指南>媒体>Media Kit（媒体服务）>媒体开发指导(ArkTS)>播放>使用AVPlayer播放视频(ArkTS)
 
->>> 更新时间: 2025-04-21 17:01
-
 >> ## [使用AVPlayer设置播放URL(ArkTS)](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/playback-url-setting-method)
 
 >>> 指南>媒体>Media Kit（媒体服务）>媒体开发指导(ArkTS)>播放>使用AVPlayer设置播放URL(ArkTS)
-
->>> 更新时间: 2025-04-21 17:01
 
 >> ## [使用AVPlayer播放流媒体(ArkTS)](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/streaming-media-playback-development-guide)
 
 >>> 指南>媒体>Media Kit（媒体服务）>媒体开发指导(ArkTS)>播放>使用AVPlayer播放流媒体(ArkTS)
 
->>> 更新时间: 2025-04-21 17:01
-
 >> ## [应用接续开发指导](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/app-continuation-guide)
 
 >>> 指南>自由流转>应用接续>应用接续开发指导
-
->>> 更新时间: 2025-04-21 17:01
+> 
 ---
 
 # 参考项目

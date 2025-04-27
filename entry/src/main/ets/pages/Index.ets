@@ -1,7 +1,9 @@
 import { unifiedDataChannel, uniformTypeDescriptor } from '@kit.ArkData';
-import { curves } from '@kit.ArkUI' // 导入ArkUI动画曲线库
-import userAuth from '@ohos.userIAM.userAuth'
+import { curves } from '@kit.ArkUI'; // 导入ArkUI动画曲线库
+import userAuth from '@ohos.userIAM.userAuth';
 import { promptAction } from '@kit.ArkUI';
+import window from '@ohos.window';
+import common from '@ohos.app.ability.common';
 
 const TAG = 'User_Auth';
 
@@ -16,25 +18,23 @@ const TAG = 'User_Auth';
 @Entry
 @Component
 // 使用@Entry装饰器标记为入口组件，@Component表示自定义组件
-struct VideoCreateComponent {// 创建滚动控制器实例
-  @State videoSrc: Resource | string = $rawfile('a.mp4');
-  @State previewUri: Resource = $rawfile('a.jpg')
+struct VideoCreateComponent {
+  context: common.Context = getContext(this);
+  @State initialOrientation: window.Orientation = window.Orientation.PORTRAIT; // 记录初始方向
+  // 创建滚动控制器实例
+  //@State videoSrc: Resource | string = $rawfile('a.mp4');
+  //@State previewUri: Resource = $rawfile('a.jpg')
   @State curRate: PlaybackSpeed = PlaybackSpeed.Speed_Forward_1_00_X
-  @State isAutoPlay: boolean = true
-  @State showControls: boolean = true
+  //@State isAutoPlay: boolean = true
+  //@State showControls: boolean = true
   @State isShortcutKeyEnabled: boolean = false
   @State message: string = '用户认证'
   @State userAuthResult?: userAuth.UserAuthResult = undefined
   @State networkVideoSrc: string = '';
-
+  @State networkPreviewUri: string = 'https://i0.hdslb.com/bfs/new_dyn/397b9fd7337868227bfcffe5d0b080581550564.jpg'; // 默认网络预览图
 
   scroller: Scroller = new Scroller()// 初始化数据数组（用于生成滚动内容）
   //private arr: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-
-  /*@State listPosition: number = 0; // 0代表滚动到List顶部，1代表中间值，2代表滚动到List底部。
-  private arr: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-  private scrollerForScroll: Scroller = new Scroller()
-  private scrollerForList: Scroller = new Scroller()*/
 
   //@State isMuted: boolean = false
   //@State isControls: boolean = false
@@ -45,22 +45,21 @@ struct VideoCreateComponent {// 创建滚动控制器实例
     Column() {
       Video({
         //src: this.videoSrc,
-        previewUri: this.previewUri,
+        previewUri: this.networkPreviewUri, // 使用网络预览图
         currentProgressRate: this.curRate,
-        //controller: this.controller,
         src: this.networkVideoSrc, // 绑定网络视频源状态变量
-        // ... 其他视频属性保持不变 ...
         controller: this.controller
       })
         .muted(false) // 设置是否静音
         .controls(false) // 设置是否显示默认控制条
         .autoPlay(true) // 设置是否自动播放
         .loop(true) // 设置是否循环播放
-        .objectFit(ImageFit.Contain) // 设置视频适配模式
+        //.objectFit(ImageFit.Contain) // 设置视频适配模式
+        .objectFit(ImageFit.Cover) // 设置填充模式不留黑边
         .width('100%')
-        .height('50%')
-        //.autoPlay(this.isAutoPlay)
-        //.controls(this.showControls)
+        .aspectRatio(16/9) // 根据视频长宽比自动计算高度
+          //.autoPlay(this.isAutoPlay)
+          //.controls(this.showControls)
         .enableShortcutKey(this.isShortcutKeyEnabled)
         .onStart(() => {
           console.info('onStart')
@@ -100,11 +99,31 @@ struct VideoCreateComponent {// 创建滚动控制器实例
         .onFullscreenChange((e?: FullscreenObject) => {
           if (e != undefined) {
             console.info('onFullscreenChange is ' + e.fullscreen)
+            window.getLastWindow(this.context).then((win: window.Window) => {
+              if (!e.fullscreen) {
+                win.setPreferredOrientation(this.initialOrientation);
+                setTimeout(() => {
+                  win.setPreferredOrientation(this.initialOrientation);
+                }, 300);
+              }
+            }).catch((err: Error) => {
+              console.error('方向恢复失败:', err);
+            });
           }
         })
         .onPrepared(() => {
           // 在onPrepared回调中执行controller的start方法，确保视频源更换后直接开始播放。
           this.controller.start();
+        })
+        .onAppear(() => {
+          // 初始化屏幕方向
+          window.getLastWindow(this.context).then((win: window.Window) => {
+            this.initialOrientation = win.getPreferredOrientation();
+            console.info('初始屏幕方向:', this.initialOrientation);
+          }).catch((err: Error) => {
+            console.error('获取屏幕方向失败:', err);
+            this.initialOrientation = window.Orientation.PORTRAIT;
+          });
         })
         .onDrop((e: DragEvent) => {
           // 外部视频拖入应用Video组件范围，松手后触发通过onDrop注册的回调。
@@ -112,7 +131,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
           let record = e.getData().getRecords()[0];
           if (record.getType() == uniformTypeDescriptor.UniformDataType.VIDEO) {
             let videoInfo = record as unifiedDataChannel.Video;
-            this.videoSrc = videoInfo.videoUri;
+            this.networkVideoSrc = videoInfo.videoUri;
           }
         })
 
@@ -184,7 +203,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
         Scroll(this.scroller) {// 垂直排列的子组件容器
           Column() { // 循环生成滚动内容项
             //ForEach(this.arr, (item: number) => {
-              //Text(item.toString())
+            //Text(item.toString())
             Button('空空儿')
               .globalButtonStyle()
               .onClick(() => {
@@ -307,8 +326,8 @@ struct VideoCreateComponent {// 创建滚动控制器实例
                 this.startUserAuth(authParam, widgetParam)
               })
             //.fontSize(16)               // 文字大小
-              // .textAlign(TextAlign.Center)// 文字居中
-              //}, (item: string) => item)       // 使用项值作为唯一标识
+            // .textAlign(TextAlign.Center)// 文字居中
+            //}, (item: string) => item)       // 使用项值作为唯一标识
             Button('password')
               .globalButtonStyle()
               .backgroundColor(0xFF66CC)
@@ -322,6 +341,20 @@ struct VideoCreateComponent {// 创建滚动控制器实例
                   title: '让我来瞅瞅你的锁屏密码是多少！！'
                 }
                 this.startUserAuth(authParam, widgetParam)
+              })
+            Button('测试网络预览图')
+              .globalButtonStyle()
+              .backgroundColor(0x66CCFF)
+              .onClick(() => {
+                this.networkPreviewUri = 'https://i0.hdslb.com/bfs/article/3cc357e83782b09c4559dc4a764743e5fc5c48eb.jpg';
+                promptAction.showToast({message: '已设置网络预览图'});
+              })
+            Button('测试网络预览图')
+              .globalButtonStyle()
+              .backgroundColor(0x66CCFF)
+              .onClick(() => {
+                this.networkPreviewUri = 'https://i0.hdslb.com/bfs/article/3cc357e83782b09c4559dc4a764743e5fc5c48eb.jpg';
+                promptAction.showToast({message: '已设置网络预览图'});
               })
             /*Button('2025新春愿照九天视频')
               .globalButtonStyle()
@@ -350,8 +383,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
         .scrollBar(BarState.On) // 滚动条常驻显示
         .scrollBarColor(Color.Gray) // 滚动条颜色
         .scrollBarWidth(10) // 滚动条宽度
-        //.height('54%') // 关键高度设置
-        .height('49.9%')
+        .flexGrow(1) // 自动填充剩余空间
         .backgroundColor(Color.White)
         .friction(0.6)                      // 设置滚动摩擦系数（影响滚动惯性）
         .edgeEffect(EdgeEffect.None)
@@ -428,13 +460,16 @@ struct VideoCreateComponent {// 创建滚动控制器实例
           .onClick(() => { // 点击后滑到下一页
             this.scroller.scrollPage({ next: true ,animation: true })
           })
-          .margin({ top: 110, left: 20 })
+          .margin({ top: 10, left: 100 })
         Button('全屏')
           .backgroundColor(0x330066)
           .height('5%')
           .onClick(() => {
-            this.controller.requestFullscreen(true)
-          }).margin({ top: 160, left: 20 })
+            this.controller.requestFullscreen(true);
+            window.getLastWindow(this.context).then((win) => {
+              win.setPreferredOrientation(window.Orientation.LANDSCAPE);
+            });
+          }).margin({ top: 60, left: 100 })
         /*Button('触发初始速度为-3000vp/s的惯性滚动')
           .height('5%')
           .onClick(() => { // 点击后触发初始速度为-3000vp/s的惯性滚动 fling -3000
