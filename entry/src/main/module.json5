@@ -4,9 +4,10 @@
     "type": "entry",
     "description": "$string:module_desc",
     "mainElement": "EntryAbility",
-    "requestPermissions": [{
+    "requestPermissions": [/*{
       "name": "ohos.permission.ACCESS_BIOMETRIC",
-    },{
+    },*/
+    {
       "name": "ohos.permission.INTERNET",
     }],
     "deviceTypes": [
@@ -22,9 +23,9 @@
         "name": "EntryAbility",
         "srcEntry": "./ets/entryability/EntryAbility.ets",
         "description": "$string:EntryAbility_desc",
-        "icon": "$media:layered_image",
+        "icon": "$media:start",
         "label": "$string:EntryAbility_label",
-        "startWindowIcon": "$media:startIcon",
+        "startWindowIcon": "$media:start",
         "startWindowBackground": "$color:start_window_background",
         "exported": true,
         "skills": [

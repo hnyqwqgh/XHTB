@@ -278,7 +278,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
                 this.networkVideoSrc = 'https://gitee.com/hnyqwq/video/releases/download/v0.1/%E4%B9%9D%E5%91%A8%E5%B9%B4.mp4';
                 this.controller.start();
               })
-            Button('想看看你的小脸')
+            /*('想看看你的小脸')
               .globalButtonStyle()
               .backgroundColor(0xFF66CC)
               .onClick(() => {
@@ -322,7 +322,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
                   title: '让我来瞅瞅你的锁屏密码是多少！！'
                 }
                 this.startUserAuth(authParam, widgetParam)
-              })
+              })*/
             /*Button('2025新春愿照九天视频')
               .globalButtonStyle()
               .onClick(() => {
@@ -450,7 +450,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
       }.width('100%').height('100%').backgroundColor(0xDCDCDC)
     }
   }
-  startUserAuth (authParam: userAuth.AuthParam, widgetParam: userAuth.WidgetParam) {
+  /*startUserAuth (authParam: userAuth.AuthParam, widgetParam: userAuth.WidgetParam) {
     try {
       const userAuthInstance = userAuth.getUserAuthInstance(authParam, widgetParam);
       userAuthInstance.on('result', {
@@ -468,7 +468,7 @@ struct VideoCreateComponent {// 创建滚动控制器实例
         message: `拉起用户认证失败 ${e.code} ${e.message}`
       })
     }
-  }
+  }*/
 }
 
 
