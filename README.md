@@ -10,7 +10,7 @@
 
 >> HUAWEI MatePad Pro MRO-W00
 
->>> HarmonyOS版本：HarmonyOS 5.0.0.155 (SP6C00E155R1P6patch02)
+>>> HarmonyOS版本：HarmonyOS 5.0.0.155 (SP6C00E155R1P6patch05)
 
 >>> API版本：5.0.4(16)
 

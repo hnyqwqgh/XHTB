@@ -22,8 +22,6 @@
         "value": "value1"
       }
     ],*/
-
-
     //"maxChildProcess": 5,
     "multiAppMode": {
       "multiAppModeType": "appClone",
