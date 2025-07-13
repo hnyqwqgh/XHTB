@@ -180,9 +180,10 @@ export struct exPage {
           Text('版权所有◎ 2025 保留一切权利')
             .fontSize(12);
           Text() {
-            Span('前往下载MeoW')
+            Span('前往MeoW订阅时事推送')
               .onClick(() => {
-                const want: Want = { uri: `store://appgallery.huawei.com/app/detail?id=com.chuckfang.meow` };
+                //const want: Want = { uri: `store://appgallery.huawei.com/app/detail?id=com.chuckfang.meow` };
+                const want: Want = { uri: `https://www.chuckfang.com/MeoW/appLinking?channelId=9687404a1b84433184ba27f16a57da3e` };
                 const context = getContext(this) as common.UIAbilityContext;
                 context.startAbility(want).then(() => { //拉起成功
                   console.info('拉起应用商店成功')
@@ -198,7 +199,7 @@ export struct exPage {
         .height(60);
       }
       .height('100%')
-      .title('设备认证能力')
+      .title('嘘！不要告诉别人哦~ > < ')
       .titleMode(NavigationTitleMode.Mini)
       .backgroundColor($r('app.color.listColor'))
       .padding({ top: 50 })

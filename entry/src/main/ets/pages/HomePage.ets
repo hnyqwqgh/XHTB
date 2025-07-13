@@ -286,6 +286,7 @@ export struct HomePage {
             }
           })
         Button('󰂴 播放')
+          //.fontSize(10)
         //.type(ButtonType.Capsule)
           .width('20%')
           .height(50)
@@ -415,7 +416,7 @@ export struct HomePage {
             });
           })
       }
-
+      /*
       Row() {
         CollaborationServiceStateDialog({
           onState: (stateCode: number, bufferType: string, buffer: ArrayBuffer): void => this.doInsertPicture(stateCode,
@@ -429,18 +430,6 @@ export struct HomePage {
           .height(50)
           .backgroundColor(0xffd143)
           .bindMenu(this.MyTestMenu)
-        /*if (this.picture) {
-          Image(this.picture)
-            .borderStyle(BorderStyle.Dotted)
-            .borderWidth(1)
-            .objectFit(ImageFit.Contain)
-            .height('80%')
-            .onComplete((event) => {
-              if (event != undefined) {
-                hilog.info(0x0000, 'testTag', 'onComplete %{public}s', event.loadingStatus);
-              }
-            })
-        }*/
         Button('󰇘 OCR')
           .type(ButtonType.Capsule)
           .fontColor(Color.White)
@@ -452,7 +441,7 @@ export struct HomePage {
             this.textRecognitionTest();
           })
       }.margin({ top: 10 })
-
+*/
 
       // 使用堆叠布局，顶部起始对齐
       Stack({ alignContent: Alignment.TopStart }) {
@@ -469,10 +458,10 @@ export struct HomePage {
               .constraintSize({ maxWidth: 900, minWidth: 600 })
           }
           .width('100%')
-          //.height('%') // 填满Scroll容器
+          .height('100%') // 填满Scroll容器
           //.margin({ bottom: 290 }) // 手机底部安全边距
           //.margin({ bottom: 580 }) // 平板底部安全边距
-          .margin({ bottom: 600 }) // 底部安全边距
+          //.margin({ bottom: 600 }) // 底部安全边距
         }
         .scrollable(ScrollDirection.Vertical) // 滚动方向纵向
         .scrollBar(BarState.On) // 滚动条常驻显示
@@ -625,7 +614,7 @@ export struct HomePage {
     }
   }
 
-  doInsertPicture(stateCode: number, bufferType: string, buffer: ArrayBuffer): void {
+  /*doInsertPicture(stateCode: number, bufferType: string, buffer: ArrayBuffer): void {
     if (stateCode != 0) {
       return;
     }
@@ -635,7 +624,7 @@ export struct HomePage {
         this.chooseImage = pixelMap; // 直接赋值给目标变量
       })
     }
-  }
+  }*/
 }
 
 

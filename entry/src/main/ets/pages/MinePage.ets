@@ -25,7 +25,7 @@ export struct MinePage {
   //设置条目信息数组
   @State menuGroup: SettingMenu[] = [
     new SettingMenu('setting', $r('app.media.mine_settings'), '前往官网', $r('app.string.void')),
-    new SettingMenu('vipownsetting', $r('app.media.mine_vipsettings'), '设备认证能力', $r('app.string.void')),
+    new SettingMenu('vipownsetting', $r('app.media.mine_vipsettings'), '神秘功能', $r('app.string.void')),
     new SettingMenu('mycollection', $r('app.media.ic_collect'), '关注哔哩哔哩', $r('app.string.void')),
     new SettingMenu('mylike', $r('app.media.mine_like'), '关注抖音', $r('app.string.void')),
     new SettingMenu('browsinghistory', $r('app.media.mine_time'), '前往个人博客', $r('app.string.void'))

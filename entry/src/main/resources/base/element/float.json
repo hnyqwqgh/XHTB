@@ -7,6 +7,10 @@
     {
       "name": "opacity",
       "value": "0.6"
+    },
+    {
+      "name": "safe_area_bottom",
+      "value": "100vp"
     }
   ]
 }
