@@ -126,7 +126,19 @@
 
 >>> 指南>系统>网络>Service Collaboration Kit（协同服务）>跨设备互通（ArkTS）>跨设备互通开发指导
 
----
+>> ## [Menu](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/ts-basic-components-menu#%E7%A4%BA%E4%BE%8B2%E8%AE%BE%E7%BD%AEsymbol%E7%B1%BB%E5%9E%8B%E5%9B%BE%E6%A0%87)
+
+>>> API参考>应用框架>ArkUI（方舟UI框架）>ArkTS组件>菜单>Menu
+
+>> ## [使用粘贴控件](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/pastebutton)
+
+>>> 指南>系统>安全>程序访问控制>使用安全控件>使用粘贴控件
+
+>> ## [使用剪贴板进行复制粘贴](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/use_pasteboard_to_copy_and_paste)
+
+>>> 指南>系统>基础功能>Basic Services Kit（基础服务）>剪贴板服务>使用剪贴板进行复制粘贴
+
+--- 
 
 # 参考项目
 
@@ -134,17 +146,19 @@
 
 > ## [HarmonyOS-Cases/Cases](https://gitee.com/harmonyos-cases/cases)
 
->> ### [video-demo](https://gitee.com/scenario-samples/video-demo)
+>> ### [实现播放视频功能 video-demo](https://gitee.com/scenario-samples/video-demo)
 
->> ### [avplayer-video](https://gitee.com/scenario-samples/avplayer-video)
+>> ### [实现播放视频功能 avplayer-video](https://gitee.com/scenario-samples/avplayer-video)
 
->> ### [scenario-samples](https://gitee.com/scenario-samples)
+>> ### [鸿蒙 HarmonyOS NEXT场景化示例代码仓 scenario-samples](https://gitee.com/scenario-samples)
 
->> ### [通用文字识别](https://gitee.com/harmonyos_samples/core-vision-kit-sample-code-ark-ts-ocr-demo)
+>> ### [通用文字识别 CoreVisionKit-SampleCode-ArkTS-OcrDemo](https://gitee.com/harmonyos_samples/core-vision-kit-sample-code-ark-ts-ocr-demo)
 
 >> ### [基于应用接续及跨设备互通功能实现内容发布功能 ContinuePublish](https://gitee.com/harmonyos_samples/ContinuePublish/tree/br_release_hmos)
 
 >> ### [跨设备互通 ServiceCollaborationKit-SampleCode-ArkTS](https://gitee.com/harmonyos_samples/service-collaboration-kit-sample-code-arkts)
+
+>> ### [实现剪切板复制粘贴的功能 Pasteboard](https://gitee.com/harmonyos_samples/pasteboard)
 
 ---
 
