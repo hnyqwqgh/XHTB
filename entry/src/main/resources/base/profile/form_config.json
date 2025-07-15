@@ -1,0 +1,44 @@
+{
+  "forms": [
+    {
+      "name": "startApp",
+      "description": "Click to start app",
+      "src": "./ets/StartApp/pages/StartApp.ets",
+      "uiSyntax": "arkts",
+      "window": {
+        "designWidth": 720,
+        "autoDesignWidth": true
+      },
+      "colorMode": "auto",
+      "isDynamic": true,
+      "isDefault": false,
+      "updateEnabled": true,
+      "scheduledUpdateTime": "10:30",
+      "updateDuration": 1,
+      "defaultDimension": "2*2",
+      "supportDimensions": [
+        "2*2","4*4"
+      ]
+    },
+  {
+    "name": "Cards",
+    "description": "Click to start app",
+    "src": "./ets/Cards/pages/Cards.ets",
+    "uiSyntax": "arkts",
+    "window": {
+      "designWidth": 720,
+      "autoDesignWidth": true
+    },
+    "colorMode": "auto",
+    "isDynamic": true,
+    "isDefault": false,
+    "updateEnabled": true,
+    "scheduledUpdateTime": "10:30",
+    "updateDuration": 1,
+    "defaultDimension": "2*2",
+    "supportDimensions": [
+      "2*2","4*4"
+    ]
+  }
+]
+}

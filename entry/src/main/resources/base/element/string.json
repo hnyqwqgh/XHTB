@@ -1,32 +1,44 @@
 {
-  "string": [
-    {
-      "name": "module_desc",
-      "value": "module description"
-    },
-    {
-      "name": "EntryAbility_desc",
-      "value": "description"
-    },
-    {
-      "name": "EntryAbility_label",
-      "value": "hvideo"
-    },
-    {
-      "name": "servicecollabutton",
-      "value": "Use remote device to insert images"
-    },
-    {
-      "name": "defaultForm_label",
-      "value": "Default Form Label"
-    },
-    {
-      "name": "defaultForm_desc",
-      "value": "Default Form Description"
-    },
-    {
-      "name": "void",
-      "value": " "
-    }
-  ]
+	"string":[
+		{
+			"name":"module_desc",
+			"value":"module description"
+		},
+		{
+			"name":"EntryAbility_desc",
+			"value":"description"
+		},
+		{
+			"name":"EntryAbility_label",
+			"value":"hvideo"
+		},
+		{
+			"name":"servicecollabutton",
+			"value":"Use remote device to insert images"
+		},
+		{
+			"name":"defaultForm_label",
+			"value":"Default Form Label"
+		},
+		{
+			"name":"defaultForm_desc",
+			"value":"Default Form Description"
+		},
+		{
+			"name":"void",
+			"value":" "
+		},
+		{
+			"name":"JumpLabel",
+			"value":"JumpLabel"
+		},
+		{
+			"name":"ButtonA",
+			"value":"ButtonA"
+		},
+		{
+			"name":"ButtonB",
+			"value":"ButtonB"
+		}
+	]
 }
