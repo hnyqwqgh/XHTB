@@ -1,0 +1,68 @@
+{
+  "string":[
+    {
+      "name":"module_desc",
+      "value":"module description"
+    },
+    {
+      "name":"EntryAbility_desc",
+      "value":"description"
+    },
+    {
+      "name":"EntryAbility_label",
+      "value":"hvideo"
+    },
+    {
+      "name":"servicecollabutton",
+      "value":"Use remote device to insert images"
+    },
+    {
+      "name":"defaultForm_label",
+      "value":"Default Form Label"
+    },
+    {
+      "name":"defaultForm_desc",
+      "value":"Default Form Description"
+    },
+    {
+      "name":"void",
+      "value":" "
+    },
+    {
+      "name":"JumpLabel",
+      "value":"JumpLabel"
+    },
+    {
+      "name":"ButtonA",
+      "value":"ButtonA"
+    },
+    {
+      "name":"ButtonB",
+      "value":"启动应用"
+    },
+    {
+      "name":"aboutpage",
+      "value":"关于页"
+    },
+    {
+      "name":"linkinput",
+      "value":"\uDB80\uDDDB 请输入视频直链"
+    },
+    {
+      "name":"share",
+      "value":"\uDB80\uDC3D 分享"
+    },
+    {
+      "name":"play",
+      "value":"\uDB80\uDCB4 播放"
+    },
+    {
+      "name":"testinput",
+      "value":"\uDB81\uDC94 使用测试视频，仅需输入名称，如w/k/55/ay/bxqy/ctxn/dly/dsm/jzn/qxmst/ssy/y/ylzz/yzjt/sr"
+    },
+    {
+      "name":"scancode",
+      "value":"\uDB80\uDC28\uDB80\uDD28 扫码"
+    }
+  ]
+}

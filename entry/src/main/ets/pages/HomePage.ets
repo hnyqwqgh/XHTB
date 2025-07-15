@@ -260,7 +260,7 @@ export struct HomePage {
           }
         })
       Row() {
-        TextInput({ placeholder: '󰇛 请输入视频直链'/*, text: 'https://hnyqwq.cn/hvideo/.mp4'*/ })
+        TextInput({ placeholder: $r('app.string.linkinput')})
           .type(InputType.URL)
           //.backgroundColor('#FF9CCE')
           .width('55%')
@@ -269,7 +269,7 @@ export struct HomePage {
           .onChange((value: string) => {
             this.networkVideoSrc = value;
           })
-        Button('󰀽 分享')
+        Button($r('app.string.share'))
         //.type(ButtonType.Capsule)
           .width('20%')
           .height(50)
@@ -285,7 +285,7 @@ export struct HomePage {
               promptAction.showToast({ message: '分享功能异常: ' + error.message });
             }
           })
-        Button('󰂴 播放')
+        Button($r('app.string.play'))
           //.fontSize(10)
         //.type(ButtonType.Capsule)
           .width('20%')
@@ -305,7 +305,7 @@ export struct HomePage {
 
       Row() {
         TextArea({
-          placeholder: '󰒔 使用测试视频，仅需输入名称，如w/k/55/ay/bxqy/ctxn/dly/dsm/jzn/qxmst/ssy/y/ylzz/yzjt/sr'
+          placeholder: $r('app.string.testinput')
         })
         //.backgroundColor('#FF9CCE')
           .width('55%')
@@ -314,7 +314,7 @@ export struct HomePage {
           .onChange((value: string) => {
             this.networkVideoSrc = 'https://www.hnyqwq.cn/hvideo/' + value + '.mp4';
           })
-        Button('󰀨󰄨 扫码')
+        Button($r('app.string.scancode'))
         //.globalButtonStyle()
           .type(ButtonType.Capsule)
           .backgroundColor(0x66CCFF)//蓝色

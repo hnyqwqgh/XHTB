@@ -10,7 +10,7 @@ struct WidgetEventRouterCard {
         .margin({ top: '8%', left: '10%' })
       Row() {
         Column() {
-          Button() {
+          /*Button() {
             Text($r('app.string.ButtonA'))
               .fontColor('#45A6F4')
               .fontSize(12)
@@ -26,7 +26,7 @@ struct WidgetEventRouterCard {
               abilityName: 'EntryAbility',
               params: { targetPage: 'HomePage' }
             });
-          })
+          })*/
 
           Button() {
             Text($r('app.string.ButtonB'))

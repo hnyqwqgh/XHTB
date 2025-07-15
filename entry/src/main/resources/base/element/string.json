@@ -39,6 +39,30 @@
 		{
 			"name":"ButtonB",
 			"value":"ButtonB"
+		},
+		{
+			"name":"aboutpage",
+			"value":"aboutpage"
+		},
+		{
+			"name":"linkinput",
+			"value":"linkinput"
+		},
+		{
+			"name":"share",
+			"value":"\uDB80\uDC3Dshare"
+		},
+		{
+			"name":"play",
+			"value":"\uDB80\uDCB4 play"
+		},
+		{
+			"name":"testinput",
+			"value":"\uDB81\uDC94 使用测试视频，仅需输入名称，如w/k/55/ay/bxqy/ctxn/dly/dsm/jzn/qxmst/ssy/y/ylzz/yzjt/sr"
+		},
+		{
+			"name":"scancode",
+			"value":"\uDB80\uDC28\uDB80\uDD28 扫码"
 		}
 	]
 }

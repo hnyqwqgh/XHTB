@@ -165,7 +165,7 @@ export struct MinePage {
         .height(60);
       }
       .height('100%')
-      .title('关于页')
+      .title($r('app.string.aboutpage'))
       //.titleMode(NavigationTitleMode.Mini)
       .backgroundColor($r('app.color.listColor'));
     };
