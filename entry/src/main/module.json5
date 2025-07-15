@@ -73,20 +73,6 @@
 		"deliveryWithInstall":true,
 		"description":"$string:module_desc",
 		"type":"entry",
-		"extensionAbilities":[
-			{
-				"name":"EntryFormAbility",
-				"srcEntry":"./ets/entryformability/EntryFormAbility.ets",
-				"label":"$string:defaultForm_label",
-				"description":"$string:defaultForm_desc",
-				"type":"form",
-				"metadata":[
-					{
-						"name":"ohos.extension.form",
-						"resource":"$profile:form_config"
-					}
-				]
-			}
-		]
+
 	}
 }
