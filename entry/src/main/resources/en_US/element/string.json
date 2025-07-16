@@ -70,11 +70,11 @@
     },
     {
       "name":"share",
-      "value":"\uDB80\uDC3DShare"
+      "value":"\uDB80\uDC3D"
     },
     {
       "name":"play",
-      "value":"\uDB80\uDCB4 Play"
+      "value":"\uDB80\uDCB4"
     },
     {
       "name":"playing",
@@ -90,7 +90,7 @@
     },
     {
       "name":"scancode",
-      "value":"\uDB80\uDC28\uDB80\uDD28QR"
+      "value":"\uDB80\uDC28\uDB80\uDD28"
     },
     {
       "name":"speedtitle",
