@@ -118,7 +118,7 @@ export struct MinePage {
           Text() {
             Span('hvideo用户协议')
               .onClick(() => {
-                const want: Want = { uri: `https://hnyqwq.cn/hvideo/yhxy.html` };
+                const want: Want = { uri: `https://www.hnyqwq.cn/hvideo/yhxy.html` };
                 const context = getContext(this) as common.UIAbilityContext;
                 context.startAbility(want).then(() => { //拉起成功
                   console.info('拉起应用商店成功')

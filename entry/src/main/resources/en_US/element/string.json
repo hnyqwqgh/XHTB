@@ -45,6 +45,26 @@
       "value":"About"
     },
     {
+      "name":"Home",
+      "value":"Video"
+    },
+    {
+      "name":"Second",
+      "value":"OCR"
+    },
+    {
+      "name":"Mine",
+      "value":"Mine"
+    },
+    {
+      "name":"controlon",
+      "value":"Playback controls are now visible. ^•ω<^"
+    },
+    {
+      "name":"controloff",
+      "value":"Playback controls are now hidden. ⌯>₃<⌯ಣ"
+    },
+    {
       "name":"linkinput",
       "value":"\uDB80\uDDDB Enter video link"
     },

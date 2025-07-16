@@ -96,9 +96,15 @@ export struct HomePage {
         .constraintSize({ maxWidth: 900, minWidth: 600 })
         .onClick(() => {
           this.isControls = !this.isControls;
-          promptAction.showToast({
-            message: `控制栏已${this.isControls ? '显示' : '隐藏'}`
-          });
+          if (this.isControls) { // 显示状态的分支
+            promptAction.showToast({
+              message: $r('app.string.controlon')
+            });
+          } else { // 隐藏状态的分支
+            promptAction.showToast({
+              message: $r('app.string.controloff')
+            });
+          }
         })
         .enableShortcutKey(this.isShortcutKeyEnabled)
         .onStart(() => {

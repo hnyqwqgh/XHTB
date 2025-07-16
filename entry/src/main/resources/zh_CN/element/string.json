@@ -45,6 +45,26 @@
       "value":"关于页"
     },
     {
+      "name":"Home",
+      "value":"主页"
+    },
+    {
+      "name":"Second",
+      "value":"OCR"
+    },
+    {
+      "name":"Mine",
+      "value":"我的"
+    },
+    {
+      "name":"controlon",
+      "value":"控制栏已显示 ^•ω<^"
+    },
+    {
+      "name":"controloff",
+      "value":"控制栏已隐藏 ⌯>₃<⌯ಣ"
+    },
+    {
       "name":"linkinput",
       "value":"\uDB80\uDDDB 请输入视频直链"
     },

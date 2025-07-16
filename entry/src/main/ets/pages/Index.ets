@@ -20,7 +20,7 @@ export struct Index {
         icon: this.currentTabIndex === 0 ?
         $r('app.media.home_active') :
         $r('app.media.home'),
-        text: '主页'
+        text: $r('app.string.Home')
       })
 
       // 第二个Tab（OCR页）
@@ -30,7 +30,7 @@ export struct Index {
         icon: this.currentTabIndex === 1 ?
         $r('app.media.ocr_active') :
         $r('app.media.ocr'),
-        text: 'OCR'
+        text: $r('app.string.Second')
       })
 
       // 第三个Tab
@@ -40,7 +40,7 @@ export struct Index {
         icon: this.currentTabIndex === 2 ?
         $r('app.media.mine_active') :
         $r('app.media.mine'),
-        text: '我的'
+        text: $r('app.string.Mine')
       })
     }
     .onChange((index: number) => {
