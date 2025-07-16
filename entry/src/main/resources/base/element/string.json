@@ -57,12 +57,80 @@
 			"value":"\uDB80\uDCB4 播放"
 		},
 		{
+			"name":"playing",
+			"value":"正在播放视频... ᜊ•ᴗ•ᜊ"
+		},
+		{
+			"name":"noplay",
+			"value":"请输入视频链接 ⪩ ⪨"
+		},
+		{
 			"name":"testinput",
 			"value":"\uDB81\uDC94 使用测试视频，仅需输入名称，如w/k/55/ay/bxqy/ctxn/dly/dsm/jzn/qxmst/ssy/y/ylzz/yzjt/sr/sq"
 		},
 		{
 			"name":"scancode",
 			"value":"\uDB80\uDC28\uDB80\uDD28 扫码"
+		},
+		{
+			"name":"1xspeed",
+			"value":"原速"
+		},
+		{
+			"name":"2xspeed",
+			"value":"倍速"
+		},
+		{
+			"name":"Fill",
+			"value":"强制填充屏幕"
+		},
+		{
+			"name":"Auto",
+			"value":"自适应"
+		},
+		{
+			"name":"Contain",
+			"value":"保持比例"
+		},
+		{
+			"name":"Cover",
+			"value":"比例放大填充"
+		},
+		{
+			"name":"nowplaying",
+			"value":"当前播放的视频链接"
+		},
+		{
+			"name":"pick",
+			"value":"\uDB81\uDCE5 选图"
+		},
+		{
+			"name":"takephotos",
+			"value":"使用本机拍照 ៷>ᴗ<៷"
+		},
+		{
+			"name":"pickphotos",
+			"value":"选取本机图片꒰⑅•ᴗ•⑅꒱"
+		},
+		{
+			"name":"and",
+			"value":"和"
+		},
+		{
+			"name":"copyright",
+			"value":"版权所有 © 2025 保留一切权利"
+		},
+		{
+			"name":"mineunder",
+			"value":"前往下载AppTest"
+		},
+		{
+			"name":"expagetitle",
+			"value":"嘘！不要告诉别人哦~ > < "
+		},
+		{
+			"name":"exunder",
+			"value":"前往MeoW订阅时事推送"
 		}
 	]
 }

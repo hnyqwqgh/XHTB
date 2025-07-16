@@ -53,7 +53,7 @@ export struct exPage {
             .fontWeight(700)
             .fontSize('14fp')
             .margin({ top: 10 });
-          Text('当前最新支持的API版本：6.0.0(20) Beta1')
+          Text('API：5.1.1(19)')
             .fontWeight(600)
             .fontSize('12fp')
             .margin({ top: 10 });
@@ -177,10 +177,10 @@ export struct exPage {
               .fontSize(12);
           };*/
 
-          Text('版权所有◎ 2025 保留一切权利')
+          Text($r('app.string.copyright'))
             .fontSize(12);
           Text() {
-            Span('前往MeoW订阅时事推送')
+            Span($r('app.string.exunder'))
               .onClick(() => {
                 //const want: Want = { uri: `store://appgallery.huawei.com/app/detail?id=com.chuckfang.meow` };
                 const want: Want = { uri: `https://www.chuckfang.com/MeoW/appLinking?channelId=9687404a1b84433184ba27f16a57da3e` };
@@ -199,7 +199,7 @@ export struct exPage {
         .height(60);
       }
       .height('100%')
-      .title('嘘！不要告诉别人哦~ > < ')
+      .title($r('app.string.expagetitle'))
       .titleMode(NavigationTitleMode.Mini)
       .backgroundColor($r('app.color.listColor'))
       .padding({ top: 50 })

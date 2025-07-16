@@ -41,7 +41,7 @@ export struct MinePage {
             .fontWeight(700)
             .fontSize('14fp')
             .margin({ top: 10 });
-          Text('1.3.0.2（10300002）')
+          Text('1.3.0.3（10300003）')
             .fontWeight(600)
             .fontSize('12fp')
             .margin({ top: 10 });
@@ -128,7 +128,7 @@ export struct MinePage {
               })
               .fontColor(Color.Blue)
               .fontSize(12);
-            Span('和')
+            Span($r('app.string.and'))
               .fontSize(12);
             Span('hvideo与隐私的声明')
               .onClick(() => {
@@ -144,10 +144,10 @@ export struct MinePage {
               .fontSize(12);
           };
 
-          Text('版权所有◎ 2025 保留一切权利')
+          Text($r('app.string.copyright'))
             .fontSize(12);
           Text() {
-            Span('前往下载AppTest')
+            Span($r('app.string.mineunder'))
               .onClick(() => {
                 const want: Want = { uri: `store://appgallery.huawei.com/app/detail?id=com.huawei.hmsapp.apptest` };
                 const context = getContext(this) as common.UIAbilityContext;

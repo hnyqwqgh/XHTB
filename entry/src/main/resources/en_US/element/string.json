@@ -57,12 +57,80 @@
       "value":"\uDB80\uDCB4 Play"
     },
     {
+      "name":"playing",
+      "value":"Video is playing... ᜊ•ᴗ•ᜊ"
+    },
+    {
+      "name":"noplay",
+      "value":"Please enter the video link ⪩ ⪨"
+    },
+    {
       "name":"testinput",
       "value":"\uDB81\uDC94 Use some test videos, just enter the name.e.g.,w/k/55/ay/bxqy/ctxn/dly/dsm/jzn/qxmst/ssy/y/ylzz/yzjt/sr/sq"
     },
     {
       "name":"scancode",
       "value":"\uDB80\uDC28\uDB80\uDD28QR"
+    },
+    {
+      "name":"1xspeed",
+      "value":"1x Speed"
+    },
+    {
+      "name":"2xspeed",
+      "value":"2x Speed"
+    },
+    {
+      "name":"Fill",
+      "value":"Fill"
+    },
+    {
+      "name":"Auto",
+      "value":"Auto"
+    },
+    {
+      "name":"Contain",
+      "value":"Contain"
+    },
+    {
+      "name":"Cover",
+      "value":"Cover"
+    },
+    {
+      "name":"nowplaying",
+      "value":"The link to the currently playing video"
+    },
+    {
+      "name":"pick",
+      "value":"\uDB81\uDCE5 Pick"
+    },
+    {
+      "name":"takephotos",
+      "value":"Take a photo using this device. ៷>ᴗ<៷"
+    },
+    {
+      "name":"pickphotos",
+      "value":"Select an image from this device. ꒰⑅•ᴗ•⑅꒱"
+    },
+    {
+      "name":"and",
+      "value":"and"
+    },
+    {
+      "name":"copyright",
+      "value":"All rights reserved © 2025."
+    },
+    {
+      "name":"mineunder",
+      "value":"Download AppTest"
+    },
+    {
+      "name":"expagetitle",
+      "value":"Hidden Page > < "
+    },
+    {
+      "name":"exunder",
+      "value":"Go to MeoW to subscribe to HSR news updates"
     }
   ]
 }

@@ -84,14 +84,14 @@ export struct SecondPage {
     Menu() {
       MenuItem({
       startIcon: $r("app.media.CIcon"),
-      content: "使用本机拍照 ៷>ᴗ<៷ ",
+      content: $r('app.string.takephotos'),
       builder: (): void => {
         xj(this.context);
       }
     })
       MenuItem({
         startIcon: $r("app.media.CIcon"),
-        content: "选取本机图片꒰⑅•ᴗ•⑅꒱ ",
+        content: $r('app.string.pickphotos'),
         builder: (): void => {
           this.selectImage();
         }
@@ -141,7 +141,7 @@ export struct SecondPage {
           onState: (stateCode: number, bufferType: string, buffer: ArrayBuffer): void => this.doInsertPicture(stateCode,
             bufferType, buffer)
         })
-        Button('󰓥 选图')
+        Button($r('app.string.pick'))
           .type(ButtonType.Capsule)
           .fontColor(Color.White)
           .width('20%')

@@ -37,8 +37,8 @@ export struct HomePage {
   @State chooseImage: PixelMap | undefined = undefined;
   @State picture: PixelMap | undefined = undefined;
 
-  @State networkPreviewUri: string = 'https://www.hnyqwq.cn/hvideo/130.png'; // 默认网络预览图
-  //@State networkPreviewUri: string = 'https://act-webstatic.mihoyo.com/event-static/2023/08/15/cc72ddf351003a4a9b618e5f4697dad0_2771553456903788244.jpg';
+  //@State networkPreviewUri: string = 'https://www.hnyqwq.cn/hvideo/130.png'; // 默认网络预览图
+  @State networkPreviewUri: string = 'https://act-webstatic.mihoyo.com/event-static/2023/08/15/cc72ddf351003a4a9b618e5f4697dad0_2771553456903788244.jpg';
   @State currentFitMode: ImageFit = ImageFit.Auto; // 当前填充模式
   @State isControls: boolean = false; // 控制栏显示状态
   @State handlePopup: boolean = false; // 气泡提示（Popup）
@@ -48,7 +48,7 @@ export struct HomePage {
 
   private async share() {
     if (!this.networkVideoSrc) {
-      promptAction.showToast({ message: '请输入有效的视频链接' });
+      promptAction.showToast({ message: $r('app.string.noplay') });
       return;
     }
 
@@ -198,9 +198,9 @@ export struct HomePage {
           .onClick(() => {
             if (this.networkVideoSrc) {
               this.controller.start();
-              promptAction.showToast({ message: '正在播放视频...' });
+              promptAction.showToast({ message: $r('app.string.playing') });
             } else {
-              promptAction.showToast({ message: '请输入视频链接' });
+              promptAction.showToast({ message: $r('app.string.noplay') });
             }
           })
       }
@@ -252,7 +252,6 @@ export struct HomePage {
                 `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
             }
           })
-          .bindPopup(this.handlePopup, { message: '点击扫码输入视频链接' });
         PasteButton({ icon: PasteIconStyle.LINES, text: PasteDescription.PASTE, buttonType: ButtonType.Capsule })
         //.fontSize(10)
           .width('20%')
@@ -275,7 +274,7 @@ export struct HomePage {
       .margin({ top: 5, bottom: 10 })
 
       Row() {
-        Button(this.curRate === PlaybackSpeed.Speed_Forward_2_00_X ? '原速' : '倍速')
+        Button(this.curRate === PlaybackSpeed.Speed_Forward_2_00_X ? $r('app.string.1xspeed') : $r('app.string.2xspeed'))
         //.backgroundColor('#0044fc')
           .backgroundColor(0xFF66CC)
           //.width('20%')
@@ -287,6 +286,22 @@ export struct HomePage {
               message: `已成功切换至${this.curRate === PlaybackSpeed.Speed_Forward_2_00_X ? '2' : '1'}倍速播放`
             });
           })
+        Button('click for Menu')
+          .bindMenu([
+            {
+              value: 'Menu1',
+              action: () => {
+                console.info('handle Menu1 select');
+              }
+            },
+            {
+              value: 'Menu1',
+              action: () => {
+                this.curRate === PlaybackSpeed.Speed_Forward_2_00_X
+              }
+
+            }
+          ])
         /*Button('全屏')
           .backgroundColor(0xFF66CC)
           .margin({ left: 10 })
@@ -296,7 +311,7 @@ export struct HomePage {
               win.setPreferredOrientation(window.Orientation.LANDSCAPE);
             });
           })*/
-        Button(this.currentFitMode === ImageFit.Fill ? '自适应' : '强制填充屏幕')
+        Button(this.currentFitMode === ImageFit.Fill ? $r('app.string.Fill') :$r('app.string.Auto'))
           .backgroundColor(0xFF66CC)
           .margin({ left: 10 })
           .onClick(() => {
@@ -307,7 +322,7 @@ export struct HomePage {
               message: `当前模式: ${this.currentFitMode === ImageFit.Fill ? 'Fill(强制填充屏幕)' : 'Auto(自适应)'}`
             });
           })
-        Button(this.currentFitMode === ImageFit.Cover ? '保持比例' : '比例放大填充')
+        Button(this.currentFitMode === ImageFit.Cover ? $r('app.string.Contain') : $r('app.string.Cover'))
           .backgroundColor(0xFF66CC)
           .margin({ left: 10 })
           .onClick(() => {
@@ -315,8 +330,7 @@ export struct HomePage {
               ? ImageFit.Contain
               : ImageFit.Cover;
             promptAction.showToast({
-              message: `当前模式: ${this.currentFitMode === ImageFit.Cover ? 'Contain(保持比例)' :
-                'Cover(比例放大填充)'}`
+              message: `当前模式: ${this.currentFitMode === ImageFit.Cover ? 'Contain(保持比例)' : 'Cover(比例放大填充)'}`
             });
           })
       }
@@ -326,7 +340,7 @@ export struct HomePage {
         // 滚动区域
         Column() {
           Column() {
-            Text('当前播放的视频链接')
+            Text($r('app.string.nowplaying'))
             Text(this.networkVideoSrc)
               .copyOption(CopyOptions.LocalDevice)
               .textAlign(TextAlign.Center)
