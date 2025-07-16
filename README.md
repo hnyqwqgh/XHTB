@@ -4,7 +4,7 @@
 
 >> nova 14 Ultra MRT-AL10
 
->>> HarmonyOS版本：HarmonyOS 5.0.1.135 (SP8C00E135R5P5patch01)
+>>> HarmonyOS版本：HarmonyOS 5.0.1.135 (SP10C00E135R5P5)
 
 >>> API版本：5.0.5(17)
 
@@ -152,6 +152,8 @@
 
 >> ### [鸿蒙 HarmonyOS NEXT场景化示例代码仓 scenario-samples](https://gitee.com/scenario-samples)
 
+> ## [HarmonyOS_Samples](https://gitee.com/harmonyos_samples)
+
 >> ### [通用文字识别 CoreVisionKit-SampleCode-ArkTS-OcrDemo](https://gitee.com/harmonyos_samples/core-vision-kit-sample-code-ark-ts-ocr-demo)
 
 >> ### [基于应用接续及跨设备互通功能实现内容发布功能 ContinuePublish](https://gitee.com/harmonyos_samples/ContinuePublish/tree/br_release_hmos)
@@ -201,6 +203,10 @@ entry/src/main/ets/
 |   |---EntryAbility.ets    
 |---pages
 |   |---Index.ets
+|   |---HomePage.ets
+|   |---SecondPage.ets
+|   |---MinePage.ets
+|   |---exPage.ets
 ```
 
 ---
