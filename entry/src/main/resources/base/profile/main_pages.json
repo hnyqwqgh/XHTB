@@ -4,6 +4,7 @@
     "pages/HomePage",
     "pages/SecondPage",
     "pages/MinePage",
-    "pages/exPage"
+    "pages/exPage",
+    "pages/infoPage"
   ]
 }

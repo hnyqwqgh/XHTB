@@ -211,6 +211,10 @@
 		{
 			"name":"exunder",
 			"value":"前往MeoW订阅时事推送"
+		},
+		{
+			"name":"infopagetitle",
+			"value":"设备信息 > < "
 		}
 	]
 }

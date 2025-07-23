@@ -46,7 +46,7 @@ export struct exPage {
     Stack() {
       Navigation() {
         Column() {
-          Image($r('app.media.startIcon'))
+          Image($r('app.media.CIcon'))
             .width(60)
             .height(60);
           Text('by hnyqwq')

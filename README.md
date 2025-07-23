@@ -100,6 +100,22 @@
 
 >>> 指南>应用框架>Ability Kit（程序框架服务）>Stage模型开发指导>应用间跳转>拉起指定应用>应用链接说明
 
+>> ## [跨设备互通开发指导](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/servicecollaboration-dev-guides)
+
+>>> 指南>系统>网络>Service Collaboration Kit（协同服务）>跨设备互通（ArkTS）>跨设备互通开发指导
+
+>> ## [Menu](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/ts-basic-components-menu#%E7%A4%BA%E4%BE%8B2%E8%AE%BE%E7%BD%AEsymbol%E7%B1%BB%E5%9E%8B%E5%9B%BE%E6%A0%87)
+
+>>> API参考>应用框架>ArkUI（方舟UI框架）>ArkTS组件>菜单>Menu
+
+>> ## [使用粘贴控件](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/pastebutton)
+
+>>> 指南>系统>安全>程序访问控制>使用安全控件>使用粘贴控件
+
+>> ## [使用剪贴板进行复制粘贴](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/use_pasteboard_to_copy_and_paste)
+
+>>> 指南>系统>基础功能>Basic Services Kit（基础服务）>剪贴板服务>使用剪贴板进行复制粘贴
+
 >> ## [走近 HarmonyOS](https://consumer.huawei.com/cn/support/harmonyos-video/)
 
 >> ## [HarmonyOS Symbol](https://developer.huawei.com/consumer/cn/design/harmonyos-symbol/)
@@ -121,22 +137,6 @@
 >> ## [应用接续开发指导](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/app-continuation-guide)
 
 >>> 指南>自由流转>应用接续>应用接续开发指导
-
->> ## [跨设备互通开发指导](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/servicecollaboration-dev-guides)
-
->>> 指南>系统>网络>Service Collaboration Kit（协同服务）>跨设备互通（ArkTS）>跨设备互通开发指导
-
->> ## [Menu](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/ts-basic-components-menu#%E7%A4%BA%E4%BE%8B2%E8%AE%BE%E7%BD%AEsymbol%E7%B1%BB%E5%9E%8B%E5%9B%BE%E6%A0%87)
-
->>> API参考>应用框架>ArkUI（方舟UI框架）>ArkTS组件>菜单>Menu
-
->> ## [使用粘贴控件](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/pastebutton)
-
->>> 指南>系统>安全>程序访问控制>使用安全控件>使用粘贴控件
-
->> ## [使用剪贴板进行复制粘贴](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/use_pasteboard_to_copy_and_paste)
-
->>> 指南>系统>基础功能>Basic Services Kit（基础服务）>剪贴板服务>使用剪贴板进行复制粘贴
 
 --- 
 

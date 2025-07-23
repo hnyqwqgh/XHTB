@@ -211,6 +211,10 @@
     {
       "name":"exunder",
       "value":"Go to MeoW to subscribe to HSR news updates"
+    },
+    {
+      "name":"infopagetitle",
+      "value":"Device Info > < "
     }
   ]
 }
