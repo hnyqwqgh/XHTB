@@ -85,7 +85,7 @@ export struct HomePage {
   }
 
   //碰一碰分享
-  private async copyResourceToSandbox() {
+  private async DownloadToSandbox() {
     try {
       console.log('downloadTask filesDir' + filesDir + '/pengyipeng.jpg');
       //下载文件
@@ -112,28 +112,29 @@ export struct HomePage {
   }
 
   aboutToAppear(): void {
-    this.copyResourceToSandbox();
+    this.DownloadToSandbox();
     this.whiteListening()
     let context = getContext(this);
-    context.eventHub.on('onBackGround', () => {
-      this.whiteDisablingListening()
-    });
+
+    // 建议调整顺序确保实时参数优先
+    const params = router.getParams() as Record<string, string>;
+    if (params?.['videoUrl']) {
+      this.networkVideoSrc = params['videoUrl'];
+    }
     const sharedUrl = AppStorage.get<string>('sharedVideoUrl');
     if (sharedUrl && this.isValidUrl(sharedUrl)) {
       this.networkVideoSrc = sharedUrl;
       AppStorage.delete('sharedVideoUrl');
     }
-
-    // 处理路由参数
-    const params = router.getParams() as Record<string, string>;
-    if (params?.['videoUrl']) {
-      this.networkVideoSrc = params['videoUrl'];
-    }
-
     // 触发视频加载
-    if (this.networkVideoSrc) {
-      this.controller.start();
-    }
+    this.context.eventHub.on('urlUpdate', (url: string) => {
+      this.networkVideoSrc = url
+      this.controller.start()
+    })
+
+    context.eventHub.on('onBackGround', () => {
+      this.whiteDisablingListening()
+    });
   }
 
   aboutToDisappear(): void {

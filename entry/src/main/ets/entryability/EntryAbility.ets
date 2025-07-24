@@ -5,7 +5,6 @@ import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { router } from '@kit.ArkUI';
-import { url } from '@kit.ArkTS';
 
 const TAG: string = 'EntryAbility';
 const DOMAIN_NUMBER: number = 0xFF00;
@@ -15,21 +14,6 @@ export default class EntryAbility extends UIAbility {
   private currentWindowStage: window.WindowStage | null = null;
 
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
-    /**
-     * This is the automatically generated code for the logic of card interactions.
-     * Used to card action.
-     */
-    actionCreate(want)
-
-    /**
-     * This is the automatically generated code for the logic of card interactions.
-     * Used to create a database and insert update card data.
-     */
-    createDbInsertData(this.context)
-
-
-    hilog.info(0x0001, '[Scan Access]', 'Ability onCreate');
-
     // 处理分享链接（AppLinking/碰一碰）
     const receivedLink = want.parameters?.['link'] || want.uri;
     if (receivedLink) {
@@ -57,7 +41,7 @@ export default class EntryAbility extends UIAbility {
       this.selectPage = params.targetPage as string;
       hilog.info(DOMAIN_NUMBER, TAG, `onCreate selectPage: ${this.selectPage}`);
     }
-
+    this.context.eventHub.emit('urlUpdate', receivedLink)
   }
 
   // 热启动场景通过onNewWant回调获取码值信息
@@ -66,10 +50,12 @@ export default class EntryAbility extends UIAbility {
      * This is the automatically generated code for the logic of card interactions.
      * Used to card action.
      */
-    actionNewWant(want, this);
-
-    hilog.info(0x0001, '[Scan Access]', 'Ability onNewWant');
-
+    const receivedLink = want.parameters?.['link'] || want.uri;
+    if (receivedLink) {
+      AppStorage.setOrCreate<string>('sharedVideoUrl', receivedLink.toString());
+      // 触发页面刷新逻辑
+      this.currentWindowStage?.loadContent('pages/HomePage')
+    }
     // 保留原有逻辑
     actionNewWant(want, this);
     createDbInsertData(this.context);
