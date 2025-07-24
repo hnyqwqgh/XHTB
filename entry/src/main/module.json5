@@ -2,7 +2,13 @@
 	"module":{
 		"abilities":[
 			{
+				"name":"EntryAbility",
+				"srcEntry":"./ets/entryability/EntryAbility.ets",
+				"icon":"$media:layered_image",
+				"label":"$string:EntryAbility_label",
 				"exported":true,
+				"startWindowIcon":"$media:startIcon",
+				"startWindowBackground":"$color:start_window_background",
 				"skills":[
 					{
 						"entities":[
@@ -11,7 +17,8 @@
 						],
 						"actions":[
 							"action.system.home",
-							"ohos.want.action.viewData"
+							"ohos.want.action.viewData",
+							"ohos.want.action.home"
 						],
 						"uris":[
 							{
@@ -35,13 +42,7 @@
 						"value":"true"
 					}
 				],
-				"srcEntry":"./ets/entryability/EntryAbility.ets",
-				"startWindowBackground":"$color:start_window_background",
-				"name":"EntryAbility",
-				"icon":"$media:layered_image",
-				"startWindowIcon":"$media:startIcon",
 				"description":"$string:EntryAbility_desc",
-				"label":"$string:EntryAbility_label",
 				"launchType":"singleton"
 			}
 		],
