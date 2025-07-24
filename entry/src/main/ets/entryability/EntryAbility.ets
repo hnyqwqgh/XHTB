@@ -5,6 +5,7 @@ import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { router } from '@kit.ArkUI';
+import { url } from '@kit.ArkTS';
 
 const TAG: string = 'EntryAbility';
 const DOMAIN_NUMBER: number = 0xFF00;
@@ -14,6 +15,8 @@ export default class EntryAbility extends UIAbility {
   private currentWindowStage: window.WindowStage | null = null;
 
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
+    actionCreate(want);
+    createDbInsertData(this.context);
     // 处理分享链接（AppLinking/碰一碰）
     const receivedLink = want.parameters?.['link'] || want.uri;
     if (receivedLink) {
@@ -22,21 +25,20 @@ export default class EntryAbility extends UIAbility {
 
     // 原有扫码逻辑保留
     let uri = want?.uri;
-    if (uri) {
-      router.pushUrl({
-        url: 'pages/HomePage', // 直接跳转到视频页面
-        params: {
-          videoUrl: uri,
-          source: 'scan'
-        }
-      });
-    }
+    setTimeout(() => {
+      if (uri) {
+        router.pushUrl({
+          url: 'pages', // 直接跳转到视频页面
+          params: {
+            videoUrl: uri,
+            source: 'scan'
+          }
+        });
+      }
+    })
 
     // 保留原有逻辑
-    actionCreate(want);
-    createDbInsertData(this.context);
     this.context.getApplicationContext().setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_NOT_SET);
-
     hilog.info(DOMAIN_NUMBER, TAG, `Ability onCreate: ${JSON.stringify(want?.parameters)}`);
     if (want?.parameters?.params) {
       // want.parameters.params 对应 postCardAction() 中 params 内容
@@ -49,7 +51,8 @@ export default class EntryAbility extends UIAbility {
 
   // 热启动场景通过onNewWant回调获取码值信息
   onNewWant(want: Want, launchParam: AbilityConstant.LaunchParam): void {
-
+    actionNewWant(want, this);
+    createDbInsertData(this.context);
     const receivedLink = want.parameters?.['link'] || want.uri;
     if (receivedLink) {
       AppStorage.setOrCreate<string>('sharedVideoUrl', receivedLink.toString());
@@ -57,8 +60,6 @@ export default class EntryAbility extends UIAbility {
       this.currentWindowStage?.loadContent('pages/HomePage')
     }
     // 保留原有逻辑
-    actionNewWant(want, this);
-    createDbInsertData(this.context);
     this.context.getApplicationContext().setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_NOT_SET);
   }
 
@@ -67,17 +68,12 @@ export default class EntryAbility extends UIAbility {
   }
 
   onWindowStageCreate(windowStage: window.WindowStage): void {
-    /**
-     * This is the automatically generated code for the logic of card interactions.
-     * Used to card action.
-     */
     actionWindowStageCreate(windowStage);
     // Main window is created, set main page for this ability
     windowStage.loadContent('pages/Index', (err, data) => {
       if (err.code) {
         return;
       }
-
       let windowClass: window.Window = windowStage.getMainWindowSync(); // 获取应用主窗口
       // 1. 设置窗口全屏
       let isLayoutFullScreen = true;
@@ -99,30 +95,6 @@ export default class EntryAbility extends UIAbility {
       }).catch((err: BusinessError) => {
         console.error(`Failed to set the navigation indicator to be invisible. Code is ${err.code}, message is ${err.message}`);
       });
-    });
-
-    // Main window is created, set main page for this ability
-    let targetPage: string;
-    // 根据传递的targetPage不同，选择拉起不同的页面
-    switch (this.selectPage) {
-      case 'HomePage':
-        targetPage = 'pages/HomePage'; //与实际的UIAbility页面路径保持一致
-        break;
-      case 'SecondPage':
-        targetPage = 'pages/SecondPage'; //与实际的UIAbility页面路径保持一致
-        break;
-      default:
-        targetPage = 'pages/Index'; //与实际的UIAbility页面路径保持一致
-    }
-    if (this.currentWindowStage === null) {
-      this.currentWindowStage = windowStage;
-    }
-    windowStage.loadContent(targetPage, (err, data) => {
-      if (err.code) {
-        hilog.error(DOMAIN_NUMBER, TAG, 'Failed to load the content. Cause: %{public}s', JSON.stringify(err) ?? '');
-        return;
-      }
-      hilog.info(DOMAIN_NUMBER, TAG, 'Succeeded in loading the content. Data: %{public}s', JSON.stringify(data) ?? '');
     });
   }
 
