@@ -39,7 +39,7 @@ export struct HomePage {
   @State curRate: PlaybackSpeed = PlaybackSpeed.Speed_Forward_1_00_X
   @State isShortcutKeyEnabled: boolean = false
   @State networkVideoSrc: string = '';
-  @State chooseImage: PixelMap | undefined = undefined;
+  @State isPlaying: boolean = true;
   @State picture: PixelMap | undefined = undefined;
   //@State networkPreviewUri: string = 'https://www.hnyqwq.cn/hvideo/130.png'; // 默认网络预览图
   @State networkPreviewUri: string =
@@ -63,15 +63,15 @@ export struct HomePage {
     const resourceMgr: resourceManager.ResourceManager = contextFaker.resourceManager;
     const fileData: Uint8Array = await resourceMgr.getMediaContent($r('app.media.startIcon'));
 
+    let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
     let shareData: systemShare.SharedData = new systemShare.SharedData({
       utd: utd.UniformDataType.HYPERLINK,
       content: this.networkVideoSrc, // 使用输入框中的视频链接
-      title: '视频链接分享',
-      description: '当前链接：' + this.networkVideoSrc,
+      title: context.resourceManager.getStringSync($r('app.string.shareinfo').id),
+      description: this.networkVideoSrc,
       thumbnail: fileData,
     });
     let controller: systemShare.ShareController = new systemShare.ShareController(shareData);
-    let context: common.UIAbilityContext = getContext(this) as common.UIAbilityContext;
     controller.show(context, {
       previewMode: systemShare.SharePreviewMode.DEFAULT,
       selectionMode: systemShare.SelectionMode.SINGLE
@@ -110,10 +110,16 @@ export struct HomePage {
     const pattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([\/\w .-]*)*\/?$/;
     return pattern.test(url);
   }
+  onPageHide(): void {//隔空传送
+    let uiContext: UIContext = this.getUIContext();
+    let context: Context = uiContext.getHostContext() as Context;
+    context.eventHub.emit('onBackGround');
+  }
 
   aboutToAppear(): void {
     this.DownloadToSandbox();
     this.whiteListening()
+    this.immersiveListening();
     let context = getContext(this);
 
     // 建议调整顺序确保实时参数优先
@@ -132,17 +138,21 @@ export struct HomePage {
       this.controller.start()
     })
 
-    context.eventHub.on('onBackGround', () => {
-      this.whiteDisablingListening()
-    });
+    context.eventHub.on('onBackGround', this.onBackGround);
   }
 
   aboutToDisappear(): void {
     logger.info('aboutToDisappear invoked.');
     this.whiteDisablingListening()
+    this.immersiveDisablingListening();
     let context = getContext(this);
     context.eventHub.off('onFocus');
     context.eventHub.off('onBackGround');
+  }
+
+  private onBackGround = () => {
+    this.whiteDisablingListening()
+    this.immersiveDisablingListening();
   }
 
   // 在类成员变量区域定义箭头函数绑定回调
@@ -162,7 +172,7 @@ export struct HomePage {
       content: this.networkVideoSrc,
       thumbnailUri: fileUri.getUriFromPath(filePath),
       title: context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id),
-      description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
+      description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
     });
     sharableTarget.share(shareData);
   }
@@ -180,6 +190,34 @@ export struct HomePage {
   private whiteDisablingListening() {
     harmonyShare.off('knockShare', this.whiteCallback);
     this.whiteStatus = false;
+  }
+
+  private immersiveCallback = (sharableTarget: harmonyShare.SharableTarget) => {
+    // 直接处理分享数据（假设数据已通过其他方式传递）
+    const sharedUrl = AppStorage.get<string>('sharedVideoUrl');
+    if (sharedUrl && this.isValidUrl(sharedUrl)) {
+      this.networkVideoSrc = sharedUrl;
+      this.controller.start();
+      AppStorage.delete('sharedVideoUrl');
+    }
+    let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
+    let filePath = this.context?.filesDir + "/pengyipeng.jpg";
+    let shareData: systemShare.SharedData = new systemShare.SharedData({
+      utd: utd.UniformDataType.HYPERLINK,
+      content: this.networkVideoSrc,
+      thumbnailUri: fileUri.getUriFromPath(filePath),
+      title: context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id),
+      description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
+    });
+    sharableTarget.share(shareData);
+  }
+
+  private immersiveListening() {
+    harmonyShare.on('gesturesShare', this.immersiveCallback);
+  }
+
+  private immersiveDisablingListening() {
+    harmonyShare.off('gesturesShare', this.immersiveCallback);
   }
 
   build() {
@@ -307,12 +345,14 @@ export struct HomePage {
           .height(50)
           .backgroundColor(0xFF66CC)
           .onClick(() => {
-            if (this.networkVideoSrc) {
+            if (this.isPlaying) {
+              this.controller.pause();
+              promptAction.showToast({ message: $r('app.string.paused') });
+            } else {
               this.controller.start();
               promptAction.showToast({ message: $r('app.string.playing') });
-            } else {
-              promptAction.showToast({ message: $r('app.string.noplay') });
             }
+            this.isPlaying = !this.isPlaying;
           })
       }
       .width('90%')
@@ -329,9 +369,32 @@ export struct HomePage {
           .onChange((value: string) => {
             this.networkVideoSrc = 'https://www.hnyqwq.cn/hvideo/' + value + '.mp4';
           })
+          .bindMenu([
+            {
+              value: '万羽惊鸿',
+              action: () => {
+                console.info('handle sq select');
+                this.networkVideoSrc = 'https://www.hnyqwq.cn/hvideo/sq.mp4';
+              }
+            },
+            {
+              value: 'Immortal',
+              action: () => {
+                console.info('handle w select');
+                this.networkVideoSrc = 'https://www.hnyqwq.cn/hvideo/w.mp4';
+              }
+            },
+            {
+              value: 'Star Rail',
+              action: () => {
+                console.info('handle sr select');
+                this.networkVideoSrc = 'https://www.hnyqwq.cn/hvideo/sr.mp4';
+              }
+            }
+          ])
         Button($r('app.string.scancode'))
         //.globalButtonStyle()
-          .type(ButtonType.Capsule)
+          //.type(ButtonType.Capsule)
           .backgroundColor(0x66CCFF)//蓝色
           //.backgroundColor('#0044fc')
           .labelStyle({ overflow: TextOverflow.Ellipsis, maxLines: 3, minFontSize: 0 })

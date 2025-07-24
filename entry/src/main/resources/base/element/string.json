@@ -41,12 +41,20 @@
 			"value":"ButtonB"
 		},
 		{
+			"name": "shareinfo",
+			"value": "视频链接分享"
+		},
+		{
 			"name": "pengyipeng_title",
 			"value": "分享当前的视频链接"
 		},
 		{
 			"name": "pengyipeng_description",
 			"value": "hvideo · 碰一碰分享"
+		},
+		{
+			"name": "gekong_description",
+			"value": "hvideo · 隔空传送分享"
 		},
 		{
 			"name":"nopeng",
@@ -82,11 +90,11 @@
 		},
 		{
 			"name":"share",
-			"value":"\uDB80\uDC3D 分享"
+			"value":"\uDB80\uDC3D"
 		},
 		{
 			"name":"play",
-			"value":"\uDB80\uDCB4 播放"
+			"value":"\uDB80\uDCB4/\uDB80\uDCB1"
 		},
 		{
 			"name":"playing",
@@ -95,6 +103,10 @@
 		{
 			"name":"noplay",
 			"value":"请输入视频链接 ⪩ ⪨"
+		},
+		{
+			"name":"paused",
+			"value":"按暂停了喵 QAQ"
 		},
 		{
 			"name":"testinput",

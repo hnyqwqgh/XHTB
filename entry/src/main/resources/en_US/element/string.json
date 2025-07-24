@@ -41,6 +41,26 @@
       "value":"Start APP"
     },
     {
+      "name": "shareinfo",
+      "value": "Share Video Link"
+    },
+    {
+      "name": "pengyipeng_title",
+      "value": "Share Video Link"
+    },
+    {
+      "name": "pengyipeng_description",
+      "value": "hvideo · Tap to Transfer"
+    },
+    {
+      "name": "gekong_description",
+      "value": "hvideo · AI Air Transfer Sharing"
+    },
+    {
+      "name":"nopeng",
+      "value":"It seems there’s no video to share at the moment. ⪩ ⪨"
+    },
+    {
       "name":"aboutpage",
       "value":"About"
     },
@@ -74,7 +94,7 @@
     },
     {
       "name":"play",
-      "value":"\uDB80\uDCB4"
+      "value":"\uDB80\uDCB4/\uDB80\uDCB1"
     },
     {
       "name":"playing",
@@ -83,6 +103,10 @@
     {
       "name":"noplay",
       "value":"Please enter the video link ⪩ ⪨"
+    },
+    {
+      "name":"paused",
+      "value":"Paused~"
     },
     {
       "name":"testinput",
