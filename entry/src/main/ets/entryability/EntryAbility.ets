@@ -25,7 +25,10 @@ export default class EntryAbility extends UIAbility {
     if (uri) {
       router.pushUrl({
         url: 'pages/HomePage', // 直接跳转到视频页面
-        params: { videoUrl: uri }
+        params: {
+          videoUrl: uri,
+          source: 'scan'
+        }
       });
     }
 
