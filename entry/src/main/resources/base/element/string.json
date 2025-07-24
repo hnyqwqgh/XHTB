@@ -41,6 +41,18 @@
 			"value":"ButtonB"
 		},
 		{
+			"name": "pengyipeng_title",
+			"value": "分享当前的视频链接"
+		},
+		{
+			"name": "pengyipeng_description",
+			"value": "hvideo · 碰一碰分享"
+		},
+		{
+			"name":"nopeng",
+			"value":"没有可以分享的视频链接 ⪩ ⪨"
+		},
+		{
 			"name":"aboutpage",
 			"value":"aboutpage"
 		},

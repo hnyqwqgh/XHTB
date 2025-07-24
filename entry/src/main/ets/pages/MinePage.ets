@@ -86,7 +86,7 @@ export struct MinePage {
                         break;
                       case 'mylike': // 分享功能（需集成分享SDK）
                         uri =
-                          'https://m.douyin.com/share/user/MS4wLjABAAAAu-191qiFh5x3NLdZXeT7y8uMMhqaT9ZQCdgpe1H2ZIcEVCCoGrpDeuRb5diMrBmd';
+                          'snssdk1128://user/profile/2118115953227692?refer=web';
                         break
                         // harmonyShare.share(...);
                         break;

@@ -6,15 +6,19 @@ import { scanCore, scanBarcode } from '@kit.ScanKit';
 // 导入默认界面需要的日志模块和错误码模块
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { BusinessError } from '@kit.BasicServicesKit';
-
 import { resourceManager } from '@kit.LocalizationKit';
-import { systemShare } from '@kit.ShareKit';
+import { systemShare, harmonyShare } from '@kit.ShareKit';
+import { fileIo as fs } from '@kit.CoreFileKit';
 import { uniformTypeDescriptor as utd } from '@kit.ArkData';
 import Logger from '../utils/Logger';
 
 import { pasteboard } from '@kit.BasicServicesKit';
+import { fileUri } from '@kit.CoreFileKit';
+import request from '@ohos.request';
 
-let logger = Logger.getLogger('[TextScenario]');
+let logger = Logger.getLogger('[KnockShare]');
+let context = getContext(this) as common.UIAbilityContext;
+let filesDir = context.filesDir;
 
 /*
 @Extend(Button) function globalButtonStyle() {
@@ -36,19 +40,21 @@ export struct HomePage {
   @State networkVideoSrc: string = '';
   @State chooseImage: PixelMap | undefined = undefined;
   @State picture: PixelMap | undefined = undefined;
-
   //@State networkPreviewUri: string = 'https://www.hnyqwq.cn/hvideo/130.png'; // 默认网络预览图
-  @State networkPreviewUri: string = 'https://act-webstatic.mihoyo.com/event-static/2023/08/15/cc72ddf351003a4a9b618e5f4697dad0_2771553456903788244.jpg';
+  @State networkPreviewUri: string =
+    'https://act-webstatic.mihoyo.com/event-static/2023/08/15/cc72ddf351003a4a9b618e5f4697dad0_2771553456903788244.jpg';
   @State currentFitMode: ImageFit = ImageFit.Auto; // 当前填充模式
   @State isControls: boolean = false; // 控制栏显示状态
   @State handlePopup: boolean = false; // 气泡提示（Popup）
-  @State enableShortcutKey: boolean = true;//设置组件支持快捷键响应。
-
+  @State enableShortcutKey: boolean = true; //设置组件支持快捷键响应。
+  //碰一碰
+  @State whiteStatus: boolean = false;
   private controller: VideoController = new VideoController();
 
+  //华为系统分享
   private async share() {
     if (!this.networkVideoSrc) {
-      promptAction.showToast({ message: $r('app.string.noplay') });
+      promptAction.showToast({ message: $r('app.string.nopeng') });
       return;
     }
 
@@ -75,6 +81,75 @@ export struct HomePage {
       logger.error(`ShareController show error. code: ${error.code}, message: ${error.message}`);
       promptAction.showToast({ message: '分享失败: ' + error.message });
     });
+  }
+
+  //碰一碰分享
+  private async copyResourceToSandbox() {
+    try {
+      console.log('downloadTask filesDir' + filesDir + '/pengyipeng.jpg');
+      //下载文件
+      request.downloadFile(context, {
+        url: 'https://act-webstatic.mihoyo.com/event-static/2023/08/15/cc72ddf351003a4a9b618e5f4697dad0_2771553456903788244.jpg',
+        filePath: filesDir + '/pengyipeng.jpg'
+      }).then((downloadTask: request.DownloadTask) => {
+        //开启回调
+        downloadTask.on('complete', () => {
+          console.info('downloadTask1 complete');
+        })
+      }).catch((err: BusinessError) => {
+        console.error('Invoke downloadTask failed, code is ${err.code}, message is ${err.message}');
+      });
+    } catch (error) {
+      let err: BusinessError = error as BusinessError;
+      console.error('Invoke downloadTask downloadFile failed, code is ${err.code}, message is ${err.message}');
+    }
+  }
+
+  aboutToAppear(): void {
+    this.copyResourceToSandbox();
+    this.whiteListening()
+    let context = getContext(this);
+    context.eventHub.on('onBackGround', () => {
+      this.whiteDisablingListening()
+    });
+  }
+
+  aboutToDisappear(): void {
+    logger.info('aboutToDisappear invoked.');
+    this.whiteDisablingListening()
+    let context = getContext(this);
+    context.eventHub.off('onFocus');
+    context.eventHub.off('onBackGround');
+  }
+
+  // 在类成员变量区域定义箭头函数绑定回调
+  private whiteCallback = (sharableTarget: harmonyShare.SharableTarget): void => {
+    let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
+    let filePath = this.context?.filesDir + "/pengyipeng.jpg";
+    let shareData: systemShare.SharedData = new systemShare.SharedData({
+      utd: utd.UniformDataType.HYPERLINK,
+      content: this.networkVideoSrc,
+      thumbnailUri: fileUri.getUriFromPath(filePath),
+      title: context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id),
+      description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
+    });
+    sharableTarget.share(shareData);
+    promptAction.showToast({ message: filePath });
+  }
+
+  // 修改事件监听与解绑逻辑
+  private whiteListening() {
+    if (this.isNoListening()) {
+      harmonyShare.on('knockShare', this.whiteCallback);
+      this.whiteStatus = true;
+    } else {
+      promptAction.showToast({ message: $r('app.string.nopeng') });
+    }
+  }
+
+  private whiteDisablingListening() {
+    harmonyShare.off('knockShare', this.whiteCallback);
+    this.whiteStatus = false;
   }
 
   build() {
@@ -170,7 +245,7 @@ export struct HomePage {
           }
         })
       Row() {
-        TextInput({ placeholder: $r('app.string.linkinput')})
+        TextInput({ placeholder: $r('app.string.linkinput') })
           .type(InputType.URL)
           //.backgroundColor('#FF9CCE')
           .width('55%')
@@ -196,7 +271,7 @@ export struct HomePage {
             }
           })
         Button($r('app.string.play'))
-          //.fontSize(10)
+        //.fontSize(10)
         //.type(ButtonType.Capsule)
           .width('20%')
           .height(50)
@@ -438,10 +513,15 @@ export struct HomePage {
           .margin({ top: 10 })
           .width('100%')
           .height('100%')
+
           //.backgroundColor($r('app.color.start_window_background'))
         }
       }
     }
+  }
+
+  private isNoListening() {
+    return !this.whiteStatus;
   }
 }
 
