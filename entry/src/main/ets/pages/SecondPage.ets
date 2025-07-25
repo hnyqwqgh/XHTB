@@ -18,6 +18,22 @@ import {
 import { cameraPicker as picker } from '@kit.CameraKit';
 import { camera } from '@kit.CameraKit';
 
+async function xj(context: Context) {
+  try {
+    let pickerProfile: picker.PickerProfile = {
+      cameraPosition: camera.CameraPosition.CAMERA_POSITION_BACK
+    };
+    let pickerResult: picker.PickerResult = await picker.pick(context,
+      [picker.PickerMediaType.PHOTO/*, picker.PickerMediaType.VIDEO*/], pickerProfile);
+    console.log("the pick pickerResult is:" + JSON.stringify(pickerResult));
+  } catch (error) {
+    let err = error as BusinessError;
+    console.error(`the pick call failed. error code: ${err.code}`);
+  }
+
+}
+
+
 @Entry
 @Component
   // 使用@Entry装饰器标记为入口组件，@Component表示自定义组件
@@ -31,9 +47,6 @@ export struct SecondPage {
   @State chooseImage: PixelMap | undefined = undefined;
   @State dataValues: string = '';
   @State picture: PixelMap | undefined = undefined;
-
-  private async xj() {
-  }
 
   private async selectImage() {
     let uri = await this.openPhoto();
@@ -59,13 +72,12 @@ export struct SecondPage {
     })
   }
 
-  private async loadImage(uri: string) { // 参数调整为URI
-    try {
-      this.imageSource = image.createImageSource(uri);
+  private loadImage(name: string) {
+    setTimeout(async () => {
+      let fileSource = await fileIo.open(name, fileIo.OpenMode.READ_ONLY);
+      this.imageSource = image.createImageSource(fileSource.fd);
       this.chooseImage = await this.imageSource.createPixelMap();
-    } catch (error) {
-      hilog.error(0x0000, 'OCRDemo', `Failed to load image: ${error.message}`);
-    }
+    }, 100)
   }
 
   @Builder
@@ -74,9 +86,9 @@ export struct SecondPage {
       MenuItem({
       startIcon: $r("app.media.CIcon"),
       content: $r('app.string.takephotos'),
-        builder: () => {
-          this.xj(); // 直接调用组件方法
-        }
+      builder: (): void => {
+        xj(this.context);
+      }
     })
       MenuItem({
         startIcon: $r("app.media.CIcon"),
