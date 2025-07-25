@@ -230,7 +230,7 @@ export struct exPage {
               .fontWeight(700)
               .fontSize('14fp')
               .margin({ top: 10 });
-            Text('1.3.0.4（10300004）')
+            Text('1.3.1.0（10301000）')
               .fontWeight(600)
               .fontSize('12fp')
               .margin({ top: 10 });
