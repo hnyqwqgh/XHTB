@@ -201,7 +201,7 @@ export struct exPage {
       .height('100%')
       .title($r('app.string.expagetitle'))
       .titleMode(NavigationTitleMode.Mini)
-      .backgroundColor($r('app.color.listColor'))
+      .backgroundColor($r('app.color.start_window_background'))
       .padding({ top: 50 })
     };
   }startUserAuth (authParam: userAuth.AuthParam, widgetParam: userAuth.WidgetParam) {

@@ -254,7 +254,7 @@ export struct exPage {
               .divider({
                 strokeWidth: $r('app.float.stroke_width'),
                 color: $r('app.color.font_color_00000'),
-                startMargin: $r('app.integer.layout_size_12'),
+                startMargin: $r('app.integer.layout_size_24'),
                 endMargin: $r('app.integer.layout_size_24')
               });
             }
@@ -348,7 +348,8 @@ export struct exPage {
         .height('100%')
         .title($r('app.string.infopagetitle'))
         .titleMode(NavigationTitleMode.Mini)
-        .backgroundColor($r('app.color.listColor'))
+        //.backgroundColor($r('app.color.listColor'))
+        .backgroundColor($r('app.color.start_window_background'))
         .padding({ top: 50 })
       }
     }

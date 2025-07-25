@@ -192,7 +192,6 @@ export struct MinePage {
       .height('100%')
       .title($r('app.string.aboutpage'))
       //.titleMode(NavigationTitleMode.Mini)
-      .backgroundColor($r('app.color.listColor'));
     };
   }
 }
