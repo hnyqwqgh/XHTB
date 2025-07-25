@@ -9,6 +9,8 @@ import { image } from '@kit.ImageKit';
 import { photoAccessHelper } from '@kit.MediaLibraryKit';
 import { fileIo } from '@kit.CoreFileKit';
 
+import { DocScanPage } from '../DocScan/DocScanPage';
+
 import {
   createCollaborationServiceMenuItems,
   CollaborationServiceStateDialog,
@@ -17,22 +19,6 @@ import {
 
 import { cameraPicker as picker } from '@kit.CameraKit';
 import { camera } from '@kit.CameraKit';
-
-async function xj(context: Context) {
-  try {
-    let pickerProfile: picker.PickerProfile = {
-      cameraPosition: camera.CameraPosition.CAMERA_POSITION_BACK
-    };
-    let pickerResult: picker.PickerResult = await picker.pick(context,
-      [picker.PickerMediaType.PHOTO/*, picker.PickerMediaType.VIDEO*/], pickerProfile);
-    console.log("the pick pickerResult is:" + JSON.stringify(pickerResult));
-  } catch (error) {
-    let err = error as BusinessError;
-    console.error(`the pick call failed. error code: ${err.code}`);
-  }
-
-}
-
 
 @Entry
 @Component
@@ -47,6 +33,38 @@ export struct SecondPage {
   @State chooseImage: PixelMap | undefined = undefined;
   @State dataValues: string = '';
   @State picture: PixelMap | undefined = undefined;
+  @Provide('pathStack') pathStack: NavPathStack = new NavPathStack()
+  @Builder
+  PageMap(name: string) {
+    if (name === 'documentScanner') {
+      DocScanPage()
+    }
+  }
+  // 将原独立函数改造为组件方法
+  private async xj() {
+    try {
+      let pickerProfile: picker.PickerProfile = {
+        cameraPosition: camera.CameraPosition.CAMERA_POSITION_BACK
+      };
+
+      interface PickerResult {
+        uris?: string[];
+      }
+
+      // 直接使用组件内的上下文
+      let pickerResult = await picker.pick(this.context,
+        [picker.PickerMediaType.PHOTO], pickerProfile) as PickerResult;
+
+      // 解析pickerResult中的媒体数据
+      if (pickerResult.uris && pickerResult.uris.length > 0) {
+        const uri: string = pickerResult.uris[0]; // 只取第一个 URI
+        this.loadImage(uri); // 复用现有图片加载方法
+      }
+    } catch (error) {
+      let err = error as BusinessError;
+      console.error(`pick failed: ${err.code}`);
+    }
+  }
 
   private async selectImage() {
     let uri = await this.openPhoto();
@@ -72,29 +90,50 @@ export struct SecondPage {
     })
   }
 
-  private loadImage(name: string) {
-    setTimeout(async () => {
-      let fileSource = await fileIo.open(name, fileIo.OpenMode.READ_ONLY);
+  private async loadImage(uri: string) {
+    try {
+      // 释放之前的资源
+      if (this.chooseImage) {
+        this.chooseImage.release();
+      }
+      if (this.imageSource) {
+        this.imageSource.release();
+      }
+
+      // 加载新图片
+      let fileSource = await fileIo.open(uri, fileIo.OpenMode.READ_ONLY);
       this.imageSource = image.createImageSource(fileSource.fd);
       this.chooseImage = await this.imageSource.createPixelMap();
-    }, 100)
+
+      // 触发UI更新
+      this.dataValues = ''; // 清空OCR识别结果
+    } catch (error) {
+      hilog.error(0x0000, 'OCRDemo', `Image load failed: ${JSON.stringify(error)}`);
+    }
   }
 
   @Builder
   MyTestMenu() {
     Menu() {
       MenuItem({
-      startIcon: $r("app.media.CIcon"),
-      content: $r('app.string.takephotos'),
-      builder: (): void => {
-        xj(this.context);
-      }
-    })
+        startIcon: $r("app.media.CIcon"),
+        content: $r('app.string.takephotos'),
+        builder: (): void => {
+          this.xj();
+        }
+      })
       MenuItem({
         startIcon: $r("app.media.CIcon"),
         content: $r('app.string.pickphotos'),
         builder: (): void => {
           this.selectImage();
+        }
+      })
+      MenuItem({
+        startIcon: $r("app.media.CIcon"),
+        content: $r('app.string.pickphotos'),
+        builder: (): void => {
+          DocScanPage()
         }
       })
       /*MenuItem({
@@ -194,8 +233,8 @@ export struct SecondPage {
               .width('100%')
             Image(this.chooseImage)
               .objectFit(ImageFit.Auto)
-              //.aspectRatio(16 / 9) // 根据视频长宽比自动计算高度
-              //.constraintSize({ maxWidth: 900, minWidth: 0 })
+            //.aspectRatio(16 / 9) // 根据视频长宽比自动计算高度
+            //.constraintSize({ maxWidth: 900, minWidth: 0 })
           }
           .width('100%')
           //.height('%') // 填满Scroll容器
