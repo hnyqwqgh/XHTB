@@ -19,6 +19,18 @@
     {
       "name": "listColor",
       "value": "#F1F3F5"
+    },
+    {
+      "name": "color_info",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "font_color_info",
+      "value": "#000000"
+    },
+    {
+      "name": "version_color_182431",
+      "value": "#182431"
     }
   ]
 }

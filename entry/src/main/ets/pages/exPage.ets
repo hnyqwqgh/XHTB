@@ -53,7 +53,7 @@ export struct exPage {
             .fontWeight(700)
             .fontSize('14fp')
             .margin({ top: 10 });
-          Text('API：5.1.1(19)')
+          Text('1.3.1.2（10301002）')
             .fontWeight(600)
             .fontSize('12fp')
             .margin({ top: 10 });

@@ -11,6 +11,18 @@
     {
       "name": "font_color_FFFFFF",
       "value": "#d6bd8d"
+    },
+    {
+      "name": "color_info",
+      "value": "#3c3934"
+    },
+    {
+      "name": "font_color_info",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "version_color_182431",
+      "value": "#FFFFFF"
     }
   ]
 }

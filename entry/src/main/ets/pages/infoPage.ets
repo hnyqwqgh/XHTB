@@ -159,6 +159,17 @@ let performanceClass = deviceInfo.performanceClass;
 // 输出结果：the value of the deviceInfo performanceClass is :0
 console.info('the value of the deviceInfo performanceClass is :' + performanceClass);
 
+let bbh = displayVersionInfo.match(/0\s([\d.]+)/);
+let bbhsr = (bbh && bbh[1]) || '';//6.0.0.35
+
+let seg = displayVersionInfo.split(' ');
+let fullVersion = seg.length > 1 ? seg : '';
+let fullVersionsr = (fullVersion && fullVersion[1]) || '';//6.0.0.35(SP..C..R..P..patch..log)
+
+let versionSeg = displayVersionInfo.match(/\s([^C]*)C?/);
+let versionSegs = (versionSeg && versionSeg[1]) || '';
+let versionSegsr = versionSegs.replaceAll('(',' ')//6.0.0.35 SP
+
 @Observed
   //设置条目信息构造
 class FirstMenu {
@@ -204,15 +215,15 @@ export struct infoPage {
   @State FirstMenuGroup: FirstMenu[] = [
     new FirstMenu('one', '型号名称', marketNameInfo, $r('app.string.void')),
     new FirstMenu('two', '型号代码', productModelInfo, $r('app.string.void')),
-    new FirstMenu('three', 'HarmonyOS 版本', distributionOSVersion, $r('app.string.void')),
-    new FirstMenu('four', '', displayVersionInfo, $r('app.string.void')),
+    new FirstMenu('three', 'HarmonyOS 版本',distributionOSVersion, $r('app.string.void')),
+    new FirstMenu('four', '软件版本',fullVersionsr, $r('app.string.void')),
   //new FirstMenu('five', '序列号', '前往个人博客', $r('app.string.void'))
   ];
   @State SecondMenuGroup: SecondMenu[] = [
     new SecondMenu('one', '型号名称', marketNameInfo, $r('app.string.void')),
     new SecondMenu('two', '型号代码', productModelInfo, $r('app.string.void')),
     new SecondMenu('three', 'HarmonyOS 版本', distributionOSVersion, $r('app.string.void')),
-    new SecondMenu('four', '', displayVersionInfo, $r('app.string.void')),
+    new SecondMenu('four', '软件版本', fullVersionsr, $r('app.string.void')),
   //new SecondMenu('five', '序列号', '前往个人博客', $r('app.string.void'))
   ];
   @State message: string = '用户认证'
@@ -231,6 +242,7 @@ export struct infoPage {
             }
             .clip(true) // 如这里不设置clip为true，则Row组件的圆角不会限制其中的Image组件，Image组件的四个角会超出Row
             .borderRadius(20)
+
             Button('检查更新')
             //.type(ButtonType.Capsule)
               .width('50%')
@@ -244,17 +256,18 @@ export struct infoPage {
               Image($r('app.media.CIcon'))
                 .width(60)
                 .height(60)
-              Text('hvideo')
+              /*Text('hvideo')
                 .fontWeight(700)
-                .fontSize('14fp')
-                .margin({ top: 10 })
-              Text('1.3.1.0（10301000）')
+                .fontSize('16fp')
+                .margin({ top: 10 })*/
+              Text(versionSegsr)
                 .fontWeight(600)
-                .fontSize('12fp')
+                .fontSize('20fp')
                 .margin({ top: 10 })
+                .opacity(0.7)
+                .fontColor($r('app.color.version_color_182431'))
             }
             .alignItems(HorizontalAlign.Center)
-
 
           }
           .width('100%')
@@ -286,7 +299,7 @@ export struct infoPage {
               top: $r('app.integer.layout_size_12'), // 增加顶部间距
               bottom: $r('app.integer.layout_size_12')
             })
-            .backgroundColor($r('app.color.font_color_FFFFFF'));
+            .backgroundColor($r('app.color.color_info'));
 
             /*Row() {
               List() {
@@ -316,54 +329,8 @@ export struct infoPage {
           .layoutWeight(1);
 
           Column() {
-            /*Text() {
-              Span('hvideo用户协议')
-                .onClick(() => {
-                  const want: Want = { uri: `https://hnyqwq.cn/hvideo/yhxy.html` };
-                  const context = getContext(this) as common.UIAbilityContext;
-                  context.startAbility(want).then(() => { //拉起成功
-                    console.info('拉起应用商店成功')
-                  }).catch((e: BusinessError) => { // 拉起失败
-                    console.info('拉起应用商店失败')
-                  });
-                })
-                .fontColor(Color.Blue)
-                .fontSize(12);
-              Span('和')
-                .fontSize(12);
-              Span('hvideo与隐私的声明')
-                .onClick(() => {
-                  const want: Want = { uri: `https://www.hnyqwq.cn/hvideo/hvideo.html` };
-                  const context = getContext(this) as common.UIAbilityContext;
-                  context.startAbility(want).then(() => { //拉起成功
-                    console.info('拉起应用商店成功')
-                  }).catch((e: BusinessError) => { // 拉起失败
-                    console.info('拉起应用商店失败')
-                  });
-                })
-                .fontColor(Color.Blue)
-                .fontSize(12);
-            };*/
-
             Text($r('app.string.copyright'))
               .fontSize(12);
-            /*Text() {
-              Span($r('app.string.exunder'))
-                .onClick(() => {
-                  //const want: Want = { uri: `store://appgallery.huawei.com/app/detail?id=com.chuckfang.meow` };
-                  const want: Want =
-                    { uri: `https://www.chuckfang.com/MeoW/appLinking?channelId=9687404a1b84433184ba27f16a57da3e` };
-                  const context = getContext(this) as common.UIAbilityContext;
-                  context.startAbility(want).then(() => { //拉起成功
-                    console.info('跳转成功')
-                  }).catch((e: BusinessError) => { // 拉起失败
-                    console.info('跳转失败')
-                  });
-                })
-                .fontColor(Color.Blue)
-                .fontSize(12);
-            }
-            .layoutWeight(1)*/
           }
           .width('100%')
           .height(60);
@@ -395,7 +362,7 @@ export struct SettingItemView {
           .fontSize($r('app.integer.layout_size_16'))
           .fontWeight(400)
           .fontFamily('HarmonyOS Sans')
-          .fontColor($r('app.color.font_color_182431'))
+          .fontColor($r('app.color.font_color_info'))
           .margin({ left: $r('app.integer.layout_size_5') })
           .layoutWeight(1)
           .fontWeight(FontWeight.Bold)
@@ -405,7 +372,7 @@ export struct SettingItemView {
           .fontSize($r('app.integer.layout_size_14'))
           .fontWeight(400)
           .fontFamily('HarmonyHeiTi')
-          .fontColor($r('app.color.font_color_182431'))
+          .fontColor($r('app.color.font_color_info'))
           .margin({ right: $r('app.integer.layout_size_12') })
           .lineHeight($r('app.integer.layout_size_19'));
       }
