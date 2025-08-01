@@ -4,7 +4,7 @@
 
 >> nova 14 Ultra MRT-AL10
 
->>> HarmonyOS版本：HarmonyOS 5.0.1.135 (SP10C00E135R5P5)
+>>> HarmonyOS版本：HarmonyOS 5.1.0.128 (SP8C00E128R5P1patch01)
 
 >>> API版本：5.0.5(17)
 
@@ -16,13 +16,15 @@
 
 >> HUAWEI MatePad Pro 12.2" MRO-W00
 
->>> HarmonyOS版本：HarmonyOS 5.0.1.130 (SP8C00E130R1P2patch08)
+>>> HarmonyOS版本：HarmonyOS 5.1.0.128 (SP5C00E128R1P1patch03)
 
 >>> API版本：5.0.5(17)
 
 > 可运行环境：
 
 >> HUAWEI Mate X6 & HUAWEI MateBook Pro / Fold Ultimate Design & HUAWEI nova 14 / Pro & HUAWEI MatePad Pro 13.2" 2025 & HUAWEI MatePad Pro 12.2" 2025
+
+- a
 
 >> API版本：5.0.5(17)
 
