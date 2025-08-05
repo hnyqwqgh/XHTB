@@ -71,8 +71,8 @@ export struct HomePage {
   //本地
   @State myContext: Context = this.getUIContext().getHostContext() as common.UIAbilityContext;
   @State myFileTypes: number = 0;
-  @StorageLink('myFileName') myFileName: string = '';
-  @StorageLink('myFileSize') myFileSize: number = 0;
+  @State myFileName: string = '';
+  @State myFileSize: number = 0;
   @State myUris: string = (this.getUIContext().getRouter().getParams() as myParams)?.uri ?? ' ';
   @State uri: string = 'Hello World';
   mediaFileUri: MediaFileUri = new MediaFileUri();
@@ -273,6 +273,8 @@ export struct HomePage {
           this.uri = value;
           mediaFlag = true;
         })
+        this.networkVideoSrc = '';
+        this.networkVideoSrc = this.uri; // 明确取第一个元素
       }
       if (mediaFlag) {
         this.getFilenameByUriForMedia(array);
@@ -292,7 +294,7 @@ export struct HomePage {
 
   getImagesInfo() {
     this.controller = new VideoController();
-    this.getMediaNameByUri(this.myUris);
+    this.myFileName = (this.myUris.split('/').pop()) as string;
     this.myFileSize = this.mediaFileUri.myGetFileSize(this.myUris, fileIo.OpenMode.READ_ONLY);
   }
 
@@ -406,7 +408,6 @@ export struct HomePage {
           .backgroundColor(0xFF66CC)
           .onClick(() => {
             this.callFilePickerSelectImage();
-            this.networkVideoSrc = this.uri;
             AppStorage.setOrCreate('myFileName', this.myFileName);
             AppStorage.setOrCreate('myFileSize', this.myFileSize);
           })
@@ -642,7 +643,7 @@ export struct HomePage {
               .textAlign(TextAlign.Start)
               .maxLines(1)
               .textOverflow({ overflow: TextOverflow.Ellipsis })
-            Text('size: ' + JSON.stringify(this.myFileSize) + 'B')
+            Text('Size: ' + JSON.stringify(this.myFileSize) + 'B')
               .focusable(true)
               .focusOnTouch(true)
               .fontFamily('HarmonyHeiTi')

@@ -210,7 +210,7 @@
     },
     {
       "name":"nowplaying",
-      "value":"The link to the currently playing video"
+      "value":"Current playing video link / Link ready to be shared"
     },
     {
       "name":"pick",

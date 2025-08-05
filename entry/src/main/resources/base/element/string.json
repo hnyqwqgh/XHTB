@@ -210,7 +210,7 @@
 		},
 		{
 			"name":"nowplaying",
-			"value":"当前播放的视频链接"
+			"value":"当前播放的视频链接/待分享的链接"
 		},
 		{
 			"name":"pick",
