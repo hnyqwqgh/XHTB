@@ -10,7 +10,7 @@
     },
     {
       "name":"EntryAbility_label",
-      "value":"hvideo"
+      "value":"星河工具盒"
     },
     {
       "name":"servicecollabutton",
@@ -50,11 +50,11 @@
     },
     {
       "name": "pengyipeng_description",
-      "value": "hvideo · 碰一碰分享"
+      "value": "星河工具盒 · 碰一碰分享"
     },
     {
       "name": "gekong_description",
-      "value": "hvideo · 隔空传送分享"
+      "value": "星河工具盒 · 隔空传送分享"
     },
     {
       "name":"nopeng",
@@ -110,7 +110,7 @@
     },
     {
       "name":"testinput",
-      "value":"\uDB81\uDC94 软件官网视频"
+      "value":"\uDB81\uDC94 输入待分享链接"
     },
     {
       "name":"scancode",
@@ -283,6 +283,22 @@
     {
       "name":"info4",
       "value":"软件版本"
+    },
+    {
+      "name":"choose",
+      "value":"选择视频"
+    },
+    {
+      "name":"appname",
+      "value":"星河工具盒"
+    },
+    {
+      "name":"appyhxy",
+      "value":"星河工具盒用户协议"
+    },
+    {
+      "name":"appysxy",
+      "value":"星河工具盒与隐私的声明"
     }
   ]
 }

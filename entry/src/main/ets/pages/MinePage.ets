@@ -44,7 +44,7 @@ export struct MinePage {
           Image($r('app.media.CIcon'))
             .width(60)
             .height(60);
-          Text('hvideo')
+          Text($r('app.string.appname'))
             .fontWeight(700)
             .fontSize('14fp')
             .margin({ top: 10 });
@@ -123,13 +123,13 @@ export struct MinePage {
         // 底部协议信息区域 - 保持不变
         Column() {
           Text() {
-            Span('hvideo用户协议')
+            Span($r('app.string.appyhxy'))
               .onClick(() => {
                 try {
                   let want: Want = {
                     "action": "ohos.want.action.viewData",
                     "entities": ["entity.system.browsable"],
-                    uri: 'https://hnyqwq.cn/hvideo/yhxy.html',
+                    uri: 'https://hnyqwq.cn/hvideo/xhyhxy.html',
                     "type": "text/plain"
                   }
                   let context = getContext(this) as common.UIAbilityContext;
@@ -143,13 +143,13 @@ export struct MinePage {
               .fontSize(12);
             Span($r('app.string.and'))
               .fontSize(12);
-            Span('hvideo与隐私的声明')
+            Span($r('app.string.appysxy'))
               .onClick(() => {
                 try {
                   let want: Want = {
                     "action": "ohos.want.action.viewData",
                     "entities": ["entity.system.browsable"],
-                    uri: 'https://hnyqwq.cn/hvideo/hvideo.html',
+                    uri: 'https://hnyqwq.cn/hvideo/xh.html',
                     "type": "text/plain"
                   }
                   let context = getContext(this) as common.UIAbilityContext;

@@ -50,11 +50,11 @@
     },
     {
       "name": "pengyipeng_description",
-      "value": "hvideo · Tap to Transfer"
+      "value": "星河工具盒 · Tap to Transfer"
     },
     {
       "name": "gekong_description",
-      "value": "hvideo · AI Air Transfer Sharing"
+      "value": "星河工具盒 · AI Air Transfer Sharing"
     },
     {
       "name":"nopeng",
@@ -110,7 +110,7 @@
     },
     {
       "name":"testinput",
-      "value":"\uDB81\uDC94 APP official video"
+      "value":"\uDB81\uDC94 Link to share"
     },
     {
       "name":"scancode",
@@ -283,6 +283,22 @@
     {
       "name":"info4",
       "value":"Serial number"
+    },
+    {
+      "name":"choose",
+      "value":"Choose video"
+    },
+    {
+      "name":"appname",
+      "value":"Xinghe Tool Box"
+    },
+    {
+      "name":"appyhxy",
+      "value":"Xinghe Tool Box rules "
+    },
+    {
+      "name":"appysxy",
+      "value":" Service agreements"
     }
   ]
 }

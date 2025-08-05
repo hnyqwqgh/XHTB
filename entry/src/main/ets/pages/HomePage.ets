@@ -116,7 +116,8 @@ export struct HomePage {
       console.log('downloadTask filesDir' + filesDir + '/pengyipeng.jpg');
       //下载文件
       request.downloadFile(context, {
-        url: 'https://www.hnyqwq.cn/hvideo/share.png',
+        //url: 'https://www.hnyqwq.cn/hvideo/share.png',
+        url: 'share.png',
         filePath: filesDir + '/pengyipeng.jpg'
       }).then((downloadTask: request.DownloadTask) => {
         //开启回调
@@ -282,20 +283,8 @@ export struct HomePage {
     })
   }
 
-  onPageShow() {
-    this.getImagesInfo();
-    AppStorage.setOrCreate('myFileName', this.myFileName);
-    AppStorage.setOrCreate('myFileSize', this.myFileSize);
-  }
-
   async getMediaNameByUri(myUri: string) {
     this.myFileName = (myUri.split('/').pop()) as string;
-  }
-
-  getImagesInfo() {
-    this.controller = new VideoController();
-    this.myFileName = (this.myUris.split('/').pop()) as string;
-    this.myFileSize = this.mediaFileUri.myGetFileSize(this.myUris, fileIo.OpenMode.READ_ONLY);
   }
 
   build() {
@@ -401,7 +390,7 @@ export struct HomePage {
             this.networkVideoSrc = networkVideoSrc;
             AppStorage.set('networkVideoSrc', networkVideoSrc);
           })*/
-        Button('选择视频')
+        Button($r('app.string.choose'))
           .width('55%')
           .height(50)
           .margin({ right: 10 })
@@ -449,17 +438,26 @@ export struct HomePage {
       .margin({ top: 5, bottom: 10 })
 
       Row() {
-        TextInput({ placeholder: $r('app.string.testinput') })
+        /*TextInput({ placeholder: $r('app.string.testinput') })
         /*TextArea({
           placeholder: $r('app.string.testinput')
-        })*/
-        //.backgroundColor('#FF9CCE')
+        })
           .width('55%')
           //.height(50)
           .margin({ right: 10 })
           .onChange((value: string) => {
             this.networkVideoSrc = 'https://www.hnyqwq.cn/hvideo/' + value + '.mp4';
             AppStorage.set('networkVideoSrc', this.networkVideoSrc);
+          })*/
+        TextInput({ placeholder: $r('app.string.testinput') })
+          .type(InputType.URL)
+          //.backgroundColor('#FF9CCE')
+          .width('55%')
+          .height(50)
+          .margin({ right: 10 })
+          .onChange((networkVideoSrc: string) => {
+            this.networkVideoSrc = networkVideoSrc;
+            AppStorage.set('networkVideoSrc', networkVideoSrc);
           })
         Button($r('app.string.scancode'))
         //.globalButtonStyle()
@@ -636,7 +634,7 @@ export struct HomePage {
               .copyOption(CopyOptions.LocalDevice)
               .textAlign(TextAlign.Center)
               .width('100%')
-            Text(this.myFileName)
+            /*Text(this.myFileName)
               .focusable(true)
               .focusOnTouch(true)
               .fontFamily('HarmonyHeiTi-Bold')
@@ -647,7 +645,7 @@ export struct HomePage {
               .focusable(true)
               .focusOnTouch(true)
               .fontFamily('HarmonyHeiTi')
-              .textAlign(TextAlign.Start)
+              .textAlign(TextAlign.Start)*/
           }
           .margin({ top: 10 })
           .width('100%')
