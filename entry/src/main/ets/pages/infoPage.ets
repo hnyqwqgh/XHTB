@@ -1,13 +1,12 @@
-import { common, Want } from '@kit.AbilityKit';
+import { updateManager } from '@kit.AppGalleryKit';
+import { hilog } from '@kit.PerformanceAnalysisKit';
+import type { common } from '@kit.AbilityKit';
 import { BusinessError } from '@kit.BasicServicesKit';
-import router from '@ohos.router';
 
 import { deviceInfo } from '@kit.BasicServicesKit';
 
 import userAuth from '@ohos.userIAM.userAuth';
 import { promptAction } from '@kit.ArkUI';
-
-const TAG = 'User_Auth';
 
 let deviceTypeInfo: string = deviceInfo.deviceType;
 // 输出结果：the value of the deviceType is :wearable
@@ -249,24 +248,46 @@ export struct infoPage {
             .clip(true) // 如这里不设置clip为true，则Row组件的圆角不会限制其中的Image组件，Image组件的四个角会超出Row
             .borderRadius(20)
 
-            /*Button('检查更新')
+            Button('检查更新')
             //.type(ButtonType.Capsule)
               .width('50%')
               .height(40)
               .margin({ top: 220 })
               .onClick(() => {
-                promptAction.showToast({ message: '切，让你点到爽 (ᗜ ˰ ᗜ)' });
-              })*/
+                let context: common.UIAbilityContext = this.getUIContext().getHostContext() as common.UIAbilityContext;
+                try {
+                  updateManager.checkAppUpdate(context)
+                    .then((checkResult: updateManager.CheckUpdateResult) => {
+                      hilog.info(0, 'TAG', "Succeeded in checking Result updateAvailable:" + checkResult.updateAvailable);
+                    }).catch((error: BusinessError) => {
+                    hilog.error(0, 'TAG', `checkAppUpdate onError.code is ${error.code}, message is ${error.message}`);
+                  });
+                } catch (error) {
+                  hilog.error(0, 'TAG', `checkAppUpdate onError.code is ${error.code}, message is ${error.message}`);
+                }
+                try {
+                  updateManager.showUpdateDialog(context)
+                    .then((resultCode: updateManager.ShowUpdateResultCode) => {
+                      hilog.info(0, 'TAG', "Succeeded in showing UpdateDialog resultCode:" + resultCode);
+                    })
+                    .catch((error: BusinessError) => {
+                      hilog.error(0, 'TAG', `showUpdateDialog onError.code is ${error.code}, message is ${error.message}`);
+                    });
+                } catch (error) {
+                  hilog.error(0, 'TAG', `showUpdateDialog onError.code is ${error.code}, message is ${error.message}`);
+                }
+                promptAction.showToast({ message: '我没分批，让你点到爽 (ᗜ ˰ ᗜ)' });
+              })
 
             Column() {
               Image($r('app.media.CIcon'))
                 .width(60)
                 .height(60)
-              /*Text('hvideo')
+              Text(versionSegsr)
                 .fontWeight(700)
                 .fontSize('16fp')
-                .margin({ top: 10 })*/
-              Text('1.3.3.0（10303000）')
+                .margin({ top: 10 })
+              Text('1.3.3.1（10303001）')
                 .fontWeight(600)
                 .fontSize('20fp')
                 .margin({ top: 10 })
@@ -335,8 +356,12 @@ export struct infoPage {
           .layoutWeight(1);
 
           Column() {
-            Text($r('app.string.copyright'))
+            Text($r('app.string.appname'))
               .fontSize(12);
+            Text('yylx.hny.qwq')
+              .fontSize(12);
+            /*Text($r('app.string.copyright'))
+              .fontSize(12);*/
           }
           .width('100%')
           .height(60)

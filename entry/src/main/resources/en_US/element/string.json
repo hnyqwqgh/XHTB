@@ -93,6 +93,10 @@
       "value":"\uDB80\uDC3D"
     },
     {
+      "name":"sharesuccess",
+      "value":"Sharing initiated successfully! Currently sharing:"
+    },
+    {
       "name":"play",
       "value":"\uDB80\uDCB4/\uDB80\uDCB1"
     },

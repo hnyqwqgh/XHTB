@@ -81,13 +81,15 @@ export struct MinePage {
                         break;
                       case 'vipownsetting':
                         uri = 'https://www.hnyqwq.cn';
+                        //uri = 'bilibili://live/21220648';
                         break;
                       case 'mycollection':
                         uri = 'bilibili://space/338142387';
                         break;
                       case 'mylike':
                         uri =
-                          'snssdk1128://user/profile/2118115953227692?refer=web';
+                          //'snssdk1128://user/profile/2118115953227692?refer=web';
+                           'snssdk1128://user/profile/618379012226540?refer=web';
                         break;
                       case 'browsinghistory':
                         uri = 'https://blog.hnyqwq.cn';

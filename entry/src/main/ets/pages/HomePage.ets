@@ -103,10 +103,11 @@ export struct HomePage {
       selectionMode: systemShare.SelectionMode.SINGLE
     }).then(() => {
       logger.info('ShareController show success.');
-      promptAction.showToast({ message: '分享成功: ' + this.networkVideoSrc });
+      promptAction.showToast({ message: $r('app.string.sharesuccess') + this.networkVideoSrc });
     }).catch((error: BusinessError) => {
       logger.error(`ShareController show error. code: ${error.code}, message: ${error.message}`);
-      promptAction.showToast({ message: '分享失败: ' + error.message });
+      //promptAction.showToast({ message: '分享失败: ' + error.message });
+      promptAction.showToast({ message: $r('app.string.nopeng') });
     });
   }
 

@@ -93,6 +93,10 @@
 			"value":"\uDB80\uDC3D"
 		},
 		{
+			"name":"sharesuccess",
+			"value":"发起分享成功！当前正在分享："
+		},
+		{
 			"name":"play",
 			"value":"\uDB80\uDCB4/\uDB80\uDCB1"
 		},
