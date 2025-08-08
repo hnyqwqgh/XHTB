@@ -74,7 +74,7 @@ export struct HomePage {
   @State myFileName: string = '';
   @State myFileSize: number = 0;
   @State myUris: string = (this.getUIContext().getRouter().getParams() as myParams)?.uri ?? ' ';
-  @State uri: string = 'Hello World';
+  @State uri: string = '';
   mediaFileUri: MediaFileUri = new MediaFileUri();
   private context: common.UIAbilityContext = getContext(this) as common.UIAbilityContext;
 
@@ -326,7 +326,7 @@ export struct HomePage {
         .objectFit(this.currentFitMode)
         .width('100%')
         .aspectRatio(16 / 9) // 根据视频长宽比自动计算高度
-        .constraintSize({ maxWidth: 900, minWidth: 600 })
+        .constraintSize({ maxWidth: 750, minWidth: 600 })
         .onClick(() => {
           this.isControls = !this.isControls;
           if (this.isControls) { // 显示状态的分支
@@ -506,13 +506,13 @@ export struct HomePage {
                 this.networkVideoSrc = originalValue;
                 promptAction.showToast({ duration: 10000, message: '扫码成功: ' + originalValue });
               }).catch((error: BusinessError) => {
-                hilog.error(0x0001, '[Scan Sample]',
+                hilog.error(0x0001, '[Scan]',
                   `Failed to get ScanResult by promise with options. Code: ${error.code}, message: ${error.message}`);
                 promptAction.showToast({ message: '扫码失败: ' + error.message });
               });
             } catch (error) {
               promptAction.showToast({ message: '扫码失败: ' + error.message });
-              hilog.error(0x0001, '[Scan CPSample]',
+              hilog.error(0x0001, '[Scan]',
                 `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
             }
           })
