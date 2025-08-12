@@ -52,7 +52,7 @@ struct WidgetEventRouterCard {
     .width('100%')
     .height('100%')
     .alignItems(HorizontalAlign.Start)
-    .backgroundImage($r('app.media.startIcon'))
+    .backgroundImage($r('app.media.CIcon'))
     .backgroundImageSize(ImageSize.Cover)
   }
 }

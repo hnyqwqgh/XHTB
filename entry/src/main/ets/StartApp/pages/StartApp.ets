@@ -3,7 +3,7 @@ let storage1451592377 = new LocalStorage()
 @Entry(storage1451592377)
 @Component
 export struct Control_C1 {
-  @LocalStorageProp('backgroundImg') backgroundImg: Resource = $r('app.media.startIcon')
+  @LocalStorageProp('backgroundImg') backgroundImg: Resource = $r('app.media.CIcon')
   ClickToRedButtonYTarget = () : void => {
     postCardAction(this, {
       "action": "router",

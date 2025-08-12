@@ -214,7 +214,6 @@ entry/src/main/ets/
 |   |---HomePage.ets
 |   |---SecondPage.ets
 |   |---MinePage.ets
-|   |---exPage.ets
 |   |---infoPage.ets
 ```
 

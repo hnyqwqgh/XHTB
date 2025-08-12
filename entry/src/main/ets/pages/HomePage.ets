@@ -87,7 +87,7 @@ export struct HomePage {
 
     const contextFaker: Context = getContext(this);
     const resourceMgr: resourceManager.ResourceManager = contextFaker.resourceManager;
-    const fileData: Uint8Array = await resourceMgr.getMediaContent($r('app.media.startIcon'));
+    const fileData: Uint8Array = await resourceMgr.getMediaContent($r('app.media.CIcon'));
 
     let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
     let shareData: systemShare.SharedData = new systemShare.SharedData({
