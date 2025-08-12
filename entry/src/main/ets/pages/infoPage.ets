@@ -2,6 +2,7 @@ import { updateManager } from '@kit.AppGalleryKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import type { common } from '@kit.AbilityKit';
 import { BusinessError } from '@kit.BasicServicesKit';
+import router from '@ohos.router';
 
 import { deviceInfo } from '@kit.BasicServicesKit';
 
@@ -232,17 +233,33 @@ export struct infoPage {
     Scroll() {
       Column() {
         Column() {
-          Text($r('app.string.infopagetitle'))
-            .fontSize(20)
-            .fontColor($r('app.color.font_color_info'))
-            .fontWeight(FontWeight.Bold)
+          Row()
+          {
+            Text('󰃚') // 自定义返回图标
+              .fontSize(35)
+              .margin({ left: 20 }) // 左侧留白
+              .onClick(() => {
+                  router.back();
+                })
+            Text($r('app.string.infopagetitle'))
+              .fontSize(20)
+              .fontColor($r('app.color.font_color_info'))
+              .fontWeight(FontWeight.Bold)
+              //.layoutWeight(1)  // 占据剩余空间
+              .position({ x: '50%', y: '2.5%' }) // 基于组件自身宽高定位
+              .translate({ x: '-50%', y: '-50%' }) // 偏移补偿
+          }
+          .width('100%')          // 占满父容器宽度
+          .justifyContent(FlexAlign.Start) // 主轴线左对齐
         }
         .padding({ bottom: 20 })
           Stack() {
             Row() {
               Image($r('app.media.harmonyos'))
-                .width('1100px')
+                //.width('1100px')
                 .height('1500px')
+                .width('90%')
+                .margin({ left: '5%', right: '5%' })
                 .margin({ bottom: '3%' }) // 图片下方留白
             }
             .clip(true) // 如这里不设置clip为true，则Row组件的圆角不会限制其中的Image组件，Image组件的四个角会超出Row
@@ -250,7 +267,7 @@ export struct infoPage {
 
             Button('检查更新')
             //.type(ButtonType.Capsule)
-              .width('50%')
+              .width(200)
               .height(40)
               .margin({ top: 220 })
               .onClick(() => {
@@ -259,22 +276,22 @@ export struct infoPage {
                   updateManager.checkAppUpdate(context)
                     .then((checkResult: updateManager.CheckUpdateResult) => {
                       hilog.info(0, 'TAG', "Succeeded in checking Result updateAvailable:" + checkResult.updateAvailable);
+                      try {
+                        updateManager.showUpdateDialog(context)
+                          .then((resultCode: updateManager.ShowUpdateResultCode) => {
+                            hilog.info(0, 'TAG', "Succeeded in showing UpdateDialog resultCode:" + resultCode);
+                          })
+                          .catch((error: BusinessError) => {
+                            hilog.error(0, 'TAG', `showUpdateDialog onError.code is ${error.code}, message is ${error.message}`);
+                          });
+                      } catch (error) {
+                        hilog.error(0, 'TAG', `showUpdateDialog onError.code is ${error.code}, message is ${error.message}`);
+                      }
                     }).catch((error: BusinessError) => {
                     hilog.error(0, 'TAG', `checkAppUpdate onError.code is ${error.code}, message is ${error.message}`);
                   });
                 } catch (error) {
                   hilog.error(0, 'TAG', `checkAppUpdate onError.code is ${error.code}, message is ${error.message}`);
-                }
-                try {
-                  updateManager.showUpdateDialog(context)
-                    .then((resultCode: updateManager.ShowUpdateResultCode) => {
-                      hilog.info(0, 'TAG', "Succeeded in showing UpdateDialog resultCode:" + resultCode);
-                    })
-                    .catch((error: BusinessError) => {
-                      hilog.error(0, 'TAG', `showUpdateDialog onError.code is ${error.code}, message is ${error.message}`);
-                    });
-                } catch (error) {
-                  hilog.error(0, 'TAG', `showUpdateDialog onError.code is ${error.code}, message is ${error.message}`);
                 }
                 promptAction.showToast({ message: '我没分批，让你点到爽 (ᗜ ˰ ᗜ)' });
               })
