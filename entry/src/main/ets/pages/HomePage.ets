@@ -53,7 +53,8 @@ export struct HomePage {
   @StorageLink('networkVideoSrc') networkVideoSrc: string = '';
   @State isPlaying: boolean = true;
   @State picture: PixelMap | undefined = undefined;
-  @State networkPreviewUri: string = 'https://alliance-communityfile-drcn.dbankcdn.com/FileServer/getFile/cmtyPub/011/111/111/0000000000011111111.20250814201313.54764824779401317176433540350951:50001231000000:2800:0987A5ACC48494286FD28FDE9DDACFBCA0C24FD30400A3FE0AD75E2BC2A9EB2D.png'; // 默认网络预览图
+  //@State networkPreviewUri: string = 'https://alliance-communityfile-drcn.dbankcdn.com/FileServer/getFile/cmtyPub/011/111/111/0000000000011111111.20250814201313.54764824779401317176433540350951:50001231000000:2800:0987A5ACC48494286FD28FDE9DDACFBCA0C24FD30400A3FE0AD75E2BC2A9EB2D.png'; // 默认网络预览图
+  @State sharepng: string = 'https://www.hnyqwq.cn/hvideo/share.png'
   //@State networkPreviewUri: Resource = $r('app.media.homepageback');
   @State savefileUri: string = ' ';
   @State currentFitMode: ImageFit = ImageFit.Auto; // 当前填充模式
@@ -112,24 +113,41 @@ export struct HomePage {
   }
 
   //碰一碰分享
+  private debounceTimer: number = 0
+  // 修改 handleImageUpdate 方法
+  private handleImageUpdate() {
+    clearTimeout(this.debounceTimer);
+    this.debounceTimer = setTimeout(() => {
+      this.DownloadToSandbox();
+    }, 1000); // 1秒防抖
+  }
+
+  // 修改 DownloadToSandbox 方法
   private async DownloadToSandbox() {
-    try {
-      console.log('downloadTask filesDir' + filesDir + '/pengyipeng.jpg');
-      //下载文件
-      request.downloadFile(context, {
-        url: 'https://www.hnyqwq.cn/hvideo/share.png',
-        filePath: filesDir + '/pengyipeng.jpg'
-      }).then((downloadTask: request.DownloadTask) => {
-        //开启回调
-        downloadTask.on('complete', () => {
-          console.info('downloadTask1 complete');
-        })
-      }).catch((err: BusinessError) => {
-        console.error('Invoke downloadTask failed, code is ${err.code}, message is ${err.message}');
-      });
-    } catch (error) {
-      let err: BusinessError = error as BusinessError;
-      console.error('Invoke downloadTask downloadFile failed, code is ${err.code}, message is ${err.message}');
+    if (!this.isValidUrl(this.sharepng)) {
+      console.log('Invalid URL, skipping download');
+      return;
+    }
+
+    if (this.sharepng !== '') {
+      try {
+        // 先删除旧文件（如果存在）
+        try {
+          await fs.unlink(filesDir + '/pengyipeng.jpg');
+        } catch (e) {
+          // 文件不存在是正常情况，忽略错误
+        }
+
+        // 下载新文件
+        await request.downloadFile(context, {
+          url: this.sharepng,
+          filePath: filesDir + '/pengyipeng.jpg'
+        });
+
+        console.log('Image downloaded successfully');
+      } catch (error) {
+        console.error('Download failed:', error);
+      }
     }
   }
 
@@ -312,107 +330,22 @@ export struct HomePage {
 
   build() {
     Column() {
-      // 固定在顶部的输入框区域
-      /*Video({
-        previewUri: this.networkPreviewUri,
-        currentProgressRate: this.curRate,
-        src: this.networkVideoSrc,
-        controller: this.controller
-      })
-        .muted(false) // 设置是否静音
-        .controls(this.isControls) // 设置是否显示默认控制条
-        .autoPlay(true) // 设置是否自动播放
-        .loop(true) // 设置是否循环播放
-        .objectFit(this.currentFitMode)
-        .width('100%')
-        .aspectRatio(16 / 9) // 根据视频长宽比自动计算高度
-        .constraintSize({ maxWidth: 750, minWidth: 600 })
-        .onClick(() => {
-          this.isControls = !this.isControls;
-          if (this.isControls) { // 显示状态的分支
-            promptAction.showToast({
-              message: $r('app.string.controlon')
-            });
-          } else { // 隐藏状态的分支
-            promptAction.showToast({
-              message: $r('app.string.controloff')
-            });
-          }
-        })
-        .enableShortcutKey(this.isShortcutKeyEnabled)
-        .onStart(() => {
-          console.info('onStart')
-        })
-        .onPause(() => {
-          console.info('onPause')
-        })
-        .onFinish(() => {
-          console.info('onFinish')
-        })
-        .onError(() => {
-          console.info('onError')
-        })
-        .onStop(() => {
-          console.info('onStop')
-        })
-        .onPrepared((e?: DurationObject) => {
-          if (e != undefined) {
-            console.info('onPrepared is ' + e.duration)
-          }
-        })
-        .onSeeking((e?: TimeObject) => {
-          if (e != undefined) {
-            console.info('onSeeking is ' + e.time)
-          }
-        })
-        .onSeeked((e?: TimeObject) => {
-          if (e != undefined) {
-            console.info('onSeeked is ' + e.time)
-          }
-        })
-        .onUpdate((e?: TimeObject) => {
-          if (e != undefined) {
-            console.info('onUpdate is ' + e.time)
-          }
-        })
-        .onFullscreenChange((e?: FullscreenObject) => {
-          if (e != undefined) {
-            console.info('onFullscreenChange is ' + e.fullscreen)
-            window.getLastWindow(this.context).then((win: window.Window) => {
-              if (e.fullscreen) {
-                // 进入全屏时旋转到横屏
-                win.setPreferredOrientation(window.Orientation.LANDSCAPE);
-              } else {
-                // 退出全屏时恢复原始方向
-                win.setPreferredOrientation(this.initialOrientation);
-              }
-            }).catch((err: Error) => {
-              console.error('方向设置失败:', err);
-              promptAction.showToast({ message: '方向设置失败' });
-            });
-          }
-        })
-        .onPrepared(() => {
-          this.controller.start();
-        })
-        .onDrop((e: DragEvent) => {
-          let record = e.getData().getRecords()[0];
-          if (record.getType() == uniformTypeDescriptor.UniformDataType.VIDEO) {
-            let videoInfo = record as unifiedDataChannel.Video;
-            this.networkVideoSrc = videoInfo.videoUri;
-          }
-        })*/
-      Row() {
-        /*TextInput({ placeholder: $r('app.string.linkinput') })
+      Row()
+      {
+        TextInput({ placeholder: $r('app.string.linkinput'), text: this.sharepng })
           .type(InputType.URL)
           //.backgroundColor('#FF9CCE')
-          .width('55%')
+          .width('90%')
           .height(50)
-          .margin({ right: 10 })
-          .onChange((networkVideoSrc: string) => {
-            this.networkVideoSrc = networkVideoSrc;
-            AppStorage.set('networkVideoSrc', networkVideoSrc);
-          })*/
+          .margin({ bottom: 10 })
+          .onChange((sharepng: string) => {
+            this.sharepng = sharepng;
+            if (this.isValidUrl(sharepng)) {
+              this.handleImageUpdate(); // 触发图片更新逻辑
+            }
+          })
+      }
+      Row() {
         Button($r('app.string.scancode'))
         //.globalButtonStyle()
         //.type(ButtonType.Capsule)
