@@ -43,6 +43,10 @@ export struct SecondPage {
           left: $r('sys.float.padding_level16'),
           right: $r('sys.float.padding_level16'),
         })
+        .onChange((networkVideoSrc: string) => {
+          this.networkVideoSrc = networkVideoSrc;
+          AppStorage.set('networkVideoSrc', networkVideoSrc);
+        })
 
       Row({ space: 40 }) {
         Button('', { type: ButtonType.Circle, stateEffect: true })
@@ -86,6 +90,10 @@ export struct SecondPage {
           top: 10,
           left: $r('sys.float.padding_level16'),
           right: $r('sys.float.padding_level16'),
+        })
+        .onChange((networkVideoSrc: string) => {
+          this.networkVideoSrc = networkVideoSrc;
+          AppStorage.set('networkVideoSrc', networkVideoSrc);
         })
       Button($r('app.string.pick'))
         .margin({ top: 10 })

@@ -313,7 +313,7 @@ export struct HomePage {
   build() {
     Column() {
       // 固定在顶部的输入框区域
-      Video({
+      /*Video({
         previewUri: this.networkPreviewUri,
         currentProgressRate: this.curRate,
         src: this.networkVideoSrc,
@@ -401,7 +401,7 @@ export struct HomePage {
             let videoInfo = record as unifiedDataChannel.Video;
             this.networkVideoSrc = videoInfo.videoUri;
           }
-        })
+        })*/
       Row() {
         /*TextInput({ placeholder: $r('app.string.linkinput') })
           .type(InputType.URL)
@@ -413,20 +413,45 @@ export struct HomePage {
             this.networkVideoSrc = networkVideoSrc;
             AppStorage.set('networkVideoSrc', networkVideoSrc);
           })*/
-        Button($r('app.string.choose'))
+        Button($r('app.string.scancode'))
+        //.globalButtonStyle()
+        //.type(ButtonType.Capsule)
+          //.backgroundColor(0x66CCFF)//蓝色
+          //.backgroundColor('#0044fc')
+          .labelStyle({ overflow: TextOverflow.Ellipsis, maxLines: 3, minFontSize: 0 })
           .width('55%')
           .height(50)
           .margin({ right: 10 })
           .backgroundColor(0xFF66CC)
-          .onClick(() => {
-            this.callFilePickerSelectImage();
-            AppStorage.setOrCreate('myFileName', this.myFileName);
-            AppStorage.setOrCreate('myFileSize', this.myFileSize);
+          .onClick(async () => {
+            try {
+              // 定义扫码参数options
+              let options: scanBarcode.ScanOptions = {
+                scanTypes: [scanCore.ScanType.ALL],
+                enableMultiMode: true,
+                enableAlbum: true
+              };
+              // 调用扫码功能
+              scanBarcode.startScanForResult(getContext(this), options).then((result: scanBarcode.ScanResult) => {
+                // 正确获取扫描结果的字符串值
+                const originalValue: string = result.originalValue; // 假设ScanResult有originalValue属性
+                this.networkVideoSrc = originalValue;
+                promptAction.showToast({ duration: 10000, message: '扫码成功: ' + originalValue });
+              }).catch((error: BusinessError) => {
+                hilog.error(0x0001, '[Scan]',
+                  `Failed to get ScanResult by promise with options. Code: ${error.code}, message: ${error.message}`);
+                promptAction.showToast({ message: 'PC/2in1设备暂不支持扫描二维码，请使用其它类型的设备' });
+              });
+            } catch (error) {
+              //promptAction.showToast({ message: '扫码失败: 读取二维码信息错误； ' + error.message });
+              promptAction.showToast({ message: '扫码失败: 启动扫码服务失败' });
+              hilog.error(0x0001, '[Scan]',
+                `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
+            }
           })
-
         Button($r('app.string.share'))
         //.type(ButtonType.Capsule)
-          .width('20%')
+          .width('40%')
           .height(50)
           .backgroundColor(0xFF66CC)
           //.backgroundColor(0x66CCFF)//浅蓝色
@@ -439,22 +464,6 @@ export struct HomePage {
               logger.error(`分享按钮点击异常: ${error.message}`);
               promptAction.showToast({ message: '分享功能异常: ' + error.message });
             }
-          })
-        Button($r('app.string.play'))
-        //.fontSize(10)
-        //.type(ButtonType.Capsule)
-          .width('20%')
-          .height(50)
-          .backgroundColor(0xFF66CC)
-          .onClick(() => {
-            if (this.isPlaying) {
-              this.controller.pause();
-              promptAction.showToast({ message: $r('app.string.paused') });
-            } else {
-              this.controller.start();
-              promptAction.showToast({ message: $r('app.string.playing') });
-            }
-            this.isPlaying = !this.isPlaying;
           })
       }
       .width('90%')
@@ -482,44 +491,9 @@ export struct HomePage {
             this.networkVideoSrc = networkVideoSrc;
             AppStorage.set('networkVideoSrc', networkVideoSrc);
           })
-        Button($r('app.string.scancode'))
-        //.globalButtonStyle()
-        //.type(ButtonType.Capsule)
-          .backgroundColor(0x66CCFF)//蓝色
-          //.backgroundColor('#0044fc')
-          .labelStyle({ overflow: TextOverflow.Ellipsis, maxLines: 3, minFontSize: 0 })
-          .width('20%')
-          .height(50)
-          .margin({ right: 10 })
-          .onClick(async () => {
-            try {
-              // 定义扫码参数options
-              let options: scanBarcode.ScanOptions = {
-                scanTypes: [scanCore.ScanType.ALL],
-                enableMultiMode: true,
-                enableAlbum: true
-              };
-              // 调用扫码功能
-              scanBarcode.startScanForResult(getContext(this), options).then((result: scanBarcode.ScanResult) => {
-                // 正确获取扫描结果的字符串值
-                const originalValue: string = result.originalValue; // 假设ScanResult有originalValue属性
-                this.networkVideoSrc = originalValue;
-                promptAction.showToast({ duration: 10000, message: '扫码成功: ' + originalValue });
-              }).catch((error: BusinessError) => {
-                hilog.error(0x0001, '[Scan]',
-                  `Failed to get ScanResult by promise with options. Code: ${error.code}, message: ${error.message}`);
-                promptAction.showToast({ message: 'PC/2in1设备暂不支持扫描二维码，请使用其它类型的设备' });
-              });
-            } catch (error) {
-              //promptAction.showToast({ message: '扫码失败: 读取二维码信息错误； ' + error.message });
-              promptAction.showToast({ message: '扫码失败: 启动扫码服务失败' });
-              hilog.error(0x0001, '[Scan]',
-                `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
-            }
-          })
         PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
           .backgroundColor(0x66CCFF)//蓝色
-          .width('20%')
+          .width('40%')
           .height(50)
           //.padding({top: 12, bottom: 12, left: 24, right: 24})
           .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
@@ -537,7 +511,7 @@ export struct HomePage {
       .width('90%')
       .margin({ top: 5, bottom: 10 })
 
-      Row() {
+      /*Row() {
         Button($r('app.string.speedtitle'))
           .backgroundColor(0xb87cff)
           .bindMenu([
@@ -646,7 +620,7 @@ export struct HomePage {
               }
             }
           ])
-      }
+      }*/
 
       // 使用堆叠布局，顶部起始对齐
       Stack({ alignContent: Alignment.TopStart }) {
@@ -679,6 +653,10 @@ export struct HomePage {
         }
       }
     }
+    .width('100%')
+    .height('100%')
+    .justifyContent(FlexAlign.Center) // 垂直居中
+    .alignItems(HorizontalAlign.Center) // 水平居中
   }
 
   private isNoListening() {
@@ -686,7 +664,7 @@ export struct HomePage {
   }
 }
 
-
+/*
 interface DurationObject {
   duration: number;
 }
@@ -697,4 +675,4 @@ interface TimeObject {
 
 interface FullscreenObject {
   fullscreen: boolean;
-}
+}*/

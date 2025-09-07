@@ -214,7 +214,7 @@
     },
     {
       "name":"nowplaying",
-      "value":"Current playing video link / Link ready to be shared"
+      "value":"Current scan results or text pending sharing or processing."
     },
     {
       "name":"pick",
