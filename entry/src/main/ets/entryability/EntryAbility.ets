@@ -103,7 +103,7 @@ export default class EntryAbility extends UIAbility {
       }
       let windowClass: window.Window = windowStage.getMainWindowSync(); // 获取应用主窗口
       // 1. 设置窗口全屏
-      let isLayoutFullScreen = true;
+      /*let isLayoutFullScreen = true;
       windowClass.setWindowLayoutFullScreen(isLayoutFullScreen).then(() => {
         console.info('Succeeded in setting the window layout to full-screen mode.');
       }).catch((err: BusinessError) => {
@@ -115,7 +115,7 @@ export default class EntryAbility extends UIAbility {
         console.info('Succeeded in setting the status bar to be invisible.');
       }).catch((err: BusinessError) => {
         console.error(`Failed to set the status bar to be invisible. Code is ${err.code}, message is ${err.message}`);
-      });
+      });*/
       //3
       windowClass.setSpecificSystemBarEnabled('navigationIndicator', false).then(() => {
         console.info('Succeeded in setting the navigation indicator to be invisible.');

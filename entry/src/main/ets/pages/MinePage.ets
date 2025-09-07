@@ -103,7 +103,7 @@ export struct MinePage {
           context.startAbility(want)
           console.info(`MenuItem2 ability succeed`)
         })
-      MenuItem({ startIcon: this.iconStr, content: "【提出反馈与建议】APP内通过跳转链接直接发送问题。此方法无法收到问题回复" })
+      MenuItem({ startIcon: this.iconStr, content: "【提出反馈与建议】填写完反馈后跳转链接，通过MeoW直链直接发送问题，提示发送成功后请关闭窗口。此方法无法收到问题回复" })
         .onClick(() => {
           // 注入当前上下文
           PromptActionClass.setContext(this.getUIContext());
@@ -299,7 +299,7 @@ export struct MinePage {
       }
       .width('100%')
       .height('100%')
-      .padding({ top: 60 }) // 为标题栏留出空间
+      .padding({ top: 30 }) // 为标题栏留出空间
     }
     .width('100%')
     .height('100%')

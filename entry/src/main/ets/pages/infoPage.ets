@@ -187,23 +187,6 @@ class FirstMenu {
   }
 }
 
-@Observed
-  //设置条目信息构造
-class SecondMenu {
-  public uri?: string;
-  public id: string; // 唯一id
-  public title: string; // 标题文本
-  public text: string; // 菜单文本
-  public des: Resource; //后缀文本
-
-  constructor(id: string, title: string, text: string, des: Resource) {
-    this.id = id;
-    this.title = title;
-    this.text = text;
-    this.des = des;
-  }
-}
-
 @Entry
 @Component
 export struct infoPage {
@@ -218,13 +201,6 @@ export struct infoPage {
     new FirstMenu('three',$r('app.string.info3'),distributionOSVersion, $r('app.string.void')),
     new FirstMenu('four',$r('app.string.info4'),fullVersionsr, $r('app.string.void')),
     new FirstMenu('five',$r('app.string.info5') ,versionSegsr, $r('app.string.void'))
-  ];
-  @State SecondMenuGroup: SecondMenu[] = [
-    new SecondMenu('one', '型号名称', marketNameInfo, $r('app.string.void')),
-    new SecondMenu('two', '型号代码', productModelInfo, $r('app.string.void')),
-    new SecondMenu('three', 'HarmonyOS 版本', distributionOSVersion, $r('app.string.void')),
-    new SecondMenu('four', '软件版本', fullVersionsr, $r('app.string.void')),
-  //new SecondMenu('five', '序列号', '前往个人博客', $r('app.string.void'))
   ];
   @State message: string = '用户认证'
   @State userAuthResult?: userAuth.UserAuthResult = undefined
@@ -387,7 +363,7 @@ export struct infoPage {
       .width('100%')
       .height('100%')
       .backgroundColor($r('app.color.start_window_background'))
-      .padding({ top: 60 }) // 为标题栏留出空间
+      .padding({ top: 30 }) // 为标题栏留出空间
     }
     .scrollable(ScrollDirection.Vertical)
     .height('100%')

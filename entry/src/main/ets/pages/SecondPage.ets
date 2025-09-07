@@ -125,7 +125,7 @@ export struct SecondPage {
       }
     }
     .width('100%')
-    .height(400)
+    //.height(400)
     .justifyContent(FlexAlign.Center)
     .layoutWeight(1)  // 动态分配剩余空间
   }

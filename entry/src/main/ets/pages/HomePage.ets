@@ -38,7 +38,7 @@ let filesDir = context.filesDir;
 @Extend(Button) function globalButtonStyle() {
   .width('60%')
   .height(80)
-  //.backgroundColor(0x99CCFF)  // 白色背景
+  //.background (0x99CCFF)  // 白色背景
   .borderRadius(15)           // 圆角半径
   .margin({ top: 10 })         // 顶部间距
 }*/
@@ -625,7 +625,6 @@ export struct HomePage {
       // 使用堆叠布局，顶部起始对齐
       Stack({ alignContent: Alignment.TopStart }) {
         // 滚动区域
-        Column() {
           Column() {
             Text($r('app.string.nowplaying'))
             Text(this.networkVideoSrc)
@@ -645,18 +644,16 @@ export struct HomePage {
               .fontFamily('HarmonyHeiTi')
               .textAlign(TextAlign.Start)*/
           }
+          .width('90%')  // 控制内容区域宽度
+          .alignItems(HorizontalAlign.Center) // 内容水平居中
           .margin({ top: 10 })
-          .width('100%')
-          .height('100%')
-
-          //.backgroundColor($r('app.color.start_window_background'))
-        }
+          //.height('100%')
       }
     }
     .width('100%')
-    .height('100%')
-    .justifyContent(FlexAlign.Center) // 垂直居中
-    .alignItems(HorizontalAlign.Center) // 水平居中
+    //.height(400)
+    .justifyContent(FlexAlign.Center)
+    .layoutWeight(1)  // 动态分配剩余空间
   }
 
   private isNoListening() {
