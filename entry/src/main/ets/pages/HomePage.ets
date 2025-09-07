@@ -62,6 +62,9 @@ export struct HomePage {
   @State isControls: boolean = false; // 控制栏显示状态
   @State handlePopup: boolean = false; // 气泡提示（Popup）
   @State enableShortcutKey: boolean = true; //设置组件支持快捷键响应。
+  //分享
+  @State localShareImageUri: string = ''; // 本地分享图片的URI
+  @State isLocalImageSelected: boolean = false; // 是否已选择本地图片
   //碰一碰
   @State whiteStatus: boolean = false;
   private controller: VideoController = new VideoController();
@@ -79,6 +82,34 @@ export struct HomePage {
   @State uri: string = '';
   mediaFileUri: MediaFileUri = new MediaFileUri();
   private context: common.UIAbilityContext = getContext(this) as common.UIAbilityContext;
+
+  //背景图片本地
+  // 替代方案：使用PhotoViewPicker
+  private async selectLocalImage() {
+    try {
+      let photoPicker: photoAccessHelper.PhotoViewPicker = new photoAccessHelper.PhotoViewPicker();
+
+      // 定义选择选项
+      let options: photoAccessHelper.PhotoSelectOptions = {
+        MIMEType: photoAccessHelper.PhotoViewMIMETypes.IMAGE_TYPE,
+        maxSelectNumber: 1
+      };
+
+      const result: photoAccessHelper.PhotoSelectResult = await photoPicker.select(options);
+
+      if (result && result.photoUris && result.photoUris.length > 0) {
+        this.localShareImageUri = result.photoUris[0];
+        this.isLocalImageSelected = true;
+        promptAction.showToast({ message: $r('app.string.local_image_selected') });
+      }
+    } catch (error) {
+      let businessError = error as BusinessError;
+      hilog.error(0x0000, 'localImage', `Failed to select image. code: ${businessError.code}, message: ${businessError.message}`);
+      promptAction.showToast({ message: $r('app.string.select_image_failed') });
+    }
+  }
+
+
 
   //华为系统分享
   private async share() {
@@ -308,62 +339,34 @@ export struct HomePage {
     sharableTarget.share(shareData);
   }
 
-  /*private immersiveListening() {
-    harmonyShare.on('gesturesShare', this.immersiveCallback);
-  }
-
-  private immersiveDisablingListening() {
-    harmonyShare.off('gesturesShare', this.immersiveCallback);
-  }*/
-
-  //本地
-  private async callFilePickerSelectImage() {
-    let uri = await this.openPhoto();
-    if (uri === undefined) {
-      hilog.error(0x0000, 'local', "Failed to get uri.");
-      return;
-    }
-    this.networkVideoSrc=uri;
-  }
-
-  private openPhoto(): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
-      let photoPicker: photoAccessHelper.PhotoViewPicker = new photoAccessHelper.PhotoViewPicker();
-      photoPicker.select({
-        MIMEType: photoAccessHelper.PhotoViewMIMETypes.VIDEO_TYPE,
-        maxSelectNumber: 1
-      }).then((res: photoAccessHelper.PhotoSelectResult) => {
-        resolve(res.photoUris[0]);
-      }).catch((err: BusinessError) => {
-        hilog.error(0x0000, 'local', `Failed to get photo image uri. code：${err.code}，message：${err.message}`);
-        reject('');
-      })
-    })
-  }
-
-  async getMediaNameByUri(myUri: string) {
-    this.myFileName = (myUri.split('/').pop()) as string;
-  }
-
   build() {
     Column() {
-      Column()
+      Row()
       {
         Text($r('app.string.sharepngon'))
           .textAlign(TextAlign.Center)
-        TextInput({ placeholder: $r('app.string.sharepng'), text: this.sharepng })
-          .type(InputType.URL)
-          //.backgroundColor('#FF9CCE')
-          .width('90%')
+          .width('55%')
+        Button($r('app.string.choose'))
+          .width('27.1%')
           .height(50)
-          .margin({ top: 10, bottom: 10 })
-          .onChange((sharepng: string) => {
-            this.sharepng = sharepng;
-            if (this.isValidUrl(sharepng)) {
-              this.handleImageUpdate(); // 触发图片更新逻辑
-            }
+          .width('40%')
+          .backgroundColor(0xFF66CC)
+          .onClick(() => {
+            this.selectLocalImage();
           })
       }
+      TextInput({ placeholder: $r('app.string.sharepng'), text: this.sharepng })
+        .type(InputType.URL)
+        //.backgroundColor('#FF9CCE')
+        .width('90%')
+        .height(50)
+        .margin({ top: 10, bottom: 10 })
+        .onChange((sharepng: string) => {
+          this.sharepng = sharepng;
+          if (this.isValidUrl(sharepng)) {
+            this.handleImageUpdate(); // 触发图片更新逻辑
+          }
+        })
       Text($r('app.string.texton'))
         .textAlign(TextAlign.Center)
         .margin({ top: 5, bottom: 10 })
