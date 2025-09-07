@@ -304,7 +304,7 @@ export struct infoPage {
                 .fontWeight(700)
                 .fontSize('16fp')
                 .margin({ top: 10 })*/
-              Text('1.3.4.2（10304002）')
+              Text('1.3.5.0（10305000）')
                 .fontWeight(600)
                 .fontSize('20fp')
                 .margin({ top: 10 })
