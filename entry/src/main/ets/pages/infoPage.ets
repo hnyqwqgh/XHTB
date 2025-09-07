@@ -319,7 +319,7 @@ export struct infoPage {
               top: $r('app.integer.layout_size_12'), // 增加顶部间距
               bottom: $r('app.integer.layout_size_12')
             })
-            .backgroundColor($r('app.color.color_info'));
+            .backgroundColor($r('app.color.info'));
 
             /*Row() {
               List() {
@@ -362,8 +362,8 @@ export struct infoPage {
       }
       .width('100%')
       .height('100%')
-      .backgroundColor($r('app.color.start_window_background'))
-      .padding({ top: 30 }) // 为标题栏留出空间
+      //.backgroundColor($r('app.color.start_window_background'))
+      .padding({ top: 10 }) // 为标题栏留出空间
     }
     .scrollable(ScrollDirection.Vertical)
     .height('100%')

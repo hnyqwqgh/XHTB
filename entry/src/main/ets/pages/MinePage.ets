@@ -161,7 +161,7 @@ export struct MinePage {
         .height(300)
         .justifyContent(FlexAlign.Center)
         .alignItems(HorizontalAlign.Center)
-        .backgroundColor($r('app.color.start_window_background'))
+        //.backgroundColor($r('app.color.start_window_background'))
 
         // 设置项列表区域 - 保持不变
         Column() {
@@ -304,7 +304,7 @@ export struct MinePage {
     }
     .width('100%')
     .height('100%')
-    .backgroundColor($r('app.color.start_window_background'))
+    //.backgroundColor($r('app.color.start_window_background'))
   }
 }
 

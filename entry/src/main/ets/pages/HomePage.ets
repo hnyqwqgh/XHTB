@@ -481,11 +481,11 @@ export struct HomePage {
             this.networkVideoSrc = 'https://www.hnyqwq.cn/hvideo/' + value + '.mp4';
             AppStorage.set('networkVideoSrc', this.networkVideoSrc);
           })*/
-        TextInput({ placeholder: $r('app.string.testinput') })
-          .type(InputType.URL)
+        TextArea({ placeholder: $r('app.string.testinput') })
+          //.type(InputType.URL)
           //.backgroundColor('#FF9CCE')
           .width('55%')
-          .height(50)
+          //.height(50)
           .margin({ right: 10 })
           .onChange((networkVideoSrc: string) => {
             this.networkVideoSrc = networkVideoSrc;
@@ -626,7 +626,10 @@ export struct HomePage {
       Stack({ alignContent: Alignment.TopStart }) {
         // 滚动区域
           Column() {
+            Text($r('app.string.nowplayingon'+'\n'))
+              .textAlign(TextAlign.Center)
             Text($r('app.string.nowplaying'))
+              .textAlign(TextAlign.Center)
             Text(this.networkVideoSrc)
               .copyOption(CopyOptions.LocalDevice)
               .textAlign(TextAlign.Center)

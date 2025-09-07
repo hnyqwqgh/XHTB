@@ -213,6 +213,10 @@
       "value":"\uDB80\uDC09 Current scaling mode: Proportional Zoom / Fit to Fill (Aspect Ratio Zoom Fill) ⌯>ᴗo⌯ಣ"
     },
     {
+      "name":"nowplayingon",
+      "value":"Tap to Transfer is available"
+    },
+    {
       "name":"nowplaying",
       "value":"Current scan results or text pending sharing or processing."
     },

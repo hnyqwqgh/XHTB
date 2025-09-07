@@ -27,6 +27,10 @@
     {
       "name": "mine",
       "value": "#d6bd8d"
+    },
+    {
+      "name": "info",
+      "value": "#d6bd8d"
     }
   ]
 }
