@@ -38,7 +38,7 @@ export struct SecondPage {
 
   build() {
     Column({ space: 0 }) {
-      TextArea({ placeholder: '我是提示文本', text: this.networkVideoSrc })
+      TextArea({ placeholder: $r('app.string.speak'), text: this.networkVideoSrc })
         .margin({
           left: $r('sys.float.padding_level16'),
           right: $r('sys.float.padding_level16'),
@@ -85,7 +85,7 @@ export struct SecondPage {
       .justifyContent(FlexAlign.Center)
 
       //二维码生成
-      TextArea({ placeholder: '我是提示文本', text: this.networkVideoSrc })
+      TextArea({ placeholder: $r('app.string.qrcode'), text: this.networkVideoSrc })
         .margin({
           top: 10,
           left: $r('sys.float.padding_level16'),

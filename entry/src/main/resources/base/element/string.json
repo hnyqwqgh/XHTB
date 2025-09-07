@@ -42,11 +42,11 @@
 		},
 		{
 			"name": "shareinfo",
-			"value": "链接分享"
+			"value": "文本/链接分享"
 		},
 		{
 			"name": "pengyipeng_title",
-			"value": "分享当前的链接"
+			"value": "分享当前的文本/链接"
 		},
 		{
 			"name": "pengyipeng_description",
@@ -58,7 +58,7 @@
 		},
 		{
 			"name":"nopeng",
-			"value":"没有可以分享的链接 ⪩ ⪨"
+			"value":"没有可以分享的文本/链接 ⪩ ⪨"
 		},
 		{
 			"name":"aboutpage",
@@ -90,7 +90,7 @@
 		},
 		{
 			"name":"share",
-			"value":"\uDB80\uDC3D"
+			"value":"\uDB80\uDC3D 使用系统分享"
 		},
 		{
 			"name":"sharesuccess",
@@ -106,7 +106,7 @@
 		},
 		{
 			"name":"noplay",
-			"value":"请输入视频链接 ⪩ ⪨"
+			"value":"请输入要分享的文本/视频链接 ⪩ ⪨"
 		},
 		{
 			"name":"paused",
@@ -114,11 +114,11 @@
 		},
 		{
 			"name":"testinput",
-			"value":"\uDB81\uDC94 输入待分享链接"
+			"value":"\uDB81\uDC94 输入文本/链接"
 		},
 		{
 			"name":"scancode",
-			"value":"\uDB80\uDC28\uDB80\uDD28"
+			"value":"\uDB80\uDC28\uDB80\uDD28 扫描二维码提取文本/链接"
 		},
 		{
 			"name":"downloaded",
@@ -307,6 +307,14 @@
 		{
 			"name":"appysxy",
 			"value":"星河工具盒与隐私的声明"
+		},
+		{
+			"name":"speak",
+			"value":"输入需要朗读的文本"
+		},
+		{
+			"name":"qrcode",
+			"value":"输入需要生成二维码的文本"
 		}
 	]
 }

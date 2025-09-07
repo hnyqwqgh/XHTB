@@ -23,6 +23,10 @@
     {
       "name": "version_color_182431",
       "value": "#FFFFFF"
+    },
+    {
+      "name": "mine",
+      "value": "#d6bd8d"
     }
   ]
 }

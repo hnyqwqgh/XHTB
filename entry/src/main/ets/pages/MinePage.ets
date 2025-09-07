@@ -221,7 +221,8 @@ export struct MinePage {
           .borderRadius($r('app.integer.layout_size_24'))
           .alignItems(VerticalAlign.Center)
           .margin({ bottom: $r('app.integer.layout_size_12') })
-          .backgroundColor($r('app.color.font_color_FFFFFF'));
+          //.backgroundColor($r('app.color.font_color_FFFFFF'));
+          .backgroundColor($r('app.color.mine'))
         }
         .layoutWeight(1)
         .width('100%');
