@@ -404,50 +404,9 @@ export struct HomePage {
                 `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
             }
           })
-        Button($r('app.string.share'))
-        //.type(ButtonType.Capsule)
-          .width('40%')
-          .height(50)
+        PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
           .backgroundColor(0xFF66CC)
           //.backgroundColor(0x66CCFF)//浅蓝色
-          .margin({ right: 10 })
-          .onClick(() => {
-            logger.info('分享按钮被点击');
-            try {
-              this.share();
-            } catch (error) {
-              logger.error(`分享按钮点击异常: ${error.message}`);
-              promptAction.showToast({ message: '分享功能异常: ' + error.message });
-            }
-          })
-      }
-      .width('90%')
-      .margin({ top: 5, bottom: 10 })
-
-      Row() {
-        /*TextInput({ placeholder: $r('app.string.testinput') })
-        /*TextArea({
-          placeholder: $r('app.string.testinput')
-        })
-          .width('55%')
-          //.height(50)
-          .margin({ right: 10 })
-          .onChange((value: string) => {
-            this.networkVideoSrc = 'https://www.hnyqwq.cn/hvideo/' + value + '.mp4';
-            AppStorage.set('networkVideoSrc', this.networkVideoSrc);
-          })*/
-        TextArea({ placeholder: $r('app.string.testinput') })
-          //.type(InputType.URL)
-          //.backgroundColor('#FF9CCE')
-          .width('55%')
-          //.height(50)
-          .margin({ right: 10 })
-          .onChange((networkVideoSrc: string) => {
-            this.networkVideoSrc = networkVideoSrc;
-            AppStorage.set('networkVideoSrc', networkVideoSrc);
-          })
-        PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
-          .backgroundColor(0x66CCFF)//蓝色
           .width('40%')
           .height(50)
           //.padding({top: 12, bottom: 12, left: 24, right: 24})
@@ -466,127 +425,48 @@ export struct HomePage {
       .width('90%')
       .margin({ top: 5, bottom: 10 })
 
-      /*Row() {
-        Button($r('app.string.speedtitle'))
-          .backgroundColor(0xb87cff)
-          .bindMenu([
-            {
-              value: $r('app.string.1xspeed'),
-              action: () => {
-                console.info('handle Menu11 select');
-                this.curRate = PlaybackSpeed.Speed_Forward_1_00_X;
-                promptAction.showToast({
-                  message: $r('app.string.1xspeedyes')
-                })
-              }
-            },
-            {
-              value: $r('app.string.125xspeed'),
-              action: () => {
-                console.info('handle Menu12 select');
-                this.curRate = PlaybackSpeed.Speed_Forward_1_25_X;
-                promptAction.showToast({
-                  message: $r('app.string.125xspeedyes')
-                })
-              }
-            },
-            {
-              value: $r('app.string.175xspeed'),
-              action: () => {
-                console.info('handle Menu13 select');
-                this.curRate = PlaybackSpeed.Speed_Forward_1_75_X;
-                promptAction.showToast({
-                  message: $r('app.string.175xspeedyes')
-                })
-              }
-            },
-            {
-              value: $r('app.string.2xspeed'),
-              action: () => {
-                console.info('handle Menu14 select');
-                this.curRate = PlaybackSpeed.Speed_Forward_2_00_X;
-                promptAction.showToast({
-                  message: $r('app.string.2xspeedyes')
-                })
-              }
-            },
-            {
-              value: $r('app.string.075xspeed'),
-              action: () => {
-                console.info('handle Menu15 select');
-                this.curRate = PlaybackSpeed.Speed_Forward_0_75_X;
-                promptAction.showToast({
-                  message: $r('app.string.075xspeedyes')
-                })
-              }
-            }
-          ])
-        Button($r('app.string.fullscreen'))
-          .backgroundColor(0xb87cff)
-          .margin({ left: 10 })
-          .onClick(() => {
-            this.controller.requestFullscreen(true);
-            window.getLastWindow(this.context).then((win) => {
-              win.setPreferredOrientation(window.Orientation.LANDSCAPE);
-            });
-          })
-        Button($r('app.string.ImageFittitle'))
-          .backgroundColor(0xb87cff)
-          .margin({ left: 10 })
-          .bindMenu([
-            {
-              value: $r('app.string.Cover'),
-              action: () => {
-                console.info('handle Menu21 select');
-                this.currentFitMode = ImageFit.Cover;
-                promptAction.showToast({ duration: 10000,
-                  message: $r('app.string.Coveryes')
-                })
-              }
-            },
-            {
-              value: $r('app.string.Auto'),
-              action: () => {
-                console.info('handle Menu22 select');
-                this.currentFitMode = ImageFit.Auto;
-                promptAction.showToast({ duration: 10000,
-                  message: $r('app.string.Autoyes')
-                })
-              }
-            },
-            {
-              value: $r('app.string.Fill'),
-              action: () => {
-                console.info('handle Menu23 select');
-                this.currentFitMode = ImageFit.Fill;
-                promptAction.showToast({ duration: 10000,
-                  message: $r('app.string.Fillyes')
-                })
-              }
-            },
-            {
-              value: $r('app.string.Contain'),
-              action: () => {
-                console.info('handle Menu24 select');
-                this.currentFitMode = ImageFit.Contain;
-                promptAction.showToast({ duration: 10000,
-                  message: $r('app.string.Containyes')
-                })
-              }
-            }
-          ])
-      }*/
+      TextArea({ placeholder: $r('app.string.testinput') })
+      //.type(InputType.URL)
+      //.backgroundColor('#FF9CCE')
+        .width('90%')
+        //.height(50)
+        .margin({ right: 10 })
+        .onChange((networkVideoSrc: string) => {
+          this.networkVideoSrc = networkVideoSrc;
+          AppStorage.set('networkVideoSrc', networkVideoSrc);
+        })
+      .width('90%')
+      .margin({ top: 5, bottom: 10 })
 
       // 使用堆叠布局，顶部起始对齐
       Stack({ alignContent: Alignment.TopStart }) {
         // 滚动区域
           Column() {
-            Text($r('app.string.nowplaying'))
-              .textAlign(TextAlign.Center)
+            Row()
+            {
+              Text($r('app.string.nowplaying'))
+                .width('55%')
+                .textAlign(TextAlign.Center)
+                .margin({ right: 10 })
+              Button($r('app.string.share'))
+              //.type(ButtonType.Capsule)
+                .width('40%')
+                .height(50)
+                .backgroundColor(0x66CCFF)//蓝色
+                .onClick(() => {
+                  logger.info('分享按钮被点击');
+                  try {
+                    this.share();
+                  } catch (error) {
+                    logger.error(`分享按钮点击异常: ${error.message}`);
+                    promptAction.showToast({ message: '分享功能异常: ' + error.message });
+                  }
+                })
+            }.width('100%')
             Text(this.networkVideoSrc)
               .padding({ top: 10 })
               .copyOption(CopyOptions.LocalDevice)
-              .textAlign(TextAlign.Center)
+              .textAlign(TextAlign.Center).margin({ right: 10 })
               .width('100%')
             Text($r('app.string.nowplayingon'))
               .padding({ top: 10 , left: 24, right: 24 })
