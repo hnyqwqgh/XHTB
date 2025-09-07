@@ -2,6 +2,7 @@ import { common, Want } from '@kit.AbilityKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import router from '@ohos.router';
 import { PromptActionClass } from '../DocScan//PromptActionClass';
+import web from '@ohos.web.webview'
 
 @Observed
 class SettingMenu {
@@ -24,29 +25,50 @@ class SettingMenu {
 export struct MinePage {
   @State inputText: string = ''
   private customDialogComponentId: number = 0
+  @State isDialogActive: boolean = false
+
   @Builder
   customDialogComponent() {
     Column()
     {
     TextArea({text: this.inputText})
+      .onChange((value: string) => {
+          this.inputText = value // 同步输入内容至状态变量
+      })
       .height(200)
-    Row({ space: 50 }) {
-      Button('确认')
+      .margin({ top: 20,right:20,left:20,bottom:20 })
+    Text('将使用浏览器发送反馈\n网页提示发送成功即可关闭网页')
+      .textAlign(TextAlign.Center)
+    Row() {
+      Button('确认发送反馈')
+        //.margin({ top: 10 })
         .onClick(() => {
-          PromptActionClass.closeDialog();
-          // 后台请求链接
+          // 关闭弹窗与访问链接的双重逻辑
+          this.safeCloseDialog()
           let want: Want = {
+            action: 'ohos.want.action.viewData',
             "entities": ["entity.system.browsable"],
             uri: 'https://api.chuckfang.com/hnyqwq/星河工具盒-反馈/' + this.inputText,
+            parameters: {
+              'ohos.ability.params.showDefaultPicker': false
+            }
           }
           let context = getContext(this) as common.UIAbilityContext;
           context.startAbility(want)
           console.info(`MenuItem3 ability succeed`)
         })
-    }.height(200).padding(5)
+    }.height(80).padding(5)
     }
   }
 
+  aboutToDisappear(): void {  // 显式声明返回类型
+    if (this.isDialogActive) {
+      this.safeCloseDialog()
+    }
+  }
+  private safeCloseDialog() {
+    if (this.customDialogComponentId === 0 || !this.isDialogActive) return
+  }
   private iconStr: ResourceStr = $r("app.media.CIcon");
   @State menuGroup: SettingMenu[] = [
     new SettingMenu('setting', $r('app.media.mine_settings'), $r('app.string.mine1'), $r('app.string.void')),
@@ -70,7 +92,7 @@ export struct MinePage {
             context.startAbility(want)
             console.info(`MenuItem1 ability succeed`)
         })
-      MenuItem({ startIcon: this.iconStr, content: "前往MeoW，订阅频道后点击联系博主以反馈问题" })
+      MenuItem({ startIcon: this.iconStr, content: "前往MeoW，订阅频道后点击联系博主以反馈问题，可收到问题回复" })
         .onClick(() => {
           let want: Want = {
             "action": "ohos.want.action.viewData",
@@ -81,31 +103,18 @@ export struct MinePage {
           context.startAbility(want)
           console.info(`MenuItem2 ability succeed`)
         })
-      MenuItem({ startIcon: this.iconStr, content: "直接发送问题" })
+      MenuItem({ startIcon: this.iconStr, content: "直接发送问题，无法收到问题回复" })
         .onClick(() => {
+          // 注入当前上下文
+          PromptActionClass.setContext(this.getUIContext());
           this.getUIContext().getPromptAction().openCustomDialog({
-            builder: () => {
-              this.customDialogComponent()
-            },
-            /*isModal:true,
-            showInSubWindow:false,
-            maskColor: Color.Pink,
-            maskRect:{ x: 20, y: 20, width: '90%', height: '90%' },
-
-            dialogTransition: // 设置弹窗内容显示的过渡效果
-            TransitionEffect.translate({ x: 0, y: 290, z: 0 })
-              .animation({ duration: 4000, curve: Curve.Smooth }),// 四秒钟的偏移渐变动画
-
-            maskTransition: // 设置蒙层显示的过渡效果
-            TransitionEffect.opacity(0)
-              .animation({ duration: 4000, curve: Curve.Smooth }) // 四秒钟的透明渐变动画
-*/
+            builder: () => this.customDialogComponent()
           }).then((dialogId: number) => {
-            this.customDialogComponentId = dialogId
+            this.customDialogComponentId = dialogId;
           })
             .catch((error: BusinessError) => {
-              console.error(`openCustomDialog error code is ${error.code}, message is ${error.message}`)
-            })
+              console.error(`打开对话框失败: ${error.code}`, error.message);
+            });
         })
     }
   }
