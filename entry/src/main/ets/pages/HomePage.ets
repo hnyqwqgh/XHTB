@@ -128,11 +128,22 @@ export struct HomePage {
       return;
     }
 
-    const contextFaker: Context = getContext(this);
-    const resourceMgr: resourceManager.ResourceManager = contextFaker.resourceManager;
-    const fileData: Uint8Array = await resourceMgr.getMediaContent($r('app.media.CIcon'));
-
+    console.log('Getting context');
     let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
+    if (!context) {
+      console.error('Failed to get context');
+      promptAction.showToast({ message: $r('app.string.nopeng') });
+      return;
+    }
+
+    const contextFaker: Context = getContext(this);
+    console.log('Getting resource manager');
+    const resourceMgr: resourceManager.ResourceManager = contextFaker.resourceManager;
+    console.log('Loading thumbnail image');
+    const fileData: Uint8Array = await resourceMgr.getMediaContent($r('app.media.CIcon'));
+    console.log('Thumbnail loaded, size:', fileData?.byteLength);
+
+    console.log('Creating share data');
     let shareData: systemShare.SharedData = new systemShare.SharedData({
       utd: utd.UniformDataType.HYPERLINK,
       content: this.networkVideoSrc, // 使用输入框中的视频链接
@@ -140,7 +151,9 @@ export struct HomePage {
       description: this.networkVideoSrc,
       thumbnail: fileData,
     });
+    console.log('Creating share controller');
     let controller: systemShare.ShareController = new systemShare.ShareController(shareData);
+    console.log('Showing share panel');
     controller.show(context, {
       previewMode: systemShare.SharePreviewMode.DEFAULT,
       selectionMode: systemShare.SelectionMode.SINGLE
@@ -169,6 +182,13 @@ export struct HomePage {
       framesCount: 104,
       startDelay: 50,
       stopDelay: 50,
+    },
+    {
+      text: '对方手机需 HarmonyOS 6 及以上版本。',
+      rawfilePrefix: 'knock_share_guide/knock_share_guide_pc_pull_',
+      framesCount: 150,
+      startDelay: 500,
+      stopDelay: 1000,
     },
   ];
   private debounceTimer: number = 0
@@ -359,7 +379,7 @@ export struct HomePage {
         Button($r('app.string.choose'))
           .height(50)
           .width('40%')
-          .backgroundColor(0xFF66CC)
+          .backgroundColor(0xb87cff)//紫色
           .onClick(() => {
             this.selectImage();
           })

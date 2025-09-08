@@ -218,7 +218,7 @@
     },
     {
       "name":"nowplaying",
-      "value":"Current scan results or text pending sharing or processing."
+      "value":"③Current scan results or text pending sharing or processing."
     },
     {
       "name":"pick",
@@ -319,6 +319,29 @@
     {
       "name":"qrcode",
       "value":"Enter the text to generate a QR code"
+    },
+    {
+      "name":"sharepngon",
+      "value":"①Enter the direct link to the background image for sharing"
+    },
+    {
+      "name":"sharepng",
+      "value":"\uDB81\uDC94 Enter the direct link to the background image for sharing"
+    },
+    {
+      "name":"texton",
+      "value":"②Enter or process the links to be shared"
+    },{
+      "name": "local_image_selected",
+      "value": "Local image selected"
+    },
+    {
+      "name": "select_image_failed",
+      "value": "Select image failed"
+    },
+    {
+      "name": "share_failed",
+      "value": "Share failed"
     }
   ]
 }

@@ -218,7 +218,7 @@
 		},
 		{
 			"name":"nowplaying",
-			"value":"当前扫描的结果/待分享/待处理的文本"
+			"value":"③当前扫描的结果/待分享/待处理的文本"
 		},
 		{
 			"name":"pick",
@@ -322,7 +322,7 @@
 		},
 		{
 			"name":"sharepngon",
-			"value":"输入分享的背景图片直链"
+			"value":"①输入分享的背景图片直链"
 		},
 		{
 			"name":"sharepng",
@@ -330,7 +330,7 @@
 		},
 		{
 			"name":"texton",
-			"value":"输入或处理需要分享的链接"
+			"value":"②输入或处理需要分享的链接"
 		},{
 			"name": "local_image_selected",
 			"value": "已选择本地图片"
