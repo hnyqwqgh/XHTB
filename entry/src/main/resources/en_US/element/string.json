@@ -118,7 +118,7 @@
     },
     {
       "name":"scancode",
-      "value":"\uDB80\uDC28\uDB80\uDD28"
+      "value":"\uDB80\uDC28\uDB80\uDD28 Scan QR Codes"
     },
     {
       "name":"downloaded",
@@ -342,6 +342,10 @@
     {
       "name": "share_failed",
       "value": "Share failed"
+    },
+    {
+      "name": "pengtitleset",
+      "value": "Custom Sharing title"
     }
   ]
 }

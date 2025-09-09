@@ -63,6 +63,7 @@ export struct HomePage {
   @State isControls: boolean = false; // 控制栏显示状态
   @State handlePopup: boolean = false; // 气泡提示（Popup）
   @State enableShortcutKey: boolean = true; //设置组件支持快捷键响应。
+  @State pengtitle: string = ' ';//碰一碰分享标题
   //分享
   @State localShareImageUri: string = ''; // 本地分享图片的URI
   @State isLocalImageSelected: boolean = false; // 是否已选择本地图片
@@ -148,7 +149,8 @@ export struct HomePage {
     let shareData: systemShare.SharedData = new systemShare.SharedData({
       utd: utd.UniformDataType.HYPERLINK,
       content: this.networkVideoSrc, // 使用输入框中的视频链接
-      title: shareTitle,
+      //title: shareTitle,
+      title: this.pengtitle,
       description: this.networkVideoSrc,
       thumbnail: new Uint8Array(buffer),
     });
@@ -260,6 +262,9 @@ export struct HomePage {
     //this.immersiveListening();
     let context = getContext(this);
 
+    //碰一碰标题
+    this.pengtitle = this.context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id);
+
     // 建议调整顺序确保实时参数优先
     const params = router.getParams() as Record<string, string>;
     if (params?.['videoUrl']) {
@@ -308,7 +313,7 @@ export struct HomePage {
       utd: utd.UniformDataType.HYPERLINK,
       content: this.networkVideoSrc,
       thumbnailUri: fileUri.getUriFromPath(filePath),
-      title: context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id),
+      title: this.pengtitle,
       description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
     });
     sharableTarget.share(shareData);
@@ -379,7 +384,7 @@ export struct HomePage {
       utd: utd.UniformDataType.HYPERLINK,
       content: this.networkVideoSrc,
       thumbnailUri: fileUri.getUriFromPath(filePath),
-      title: context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id),
+      title: this.pengtitle,
       description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
     });
     sharableTarget.share(shareData);
@@ -453,7 +458,7 @@ export struct HomePage {
                 `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
             }
           })
-        PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
+        PasteButton({ icon: PasteIconStyle.LINES, text: PasteDescription.PASTE, buttonType: ButtonType.ROUNDED_RECTANGLE })
           .backgroundColor(0xFF66CC)
           //.backgroundColor(0x66CCFF)//浅蓝色
           .width('40%')
@@ -486,10 +491,23 @@ export struct HomePage {
         })
       .width('90%')
       .margin({ top: 5, bottom: 10 })
-
-      // 使用堆叠布局，顶部起始对齐
-      Stack({ alignContent: Alignment.TopStart }) {
-        // 滚动区域
+      Row()
+      {
+        Text($r('app.string.pengtitleset'))
+          .width('40%')
+          .textAlign(TextAlign.Center)
+          .margin({ right: 10 })
+        TextArea({ placeholder: $r('app.string.pengyipeng_title'), text: this.pengtitle })
+        //.backgroundColor('#FF9CCE')
+          .width('55%')
+          .height(50)
+          .onChange((pengtitle: string) => {
+            this.pengtitle = pengtitle;
+            AppStorage.set('pengtitle', pengtitle);
+          })
+      }
+      .margin({ top: 10 })
+      .width('90%')  // 控制内容区域宽度
           Column() {
             Row()
             {
@@ -517,6 +535,9 @@ export struct HomePage {
               .copyOption(CopyOptions.LocalDevice)
               .textAlign(TextAlign.Center).margin({ right: 10 })
               .width('100%')
+
+
+            //碰一碰提示
             Text($r('app.string.nowplayingon'))
               .padding({ top: 10 , left: 24, right: 24 })
               .maxLines(2)
@@ -549,11 +570,6 @@ export struct HomePage {
           //.height('100%')
       }
     }
-    .width('100%')
-    //.height(400)
-    .justifyContent(FlexAlign.Center)
-    .layoutWeight(1)  // 动态分配剩余空间
-  }
 
   private isNoListening() {
     return !this.whiteStatus;
