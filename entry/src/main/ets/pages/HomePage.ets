@@ -538,7 +538,7 @@ export struct HomePage {
 
             //碰一碰提示
             Text($r('app.string.nowplayingon'))
-              .padding({ top: 10 , left: 24, right: 24 })
+              .padding({ top: 20 , left: 24, right: 24 })
               .maxLines(2)
               .fontSize(11)
               .maxFontScale(1.75)
