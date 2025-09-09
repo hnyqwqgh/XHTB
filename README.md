@@ -4,7 +4,7 @@
 
 >> nova 14 Ultra MRT-AL10
 
->>> HarmonyOS版本：HarmonyOS 5.1.0.150 (C00E140R5P1patch04)
+>>> HarmonyOS版本：HarmonyOS 5.1.0.150 (SP5C00E140R5P1patch03)
 
 >>> API版本：5.0.5(17)
 
