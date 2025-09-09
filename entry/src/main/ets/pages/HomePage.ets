@@ -479,7 +479,7 @@ export struct HomePage {
       .width('90%')
       .margin({ top: 5, bottom: 10 })
 
-      TextArea({ placeholder: $r('app.string.testinput') })
+      TextArea({ placeholder: $r('app.string.testinput') , text: this.networkVideoSrc })
       //.type(InputType.URL)
       //.backgroundColor('#FF9CCE')
         .width('90%')
