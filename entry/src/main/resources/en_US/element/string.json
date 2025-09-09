@@ -218,7 +218,7 @@
     },
     {
       "name":"nowplaying",
-      "value":"③Current scan results or text pending sharing or processing."
+      "value":"③Current scan results , texts or links pending sharing or processing."
     },
     {
       "name":"pick",
@@ -346,6 +346,10 @@
     {
       "name": "pengtitleset",
       "value": "Custom Sharing title"
+    },
+    {
+      "name": "minelongpress",
+      "value": "Go to YunYing Tool House"
     }
   ]
 }

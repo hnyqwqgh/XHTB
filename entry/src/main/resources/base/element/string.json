@@ -218,7 +218,7 @@
 		},
 		{
 			"name":"nowplaying",
-			"value":"③当前扫描的结果/待分享/待处理的文本"
+			"value":"③当前扫描的结果/待分享/待处理的文本或链接"
 		},
 		{
 			"name":"pick",
@@ -346,6 +346,10 @@
 		{
 			"name": "pengtitleset",
 			"value": "自定义分享标题"
+		},
+		{
+			"name": "minelongpress",
+			"value": "前往云影工具屋APP"
 		}
 	]
 }

@@ -81,7 +81,7 @@ export struct MinePage {
   @Builder
   MyMenu() {
     Menu() {
-      MenuItem({ startIcon: this.iconStr, content: "前往云影工具屋APP", })
+      MenuItem({ startIcon: this.iconStr, content: $r('app.string.minelongpress'), })
         .onClick(() => {
             let want: Want = {
               "action": "ohos.want.action.viewData",
@@ -92,7 +92,7 @@ export struct MinePage {
             context.startAbility(want)
             console.info(`MenuItem1 ability succeed`)
         })
-      MenuItem({ startIcon: this.iconStr, content: "【提出反馈与建议】前往MeoW，订阅频道后点击联系博主以反馈问题。此方法可以收到问题回复" })
+      /*MenuItem({ startIcon: this.iconStr, content: "【提出反馈与建议】前往MeoW，订阅频道后点击联系博主以反馈问题。此方法可以收到问题回复" })
         .onClick(() => {
           let want: Want = {
             "action": "ohos.want.action.viewData",
@@ -115,7 +115,7 @@ export struct MinePage {
             .catch((error: BusinessError) => {
               console.error(`打开对话框失败: ${error.code}`, error.message);
             });
-        })
+        })*/
     }
   }
   @Builder
