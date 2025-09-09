@@ -129,6 +129,10 @@ export struct HomePage {
   //华为系统分享
   private async share() {
     let uiContext: UIContext = this.getUIContext();
+    if (!this.networkVideoSrc) {
+      promptAction.showToast({ message: $r('app.string.nopeng') });
+      return;
+    }
     let contextFaker: Context = uiContext.getHostContext() as Context;
     // 根据当前图片扩展名设置缩略图路径
     let thumbnailPath = contextFaker.filesDir + '/pengyipeng' + this.imageExtension;
