@@ -19,6 +19,7 @@ import { pasteboard } from '@kit.BasicServicesKit';
 import { fileUri } from '@kit.CoreFileKit';
 import request from '@ohos.request';
 import router from '@ohos.router';
+import { image } from '@kit.ImageKit';
 //本地
 import { fileIo, picker } from '@kit.CoreFileKit';
 import { photoAccessHelper } from '@kit.MediaLibraryKit';
@@ -82,6 +83,8 @@ export struct HomePage {
   @State uri: string = '';
   mediaFileUri: MediaFileUri = new MediaFileUri();
   private context: common.UIAbilityContext = getContext(this) as common.UIAbilityContext;
+  // 添加缺失的 imageExtension 状态属性
+  @State imageExtension: string = '.png'; // 默认为.png格式
 
   //背景图片本地
   private async selectImage() {
@@ -92,7 +95,8 @@ export struct HomePage {
     }
 
     let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
-    let targetPath = context.filesDir + '/pengyipeng.jpg';
+    // 根据当前图片扩展名设置目标路径
+    let targetPath = context.filesDir + '/pengyipeng' + this.imageExtension;
     let originFile: fileIo.File | undefined;
     try {
       originFile = fileIo.openSync(uri, fileIo.OpenMode.READ_ONLY); // 打开源URI文件
@@ -123,47 +127,39 @@ export struct HomePage {
 
   //华为系统分享
   private async share() {
-    if (!this.networkVideoSrc) {
-      promptAction.showToast({ message: $r('app.string.nopeng') });
-      return;
-    }
+    let uiContext: UIContext = this.getUIContext();
+    let contextFaker: Context = uiContext.getHostContext() as Context;
+    // 根据当前图片扩展名设置缩略图路径
+    let thumbnailPath = contextFaker.filesDir + '/pengyipeng' + this.imageExtension;
+    let imageSource: image.ImageSource = image.createImageSource(thumbnailPath);
+    let imagePacker: image.ImagePacker = image.createImagePacker();
+    let buffer: ArrayBuffer = await imagePacker.packToData(imageSource, {
+      // 当前只支持'image/jpeg','image/webp'和'image/png'类型图片.
+      format: 'image/jpeg',
+      // JPEG编码中设定输出图片质量的参数,取值范围为0-100.
+      // 建议适当压缩,图片过大无法拉起分享.
+      quality: 30
+    });
 
-    console.log('Getting context');
-    let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
-    if (!context) {
-      console.error('Failed to get context');
-      promptAction.showToast({ message: $r('app.string.nopeng') });
-      return;
-    }
-
-    const contextFaker: Context = getContext(this);
-    console.log('Getting resource manager');
-    const resourceMgr: resourceManager.ResourceManager = contextFaker.resourceManager;
-    console.log('Loading thumbnail image');
-    const fileData: Uint8Array = await resourceMgr.getMediaContent($r('app.media.CIcon'));
-    console.log('Thumbnail loaded, size:', fileData?.byteLength);
+    let context: common.UIAbilityContext = uiContext.getHostContext() as common.UIAbilityContext;
+    let shareTitle = context.resourceManager.getStringSync($r('app.string.shareinfo').id);
 
     console.log('Creating share data');
     let shareData: systemShare.SharedData = new systemShare.SharedData({
       utd: utd.UniformDataType.HYPERLINK,
       content: this.networkVideoSrc, // 使用输入框中的视频链接
-      title: context.resourceManager.getStringSync($r('app.string.shareinfo').id),
+      title: shareTitle,
       description: this.networkVideoSrc,
-      thumbnail: fileData,
+      thumbnail: new Uint8Array(buffer),
     });
-    console.log('Creating share controller');
     let controller: systemShare.ShareController = new systemShare.ShareController(shareData);
-    console.log('Showing share panel');
     controller.show(context, {
       previewMode: systemShare.SharePreviewMode.DEFAULT,
       selectionMode: systemShare.SelectionMode.SINGLE
     }).then(() => {
-      logger.info('ShareController show success.');
-      promptAction.showToast({ message: $r('app.string.sharesuccess') + this.networkVideoSrc });
+      console.info('ShareController show success.');
     }).catch((error: BusinessError) => {
-      logger.error(`ShareController show error. code: ${error.code}, message: ${error.message}`);
-      //promptAction.showToast({ message: '分享失败: ' + error.message });
-      promptAction.showToast({ message: $r('app.string.nopeng') });
+      console.error(`ShareController show error. code: ${error.code}, message: ${error.message}`);
     });
   }
 
@@ -196,6 +192,7 @@ export struct HomePage {
   private handleImageUpdate() {
     clearTimeout(this.debounceTimer);
     this.debounceTimer = setTimeout(() => {
+      this.updateImageExtension(); // 确保在下载前更新扩展名
       this.DownloadToSandbox();
     }, 1000); // 1秒防抖
   }
@@ -209,9 +206,12 @@ export struct HomePage {
 
     if (this.sharepng !== '') {
       try {
+        // 根据URL确定图片扩展名（再次确认）
+        this.updateImageExtension();
+        
         // 先删除旧文件（如果存在）
         try {
-          await fs.unlink(filesDir + '/pengyipeng.jpg');
+          await fs.unlink(filesDir + '/pengyipeng' + this.imageExtension);
         } catch (e) {
           // 文件不存在是正常情况，忽略错误
         }
@@ -219,13 +219,27 @@ export struct HomePage {
         // 下载新文件
         await request.downloadFile(context, {
           url: this.sharepng,
-          filePath: filesDir + '/pengyipeng.jpg'
+          filePath: filesDir + '/pengyipeng' + this.imageExtension
         });
 
-        console.log('Image downloaded successfully');
+        console.log('Image downloaded successfully as ' + this.imageExtension);
       } catch (error) {
         console.error('Download failed:', error);
       }
+    }
+  }
+
+  // 添加缺失的 updateImageExtension 方法
+  private updateImageExtension() {
+    if (this.sharepng.endsWith('.png')) {
+      this.imageExtension = '.png';
+    } else if (this.sharepng.endsWith('.jpg') || this.sharepng.endsWith('.jpeg')) {
+      this.imageExtension = '.jpg';
+    } else if (this.sharepng.endsWith('.webp')) {
+      this.imageExtension = '.webp';
+    } else {
+      // 默认使用.png格式
+      this.imageExtension = '.png';
     }
   }
 
@@ -288,7 +302,8 @@ export struct HomePage {
       AppStorage.delete('sharedVideoUrl');
     }
     const context = this.getUIContext().getHostContext() as common.UIAbilityContext;
-    let filePath = this.context?.filesDir + "/pengyipeng.jpg";
+    // 根据当前图片扩展名设置文件路径
+    let filePath = this.context?.filesDir + "/pengyipeng" + this.imageExtension;
     let shareData: systemShare.SharedData = new systemShare.SharedData({
       utd: utd.UniformDataType.HYPERLINK,
       content: this.networkVideoSrc,
@@ -358,7 +373,8 @@ export struct HomePage {
       AppStorage.delete('sharedVideoUrl');
     }
     let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
-    let filePath = this.context?.filesDir + "/pengyipeng.jpg";
+    // 根据当前图片扩展名设置文件路径
+    let filePath = this.context?.filesDir + "/pengyipeng" + this.imageExtension;
     let shareData: systemShare.SharedData = new systemShare.SharedData({
       utd: utd.UniformDataType.HYPERLINK,
       content: this.networkVideoSrc,
