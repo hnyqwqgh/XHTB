@@ -76,13 +76,13 @@ export struct HomePage {
     buttonType: ButtonType.Capsule*/
   }
   //隔空投送
-  /*private immersiveListening() {
+  private immersiveListening() {
     harmonyShare.on('gesturesShare', this.immersiveCallback);
   }
 
   private immersiveDisablingListening() {
     harmonyShare.off('gesturesShare', this.immersiveCallback);
-  }*/
+  }
   //本地
   @State myContext: Context = this.getUIContext().getHostContext() as common.UIAbilityContext;
   @State myFileTypes: number = 0;
@@ -271,7 +271,7 @@ export struct HomePage {
   aboutToAppear(): void {
     this.DownloadToSandbox();
     this.whiteListening()
-    //this.immersiveListening();
+    this.immersiveListening();
     let context = getContext(this);
 
     //碰一碰标题
@@ -307,7 +307,7 @@ export struct HomePage {
 
   private onBackGround = () => {
     this.whiteDisablingListening()
-    //this.immersiveDisablingListening();
+    this.immersiveDisablingListening();
   }
   // 在类成员变量区域定义箭头函数绑定回调
   private whiteCallback = async (sharableTarget: harmonyShare.SharableTarget): Promise<void> => {
