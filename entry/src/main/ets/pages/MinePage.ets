@@ -1,8 +1,6 @@
 import { common, Want } from '@kit.AbilityKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import router from '@ohos.router';
-import { PromptActionClass } from '../DocScan//PromptActionClass';
-import web from '@ohos.web.webview'
 
 @Observed
 class SettingMenu {
@@ -26,40 +24,6 @@ export struct MinePage {
   @State inputText: string = ''
   private customDialogComponentId: number = 0
   @State isDialogActive: boolean = false
-
-  @Builder
-  customDialogComponent() {
-    Column()
-    {
-    TextArea({text: this.inputText})
-      .onChange((value: string) => {
-          this.inputText = value // 同步输入内容至状态变量
-      })
-      .height(200)
-      .margin({ top: 20,right:20,left:20,bottom:20 })
-    Text('将使用浏览器发送反馈\n网页提示发送成功即可关闭网页')
-      .textAlign(TextAlign.Center)
-    Row() {
-      Button('确认发送反馈')
-        //.margin({ top: 10 })
-        .onClick(() => {
-          // 关闭弹窗与访问链接的双重逻辑
-          this.safeCloseDialog()
-          let want: Want = {
-            action: 'ohos.want.action.viewData',
-            "entities": ["entity.system.browsable"],
-            uri: 'https://api.chuckfang.com/hnyqwq/星河工具盒-反馈/' + this.inputText,
-            parameters: {
-              'ohos.ability.params.showDefaultPicker': false
-            }
-          }
-          let context = getContext(this) as common.UIAbilityContext;
-          context.startAbility(want)
-          console.info(`MenuItem3 ability succeed`)
-        })
-    }.height(80).padding(5)
-    }
-  }
 
   aboutToDisappear(): void {  // 显式声明返回类型
     if (this.isDialogActive) {
