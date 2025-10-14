@@ -2,17 +2,15 @@ import { promptAction } from '@kit.ArkUI';
 import window from '@ohos.window';
 import { common } from '@kit.AbilityKit';
 import { scanCore, scanBarcode } from '@kit.ScanKit';
-// 导入默认界面需要的日志模块和错误码模块
+// 导入日志模块和错误码模块
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { systemShare, harmonyShare } from '@kit.ShareKit';
 import { fileIo as fs } from '@kit.CoreFileKit';
 import { uniformTypeDescriptor as utd } from '@kit.ArkData';
 import Logger from '../utils/Logger';
-
-//两个临时无需权限组件
+//粘贴组件
 import { pasteboard } from '@kit.BasicServicesKit';
-
 //分享相关
 import { fileUri } from '@kit.CoreFileKit';
 import request from '@ohos.request';
@@ -22,10 +20,11 @@ import { image } from '@kit.ImageKit';
 //本地
 import { fileIo } from '@kit.CoreFileKit';
 import { photoAccessHelper } from '@kit.MediaLibraryKit';
+import MediaFileUri from '../media/MediaFileUri';
 import KnockShareGuideCard, { CardRes } from '../model/KnockShareGuideCard';
 
 //点光源效果
-import { hdsEffect } from '@kit.UIDesignKit'
+import { hdsEffect } from '@kit.UIDesignKit';
 
 let logger = Logger.getLogger('[KnockShare]');
 let context = getContext(this) as common.UIAbilityContext;
@@ -64,13 +63,10 @@ export struct HomePage {
   @State isLocalImageSelected: boolean = false; // 是否已选择本地图片
   //碰一碰
   @State whiteStatus: boolean = false;
-  @State imageExtension: string = '.png'; // 默认为.png格式
-  @State controller: hdsEffect.ShaderEffectController = new hdsEffect.ShaderEffectController();
-  saveButtonOptions: SaveButtonOptions = {
-    icon: SaveIconStyle.FULL_FILLED,
-    /*text: SaveDescription.SAVE_IMAGE,
-    buttonType: ButtonType.Capsule*/
-  }
+  private controller: VideoController = new VideoController();
+  //点光源效果
+  @State lightSourceType: hdsEffect.PointLightSourceType = hdsEffect.PointLightSourceType.NONE;
+
   //隔空投送
   private immersiveListening() {
     harmonyShare.on('gesturesShare', this.immersiveCallback);
@@ -80,7 +76,10 @@ export struct HomePage {
     harmonyShare.off('gesturesShare', this.immersiveCallback);
   }
   //本地
+  mediaFileUri: MediaFileUri = new MediaFileUri();
   private context: common.UIAbilityContext = getContext(this) as common.UIAbilityContext;
+  // 添加缺失的 imageExtension 状态属性
+  @State imageExtension: string = '.png'; // 默认为.png格式
 
   //背景图片本地
   private async selectImage() {
@@ -144,8 +143,8 @@ export struct HomePage {
       quality: 30
     });
 
-    let context: common.UIAbilityContext = uiContext.getHostContext() as common.UIAbilityContext;
-    let shareTitle = context.resourceManager.getStringSync($r('app.string.shareinfo').id);
+    //let context: common.UIAbilityContext = uiContext.getHostContext() as common.UIAbilityContext;
+    //let shareTitle = context.resourceManager.getStringSync($r('app.string.shareinfo').id);
 
     console.log('Creating share data');
     let shareData: systemShare.SharedData = new systemShare.SharedData({
@@ -212,7 +211,7 @@ export struct HomePage {
       try {
         // 根据URL确定图片扩展名（再次确认）
         this.updateImageExtension();
-
+        
         // 先删除旧文件（如果存在）
         try {
           await fs.unlink(filesDir + '/pengyipeng' + this.imageExtension);
@@ -280,7 +279,7 @@ export struct HomePage {
     // 触发视频加载
     this.context.eventHub.on('urlUpdate', (url: string) => {
       this.networkVideoSrc = url
-      //this.controller.start()
+      this.controller.start()
     })
 
     context.eventHub.on('onBackGround', this.onBackGround);
@@ -305,7 +304,7 @@ export struct HomePage {
     const sharedUrl = AppStorage.get<string>('sharedVideoUrl');
     if (sharedUrl && this.isValidUrl(sharedUrl)) {
       this.networkVideoSrc = sharedUrl;
-      //this.controller.start();
+      this.controller.start();
       AppStorage.delete('sharedVideoUrl');
     }
     const context = this.getUIContext().getHostContext() as common.UIAbilityContext;
@@ -319,41 +318,41 @@ export struct HomePage {
       description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
     });
     sharableTarget.share(shareData);
-    /*
-        try {
-          const context = this.getUIContext().getHostContext() as common.UIAbilityContext;
+/*
+    try {
+      const context = this.getUIContext().getHostContext() as common.UIAbilityContext;
 
-          // 1. 使用 rawfile 方案获取资源
-          const rawfileName = 'share.png'; // rawfile 目录下的文件名
-          const fdResult = await context.resourceManager.getRawFd(rawfileName);
+      // 1. 使用 rawfile 方案获取资源
+      const rawfileName = 'share.png'; // rawfile 目录下的文件名
+      const fdResult = await context.resourceManager.getRawFd(rawfileName);
 
-          // 2. 直接使用文件描述符构建 URI
-          const fdPath = `fd://${fdResult.fd}`;
+      // 2. 直接使用文件描述符构建 URI
+      const fdPath = `fd://${fdResult.fd}`;
 
-          // 3. 构建分享数据
-          let shareData: systemShare.SharedData = new systemShare.SharedData({
-            utd: utd.UniformDataType.HYPERLINK,
-            content: this.networkVideoSrc,
-            thumbnailUri: fdPath,
-            title: context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id),
-            description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
-          });
+      // 3. 构建分享数据
+      let shareData: systemShare.SharedData = new systemShare.SharedData({
+        utd: utd.UniformDataType.HYPERLINK,
+        content: this.networkVideoSrc,
+        thumbnailUri: fdPath,
+        title: context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id),
+        description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
+      });
 
-          // 4. 执行分享
-          sharableTarget.share(shareData);
+      // 4. 执行分享
+      sharableTarget.share(shareData);
 
-        } catch (error) {
-          console.error("分享缩略图处理失败:", error);
-          // 后备方案：不使用缩略图
-          const context = this.getUIContext().getHostContext() as common.UIAbilityContext;
-          let shareData = new systemShare.SharedData({
-            utd: utd.UniformDataType.HYPERLINK,
-            content: this.networkVideoSrc,
-            title: context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id),
-            description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
-          });
-          sharableTarget.share(shareData);
-        }*/
+    } catch (error) {
+      console.error("分享缩略图处理失败:", error);
+      // 后备方案：不使用缩略图
+      const context = this.getUIContext().getHostContext() as common.UIAbilityContext;
+      let shareData = new systemShare.SharedData({
+        utd: utd.UniformDataType.HYPERLINK,
+        content: this.networkVideoSrc,
+        title: context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id),
+        description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
+      });
+      sharableTarget.share(shareData);
+    }*/
   }
 
   // 修改事件监听与解绑逻辑
@@ -376,7 +375,7 @@ export struct HomePage {
     const sharedUrl = AppStorage.get<string>('sharedVideoUrl');
     if (sharedUrl && this.isValidUrl(sharedUrl)) {
       this.networkVideoSrc = sharedUrl;
-      //this.controller.start();
+      this.controller.start();
       AppStorage.delete('sharedVideoUrl');
     }
     let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
@@ -409,11 +408,17 @@ export struct HomePage {
       }
       .width('100%')
       TextArea({ placeholder: $r('app.string.sharepng'), text: this.sharepng })
-      //.type(InputType.URL)
-      //.backgroundColor('#FF9CCE')
+        //.type(InputType.URL)
+        //.backgroundColor('#FF9CCE')
         .width('90%')
         //.height(50)
         .margin({ top: 10, bottom: 10 })
+        .onChange((sharepng: string) => {
+          this.sharepng = sharepng;
+          if (this.isValidUrl(sharepng)) {
+            this.handleImageUpdate(); // 触发图片更新逻辑
+          }
+        })
         .visualEffect(new hdsEffect.HdsEffectBuilder()
           .shaderEffect({
             effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
@@ -425,27 +430,20 @@ export struct HomePage {
                 console.info('Succeeded in finishing');
               }
             },
-            controller: this.controller,
             params: {
               firstEdgeFlowLight: {
                 startPos: 0,
                 endPos: 1.0,
-                color: '#1AD0F1',
+                color: '#FF66CC',
               },
               secondEdgeFlowLight: {
                 startPos: 0.5,
                 endPos: 1.5,
-                color: '#FFA4E5',
+                color: '#b87cff',
               }
             }
           })
           .buildEffect())
-        .onChange((sharepng: string) => {
-          this.sharepng = sharepng;
-          if (this.isValidUrl(sharepng)) {
-            this.handleImageUpdate(); // 触发图片更新逻辑
-          }
-        })
       Text($r('app.string.texton'))
         .textAlign(TextAlign.Center)
         .margin({ top: 5, bottom: 10 })
@@ -453,8 +451,8 @@ export struct HomePage {
         Button($r('app.string.scancode'))
         //.globalButtonStyle()
         //.type(ButtonType.Capsule)
-        //.backgroundColor(0x66CCFF)//蓝色
-        //.backgroundColor('#0044fc')
+          //.backgroundColor(0x66CCFF)//蓝色
+          //.backgroundColor('#0044fc')
           .labelStyle({ overflow: TextOverflow.Ellipsis, maxLines: 3, minFontSize: 0 })
           .width('55%')
           .height(50)
@@ -517,8 +515,32 @@ export struct HomePage {
           this.networkVideoSrc = networkVideoSrc;
           AppStorage.set('networkVideoSrc', networkVideoSrc);
         })
-        .width('90%')
-        .margin({ top: 5, bottom: 10 })
+        .visualEffect(new hdsEffect.HdsEffectBuilder()
+          .shaderEffect({
+            effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
+            animation: {
+              duration: 4000,
+              iterations: -1,
+              autoPlay: true,
+              onFinish: () => {
+                console.info('Succeeded in finishing');
+              }
+            },
+            params: {
+              firstEdgeFlowLight: {
+                startPos: 0,
+                endPos: 1.0,
+                color: '#FF66CC',
+              },
+              secondEdgeFlowLight: {
+                startPos: 0.5,
+                endPos: 1.5,
+                color: '#FFA4E5',
+              }
+            }
+          })
+          .buildEffect())
+      .margin({ top: 5, bottom: 10 })
       Row()
       {
         Text($r('app.string.pengtitleset'))
@@ -532,71 +554,138 @@ export struct HomePage {
             this.pengtitle = pengtitle;
             AppStorage.set('pengtitle', pengtitle);
           })
-      }
-      .margin({ top: 10 })
-      .width('90%')  // 控制内容区域宽度
-      Column() {
-        Row()
-        {
-          Text($r('app.string.nowplaying'))
-            .width('55%')
-            .textAlign(TextAlign.Center)
-            .margin({ right: 10 })
-          Button($r('app.string.share'))
-          //.type(ButtonType.Capsule)
-            .width('40%')
-            .height(50)
-            .backgroundColor(0x66CCFF)//蓝色
-            .onClick(() => {
-              logger.info('分享按钮被点击');
-              try {
-                this.share();
-              } catch (error) {
-                logger.error(`分享按钮点击异常: ${error.message}`);
-                promptAction.showToast({ message: '分享功能异常: ' + error.message });
+          .visualEffect(new hdsEffect.HdsEffectBuilder()
+            .shaderEffect({
+              effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
+              animation: {
+                duration: 4000,
+                iterations: -1,
+                autoPlay: true,
+                onFinish: () => {
+                  console.info('Succeeded in finishing');
+                }
+              },
+              params: {
+                firstEdgeFlowLight: {
+                  startPos: 0,
+                  endPos: 1.0,
+                  color: '#1AD0F1',
+                },
+                secondEdgeFlowLight: {
+                  startPos: 0.5,
+                  endPos: 1.5,
+                  color: '#FFA4E5',
+                }
               }
             })
-        }.width('100%')
-        Text(this.networkVideoSrc)
-          .padding({ top: 10 })
-          .copyOption(CopyOptions.LocalDevice)
-          .textAlign(TextAlign.Center).margin({ right: 10 })
-          .width('100%')
-
-
-        //碰一碰提示
-        Text($r('app.string.nowplayingon'))
-          .padding({ top: 20 , left: 24, right: 24 })
-          .maxLines(2)
-          .fontSize(11)
-          .maxFontScale(1.75)
-          .width('100%')
-          .constraintSize({ minHeight: 16 })
-          .fontColor($r('sys.color.font_secondary'))
-          .fontFamily('HarmonyHeiTi')
-          .textAlign(TextAlign.Center)
-        KnockShareGuideCard({ cardSwiperResources: this.cardSwiperResources  })
-          .padding({ top: 2 })
-
-        /*Text(this.myFileName)
-          .focusable(true)
-          .focusOnTouch(true)
-          .fontFamily('HarmonyHeiTi-Bold')
-          .textAlign(TextAlign.Start)
-          .maxLines(1)
-          .textOverflow({ overflow: TextOverflow.Ellipsis })
-        Text('Size: ' + JSON.stringify(this.myFileSize) + 'B')
-          .focusable(true)
-          .focusOnTouch(true)
-          .fontFamily('HarmonyHeiTi')
-          .textAlign(TextAlign.Start)*/
+            .buildEffect())
       }
-      .width('90%')  // 控制内容区域宽度
-      .alignItems(HorizontalAlign.Center) // 内容水平居中
       .margin({ top: 10 })
-      //.height('100%')
+      .width('90%')  // 控制内容区域宽度
+          Column() {
+            Row()
+            {
+              Text($r('app.string.nowplaying'))
+                .width('55%')
+                .textAlign(TextAlign.Center)
+                .margin({ right: 10 })
+              Button($r('app.string.share'))
+              //.type(ButtonType.Capsule)
+                .width('40%')
+                .height(50)
+                .backgroundColor(0x66CCFF)//蓝色
+                .visualEffect(new hdsEffect.HdsEffectBuilder()
+                  .pointLight({
+                    sourceType:  hdsEffect.PointLightSourceType.NONE,
+                    illuminatedType: hdsEffect.PointLightIlluminatedType.DEFAULT_FEATHERING_BORDER
+                  })
+                  .buildEffect())
+                .onTouch((event: TouchEvent) => {
+                  if (event.type === TouchType.Down) {
+                    this.lightSourceType = hdsEffect.PointLightSourceType.BRIGHT;
+                  } else if (event.type === TouchType.Up || event.type === TouchType.Cancel) {
+                    this.lightSourceType = hdsEffect.PointLightSourceType.NONE;
+                  }
+                })
+                .onClick(() => {
+                  logger.info('分享按钮被点击');
+                  try {
+                    this.share();
+                  } catch (error) {
+                    logger.error(`分享按钮点击异常: ${error.message}`);
+                    promptAction.showToast({ message: '分享功能异常: ' + error.message });
+                  }
+                })
+            }
+            .width('100%')
+            .padding({ bottom: 10 })
+
+
+            Text(this.networkVideoSrc)
+              .padding({ top: 10 , bottom : 10 , left : 10 , right : 10 })
+               .copyOption(CopyOptions.LocalDevice)
+               .textAlign(TextAlign.Center)//.margin({ right: 10 })
+               .width('100%')
+               .visualEffect(new hdsEffect.HdsEffectBuilder()
+                .shaderEffect({
+                  effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
+                  animation: {
+                    duration: 4000,
+                    iterations: -1,
+                    autoPlay: true,
+                    onFinish: () => {
+                      console.info('Succeeded in finishing');
+                    }
+                  },
+                  params: {
+                    firstEdgeFlowLight: {
+                      startPos: 0,
+                      endPos: 1.0,
+                      color: '#ff8a00',
+                    },
+                    secondEdgeFlowLight: {
+                      startPos: 0.5,
+                      endPos: 1.5,
+                      color: '#f3c52a',
+                    }
+                  }
+                })
+                .buildEffect())
+
+
+            //碰一碰提示
+            Text($r('app.string.nowplayingon'))
+              .padding({ top: 20 , left: 24, right: 24 })
+              .maxLines(2)
+              .fontSize(11)
+              .maxFontScale(1.75)
+              .width('100%')
+              .constraintSize({ minHeight: 16 })
+              .fontColor($r('sys.color.font_secondary'))
+              .fontFamily('HarmonyHeiTi')
+              .textAlign(TextAlign.Center)
+            KnockShareGuideCard({ cardSwiperResources: this.cardSwiperResources  })
+              .padding({ top: 2 })
+
+            /*Text(this.myFileName)
+              .focusable(true)
+              .focusOnTouch(true)
+              .fontFamily('HarmonyHeiTi-Bold')
+              .textAlign(TextAlign.Start)
+              .maxLines(1)
+              .textOverflow({ overflow: TextOverflow.Ellipsis })
+            Text('Size: ' + JSON.stringify(this.myFileSize) + 'B')
+              .focusable(true)
+              .focusOnTouch(true)
+              .fontFamily('HarmonyHeiTi')
+              .textAlign(TextAlign.Start)*/
+          }
+          .width('90%')  // 控制内容区域宽度
+          .alignItems(HorizontalAlign.Center) // 内容水平居中
+          .margin({ top: 10 })
+          //.height('100%')
+      }
     }
-  }
 
   private isNoListening() {
     return !this.whiteStatus;
