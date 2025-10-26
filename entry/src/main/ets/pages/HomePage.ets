@@ -689,7 +689,7 @@ export struct HomePage {
           .margin({ top: 10 })
           //.height('100%')
       }
-    }
+  }
 
   private isNoListening() {
     return !this.whiteStatus;
