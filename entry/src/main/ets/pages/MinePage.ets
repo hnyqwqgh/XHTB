@@ -63,7 +63,7 @@ export struct MinePage {
           let want: Want = {
             "action": "ohos.want.action.viewData",
             "entities": ["entity.system.browsable"],
-            uri: 'https://www.chuckfang.com/MeoW/appLinking?channelId=9687404a1b84433184ba27f16a57da3e',
+            uri: 'https://www.chuckfang.com/MeoW/appLinking?channelId=0fd24620b27a4943bfe36e42b71df88d',
           }
           let context = getContext(this) as common.UIAbilityContext;
           context.startAbility(want)
