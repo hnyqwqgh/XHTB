@@ -350,6 +350,18 @@
 		{
 			"name": "minelongpress",
 			"value": "前往云影工具屋APP"
+		},
+		{
+			"name": "ShareUIAbility_label",
+			"value": "分享链接"
+		},
+		{
+			"name": "back",
+			"value": "返回"
+		},
+		{
+			"name": "toshare",
+			"value": "前往APP分享"
 		}
 	]
 }

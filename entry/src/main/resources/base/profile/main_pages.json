@@ -4,6 +4,7 @@
     "pages/HomePage",
     "pages/SecondPage",
     "pages/MinePage",
-    "pages/infoPage"
+    "pages/infoPage",
+    "pages/ShareUIPage"
   ]
 }

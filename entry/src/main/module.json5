@@ -24,12 +24,19 @@
 							{
 								"scheme":"https",
 								"host":"www.hnyqwq.cn",
-								"pathStartWith":"hvideo"
+								"linkFeature": "AppNotificationMgmt"
+							},
+							{
+								"scheme":"https",
+								"host":"www.hnyqwq.cn",
+								"pathStartWith":"hvideo",
+								"linkFeature": "Share"
 							},
 							{
 								"scheme":"https",
 								"host":"hnyqwq.cn",
-								"pathStartWith":"hvideo"
+								"pathStartWith":"hvideo",
+								"linkFeature": "Share"
 							}
 						],
 						"domainVerify":true
@@ -44,6 +51,30 @@
 				],
 				"description":"$string:EntryAbility_desc",
 				"launchType":"singleton"
+			},
+			{
+				"name": "ShareUIAbility",
+				"srcEntry": "./ets/entryability/ShareUIAbility.ets",
+				"description": "$string:EntryAbility_desc",
+				"icon": "$media:CIcon",
+				"label": "$string:ShareUIAbility_label",
+				"startWindowIcon": "$media:CIcon",
+				"startWindowBackground": "$color:start_window_background",
+				"exported": true,
+				"skills": [
+					{
+						"actions": [
+							"ohos.want.action.sendData"
+						],
+						"uris": [
+							{
+								"scheme": "file",
+								"utd": "general.text",
+								"maxFileSupported": 1
+							}
+						]
+					}
+				]
 			}
 		],
 		"mainElement":"EntryAbility",

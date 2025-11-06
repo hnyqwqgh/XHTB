@@ -350,6 +350,18 @@
     {
       "name": "minelongpress",
       "value": "Go to YunYing Tool House"
+    },
+    {
+      "name": "ShareUIAbility_label",
+      "value": "Share link"
+    },
+    {
+      "name": "back",
+      "value": "Back"
+    },
+    {
+      "name": "toshare",
+      "value": "Go to app sharing"
     }
   ]
 }
