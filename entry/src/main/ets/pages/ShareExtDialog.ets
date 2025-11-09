@@ -169,10 +169,6 @@ struct ShareExtDialog {
 
   build() {
     Navigation() {
-        Text(this.message)
-          .fontSize(50)
-          .fontWeight(FontWeight.Bold)
-
         this.ShareContent();
 
         Row()
@@ -232,6 +228,7 @@ struct ShareExtDialog {
               })
               .buildEffect())
         }
+        .margin({ top: 8 })
     }
     .title($r('app.string.appname'))
     .hideBackButton(true)
