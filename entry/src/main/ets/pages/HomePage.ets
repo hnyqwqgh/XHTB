@@ -400,6 +400,7 @@ export struct HomePage {
           Text($r('app.string.sharepngon'))
             .textAlign(TextAlign.Center)
             .width('55%')
+            .margin({ right: 10 })
           Button($r('app.string.choose'))
             .height(50)
             .width('40%')
@@ -408,7 +409,7 @@ export struct HomePage {
               this.selectImage();
             })
         }
-        .width('100%')
+        .width('90%')
         TextArea({ placeholder: $r('app.string.sharepng'), text: this.sharepng })
         //.type(InputType.URL)
         //.backgroundColor('#FF9CCE')
