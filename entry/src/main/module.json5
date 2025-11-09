@@ -24,6 +24,7 @@
 							{
 								"scheme":"https",
 								"host":"www.hnyqwq.cn",
+								"pathStartWith":"AppStorageMgmt",
 								"linkFeature": "AppStorageMgmt"
 							},
 							{

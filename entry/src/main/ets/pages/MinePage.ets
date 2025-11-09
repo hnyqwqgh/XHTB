@@ -94,7 +94,7 @@ export struct MinePage {
   }
 
   build() {
-    Stack() {
+    Scroll() {
       Column() {
         Column() {
           Text($r('app.string.aboutpage'))
@@ -124,7 +124,7 @@ export struct MinePage {
             .margin({ top: 10 });
         }
         .width('100%')
-        .height(300)
+        .height(222)
         .justifyContent(FlexAlign.Center)
         .alignItems(HorizontalAlign.Center)
         //.backgroundColor($r('app.color.start_window_background'))
