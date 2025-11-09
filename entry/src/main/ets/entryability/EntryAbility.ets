@@ -49,17 +49,19 @@ export default class EntryAbility extends UIAbility {
 
     // 原有扫码逻辑保留
     let uri = want?.uri;
-    setTimeout(() => {
-      if (uri) {
+    if (uri) {
+      setTimeout(() => {
         router.pushUrl({
-          url: 'pages', // 直接跳转到视频页面
+          url: 'pages/Index', // 确保跳转到正确的页面
           params: {
             videoUrl: uri,
             source: 'scan'
           }
+        }).catch((e: BusinessError) => {
+          console.error('扫码路由跳转失败', e);
         });
-      }
-    })
+      }, 100);
+    }
 
     // 保留原有逻辑
     this.context.getApplicationContext().setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_NOT_SET);
@@ -71,6 +73,18 @@ export default class EntryAbility extends UIAbility {
       hilog.info(DOMAIN_NUMBER, TAG, `onCreate selectPage: ${this.selectPage}`);
     }
     this.context.eventHub.emit('urlUpdate', receivedLink)
+
+    //快捷方式的快速打开页面跳转
+    if (want.parameters?.ShortCutPage) {
+      setTimeout(() => {
+        if (want.parameters && want.parameters.ShortCutPage === 'infoPage') {
+          router.pushUrl({ url: 'pages/infoPage' })
+            .catch((e: BusinessError) => {
+              console.error('路由跳转失败', e);
+            });
+        }
+      }, 50);
+    }
   }
 
   // 热启动场景通过onNewWant回调获取码值信息
