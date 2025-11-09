@@ -362,6 +362,10 @@
 		{
 			"name": "toshare",
 			"value": "前往APP分享"
+		},
+		{
+			"name": "ShareExtensionAbility_label",
+			"value": "分享链接"
 		}
 	]
 }

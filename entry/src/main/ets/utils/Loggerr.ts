@@ -49,5 +49,4 @@ class Logger {
   }
 }
 
-// 这里的prefix和domain字段，可以根据个人喜好来修改
 export default new Logger('hny', 0xFF00)

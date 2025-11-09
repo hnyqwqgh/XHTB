@@ -5,6 +5,7 @@
     "pages/SecondPage",
     "pages/MinePage",
     "pages/infoPage",
-    "pages/ShareUIPage"
+    "pages/ShareUIPage",
+    "pages/ShareExtDialog"
   ]
 }

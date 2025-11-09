@@ -24,7 +24,7 @@
 							{
 								"scheme":"https",
 								"host":"www.hnyqwq.cn",
-								"linkFeature": "AppNotificationMgmt"
+								"linkFeature": "AppStorageMgmt"
 							},
 							{
 								"scheme":"https",
@@ -51,7 +51,7 @@
 				],
 				"description":"$string:EntryAbility_desc",
 				"launchType":"singleton"
-			},
+			}/*,
 			{
 				"name": "ShareUIAbility",
 				"srcEntry": "./ets/entryability/ShareUIAbility.ets",
@@ -75,7 +75,7 @@
 						]
 					}
 				]
-			}
+			}*/
 		],
 		"mainElement":"EntryAbility",
 		"deviceTypes":[
@@ -107,6 +107,45 @@
 						"resource":"$profile:form_config"
 					}
 				]
+			}
+			,{
+				"name": "ShareExtensionAbility",
+				"srcEntry": "./ets/extensionAbility/ShareExtAbility.ets",
+				"description": "$string:EntryAbility_desc",
+				"icon": "$media:CIcon",
+				"label": "$string:ShareExtensionAbility_label",
+				"type": "share",
+				"exported": true,
+				"skills": [
+					{
+						"actions": [
+							"ohos.want.action.sendData"
+						],
+						"uris": [
+							{
+							"scheme": "file",
+							"utd": "general.image",
+							"maxFileSupported": 3
+							}
+						]
+					}
+				],
+				"metadata": [
+					{
+						"name": "systemShare.uiExtension.layout.preferredHeight",
+						"value": "400"
+					}
+				]
+			}
+		],
+		"metadata": [
+			{
+				"name": "shareType",
+				"value": "sharekitModel",
+			},
+			{
+				"name": "shareBundleName",
+				"value": "yylx.hny.qwq",
 			}
 		]
 	}
