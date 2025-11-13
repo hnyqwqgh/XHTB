@@ -622,6 +622,54 @@
 		{
 			"name": "sub_title8_value4",
 			"value": "开发票"
+		},
+		{
+			"name": "InternetMon",
+			"value": "请确保当前WIFI已连接需要认证的网络，当前正在尝试打开："
+		},
+		{
+			"name": "Internet1",
+			"value": "华为源\n华为默认跳转"
+		},
+		{
+			"name": "Internet2",
+			"value": "Microsoft源\nPC默认跳转"
+		},
+		{
+			"name": "Internet3",
+			"value": "Apple源\n苹果默认跳转"
+		},
+		{
+			"name": "Internet4",
+			"value": "Google源"
+		},
+		{
+			"name": "Internet5",
+			"value": "1.1.1.1"
+		},
+		{
+			"name": "Internet6",
+			"value": "测试链接情况\n打开网页"
+		},
+		{
+			"name": "Internet7",
+			"value": "测试链接情况\n播放视频"
+		},
+		{
+			"name": "Internet1success",
+			"value": "显示 404 Not Found 即表示已连接到互联网，否则会自动跳转登录页面"
+		},
+		{
+			"name": "Internet2success",
+			"value": "显示 空白界面 即表示已连接到互联网，否则会自动跳转登录页面"
+		},
+		{
+			"name": "Internet3success",
+			"value": "打开 版本说明>所有HarmonyOS版本 即表示已连接到互联网，否则会无法打开"
+		},
+		{
+			"name": "Internetselfsuccess",
+			"value": "自动播放intro视频 即表示已连接到互联网，否则会无法播放"
 		}
 	]
 }

@@ -34,10 +34,10 @@ export const
     new GridData($r('app.string.sub_title2'),
       [
         new GridItemInfo($r('app.string.sub_title2_value1'), 'XHTB/DetailPage'),
-        new GridItemInfo($r('app.string.sub_title2_value2'), 'pages/HomePage'),
+        new GridItemInfo($r('app.string.sub_title2_value2'), 'XHTB/Internet'),
         new GridItemInfo($r('app.string.sub_title2_value3'), 'pages/MinePage'),
         new GridItemInfo($r('app.string.sub_title2_value4'), 'pages/infoPage'),
-        new GridItemInfo($r('app.string.sub_title2_value5'), 'XHTB/ReadQR'),
+        new GridItemInfo($r('app.string.sub_title2_value5'), 'XHTB/ReadQR')/*,
         new GridItemInfo($r('app.string.sub_title2_value6')),
         new GridItemInfo($r('app.string.sub_title2_value7')),
         new GridItemInfo($r('app.string.sub_title2_value8')),
@@ -46,7 +46,7 @@ export const
         new GridItemInfo($r('app.string.sub_title2_value11')),
         new GridItemInfo($r('app.string.sub_title2_value12')),
         new GridItemInfo($r('app.string.sub_title2_value13')),
-        new GridItemInfo($r('app.string.sub_title2_value14'))
+        new GridItemInfo($r('app.string.sub_title2_value14'))*/
       ]),
     new GridData($r('app.string.sub_title3'),
       [
