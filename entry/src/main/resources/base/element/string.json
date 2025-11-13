@@ -66,11 +66,11 @@
 		},
 		{
 			"name":"Home",
-			"value":"主页"
+			"value":"分享工具"
 		},
 		{
 			"name":"Second",
-			"value":"文本处理"
+			"value":"工具列表"
 		},
 		{
 			"name":"Mine",
@@ -369,23 +369,19 @@
 		},
 		{
 			"name": "page_title",
-			"value": "我的服务"
-		},
-		{
-			"name": "default_search_content",
-			"value": "智选"
+			"value": "工具列表"
 		},
 		{
 			"name": "sub_title1",
-			"value": "常用服务"
+			"value": "常用工具"
 		},
 		{
 			"name": "sub_title2",
-			"value": "预定行程"
+			"value": "文本处理"
 		},
 		{
 			"name": "sub_title3",
-			"value": "旅游服务"
+			"value": "网络"
 		},
 		{
 			"name": "sub_title4",
@@ -401,11 +397,11 @@
 		},
 		{
 			"name": "sub_title1_value1",
-			"value": "值机&选座"
+			"value": "朗读&生成二维码"
 		},
 		{
 			"name": "sub_title1_value2",
-			"value": "美食预定"
+			"value": "网络认证工具"
 		},
 		{
 			"name": "sub_title1_value3",
@@ -429,11 +425,11 @@
 		},
 		{
 			"name": "sub_title2_value1",
-			"value": "机票预定"
+			"value": "朗读&生成二维码"
 		},
 		{
 			"name": "sub_title2_value2",
-			"value": "我的行程"
+			"value": "网络认证工具"
 		},
 		{
 			"name": "sub_title2_value3",
@@ -485,7 +481,7 @@
 		},
 		{
 			"name": "sub_title3_value1",
-			"value": "地铁出行"
+			"value": "网络认证工具"
 		},
 		{
 			"name": "sub_title3_value2",

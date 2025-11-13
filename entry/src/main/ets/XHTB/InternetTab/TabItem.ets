@@ -1,10 +1,12 @@
 export class TabItem {
   id: number;
   name: string | Resource;
+  icon: Resource;
 
-  constructor(id: number, name: string | Resource) {
+  constructor(id: number, name: string | Resource, icon: Resource) {
     this.id = id;
     this.name = name;
+    this.icon = icon;
   }
 }
 

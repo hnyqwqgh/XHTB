@@ -22,7 +22,7 @@ export default struct GridComponent {
 
       Grid() {
         ForEach(this.gridData.gridItemList, (item: GridItemInfo) => {
-          GridItemComponent({ itemName: item.name, pageUrl: item.pageUrl })
+          GridItemComponent({ itemName: item.name, pageUrl: item.pageUrl, itemImage: item.icon })
         },(item:GridItemInfo,index:number)=>index+JSON.stringify(item))
       }
       .margin({

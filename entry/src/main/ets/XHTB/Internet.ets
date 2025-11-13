@@ -4,7 +4,6 @@ import { TabItem } from './InternetTab/TabItem';
 
 import { promptAction } from '@kit.ArkUI';//视频
 import { unifiedDataChannel, uniformTypeDescriptor } from '@kit.ArkData';
-import { common } from '@kit.AbilityKit';
 
 import router from '@ohos.router';
 
@@ -44,8 +43,12 @@ struct BackgroundLightTab {
   private controllerr: VideoController = new VideoController();
 
   @Builder
-  tabBuilder(tabName: string | Resource, tabIndex: number) {
+  tabBuilder(tabName: string | Resource, tabIndex: number, tabIcon: Resource) {
     Row() {
+      Image(tabIcon)
+        .width(20)
+        .height(20)
+        .margin({ right: 5 })
       Text(tabName)
         .fontSize(13)
         .fontColor(tabIndex === this.focusIndex ? Color.White : '#E6000000')
@@ -54,7 +57,7 @@ struct BackgroundLightTab {
     }
     .justifyContent(FlexAlign.Center)
     .alignItems(VerticalAlign.Center)
-    .width(100)
+    .width(125)
     .backgroundColor(tabIndex === this.focusIndex ? '#0A59F7' : '#0D000000')
     .borderRadius(21)
     .height(40)
@@ -78,7 +81,7 @@ struct BackgroundLightTab {
         List({ scroller: this.listScroller }) {
           ForEach(this.tabArray.slice(0, 7),
             (item: TabItem, index: number) => {
-              this.tabBuilder(item.name, index);
+              this.tabBuilder(item.name, index, item.icon);
             }, (item: TabItem, index: number) => JSON.stringify(item) + index)
         }
         // [End BackgroundLightTab_list]
