@@ -1,252 +1,159 @@
-import { image } from '@kit.ImageKit';
-import { hilog } from '@kit.PerformanceAnalysisKit';
-import { BusinessError } from '@kit.BasicServicesKit';
-import { scanCore, generateBarcode } from '@kit.ScanKit';
-
-import { textToSpeech } from '@kit.CoreSpeechKit';//语音
-//点光源效果
-import { hdsEffect } from '@kit.UIDesignKit';
-let ttsEngine: textToSpeech.TextToSpeechEngine;
+import { router } from '@kit.ArkUI';
+import { CommonConstants, ScrollPosition } from '../constants/CommonConstants';
+import { ListDataConstants } from '../constants/ListDataConstants';
+import GridComponent from '../model/GridComponent';
+import { featureGridData, GridData, otherGridDataList } from '../model/GridListDataSources';
 
 @Entry
 @Component
 export struct SecondPage {
-  @StorageLink('networkVideoSrc') networkVideoSrc: string = '';
-  @State pixelMap: image.PixelMap | undefined = undefined
-  @State originalText: string = ''; //语音
-  @State createCount: number = 0;
-  @State result: boolean = false;
-  @State voiceInfo: string = '';
-  @State text: string = '';
-  @State textContent: string = '';
-  @State utteranceId: string = '123456'
-  @State illegalText: string = '';
-  @StorageLink('isPlaying') isPlaying: boolean = false;
-
-  //点光源效果
-  @State lightSourceType: hdsEffect.PointLightSourceType = hdsEffect.PointLightSourceType.NONE;
-  @State controller: hdsEffect.ShaderEffectController = new hdsEffect.ShaderEffectController();
-
-  aboutToDisappear() {
-    try {
-      const isBusy = ttsEngine?.isBusy();
-      if (isBusy) {
-        ttsEngine?.stop();
-        AppStorage.setOrCreate('isPlaying', false);
-        ttsEngine?.shutdown();
-      }
-    } catch (err) {
-      const error: BusinessError = err as BusinessError;
-      console.error(`The ttsEngine invoke error, the code is ${error.code}, the message is ${error.message}`);
-    }
-  }
+  //0 for scrolling to the top of the list, 1 for the middle value, and 2 for scrolling to the bottom of the list.
+  @State listPosition: number = ScrollPosition.start;
+  //0 for scrolling to the top of the page, 1 for the middle value, and 2 for scrolling to the bottom of the page.
+  @State scrollPosition: number = ScrollPosition.start;
+  @State currentIndex: number = 0;
+  private scrollerForScroll: Scroller = new Scroller();
+  private scrollerForList: Scroller = new Scroller();
+  private scrollerForTitle: Scroller = new Scroller();
 
   build() {
-    Column({ space: 0 }) {
-      TextArea({ placeholder: $r('app.string.speak'), text: this.networkVideoSrc })
-        .margin({
-          left: $r('sys.float.padding_level16'),
-          right: $r('sys.float.padding_level16'),
-        })
-        .onChange((networkVideoSrc: string) => {
-          this.networkVideoSrc = networkVideoSrc;
-          AppStorage.set('networkVideoSrc', networkVideoSrc);
-        })
-        .visualEffect(new hdsEffect.HdsEffectBuilder()
-          .shaderEffect({
-            effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
-            animation: {
-              duration: 4000,
-              iterations: -1,
-              autoPlay: true,
-              onFinish: () => {
-                console.info('Succeeded in finishing');
-              }
-            },
-            controller: this.controller,
-            params: {
-              firstEdgeFlowLight: {
-                startPos: 0,
-                endPos: 1.0,
-                color: '#0A59F7',
-              },
-              secondEdgeFlowLight: {
-                startPos: 0.5,
-                endPos: 1.5,
-                color: '#ffed6f21',
-              }
-            }
-          })
-          .buildEffect())
-
-      Row({ space: 40 }) {
-        Button('', { type: ButtonType.Circle, stateEffect: true })
-          .margin({ top: 10 })
-          .backgroundColor(Color.Transparent)
-          .backgroundImage(this.isPlaying ? $r('app.media.pause') : $r('app.media.play_circle_fill'))
-          .backgroundImagePosition(Alignment.Center)
+    Column() {
+      Row() {
+        Image($r('app.media.icon_back'))
+          .height($r('app.float.image_height'))
           .onClick(() => {
-            try {
-              this.createByCallback();
-            } catch (err) {
-              const error: BusinessError = err as BusinessError;
-              console.error(`CreateEngine error, the code is ${error.code}, the message is ${error.message}`);
-            }
+            this.getUIContext().getRouter().back();
           })
-          .width('40vp')
 
-        Button('', { type: ButtonType.Circle, stateEffect: true })
-          .margin({ top: 10 })
-          .backgroundColor(Color.Transparent)
-          .backgroundImage($r('app.media.stop_circle'))
-          .backgroundImagePosition(Alignment.Center)
-          .onClick(() => {
-            try {
-              ttsEngine?.stop();
-              ttsEngine?.shutdown();
-            } catch (err) {
-              const error: BusinessError = err as BusinessError;
-              console.error(`The ttsEngine invoke error, the code is ${error.code}, the message is ${error.message}`);
-            }
-            AppStorage.setOrCreate('isPlaying', false);
-          })
-          .width('40vp')
+        Text($r('app.string.page_title'))
+          .fontSize($r('app.float.page_title_font_size'))
+          .fontWeight(FontWeight.Bold)
+          .margin({ left: $r('app.float.page_title_left_margin') })
       }
-      .width('100%')
-      .justifyContent(FlexAlign.Center)
+      .padding({ left: $r('app.float.title_padding') })
+      .width(CommonConstants.FULL_PERCENT)
+      .height($r('app.float.page_title_height'))
 
-      //二维码生成
-      TextArea({ placeholder: $r('app.string.qrcode'), text: this.networkVideoSrc })
-        .margin({
-          top: 10,
-          left: $r('sys.float.padding_level16'),
-          right: $r('sys.float.padding_level16'),
-        })
-        .onChange((networkVideoSrc: string) => {
-          this.networkVideoSrc = networkVideoSrc;
-          AppStorage.set('networkVideoSrc', networkVideoSrc);
-        })
-
-        .visualEffect(new hdsEffect.HdsEffectBuilder()
-          .shaderEffect({
-            effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
-            animation: {
-              duration: 4000,
-              iterations: -1,
-              autoPlay: true,
-              onFinish: () => {
-                console.info('Succeeded in finishing');
-              }
-            },
-            controller: this.controller,
-            params: {
-              firstEdgeFlowLight: {
-                startPos: 0,
-                endPos: 1.0,
-                color: '#1AD0F1',
-              },
-              secondEdgeFlowLight: {
-                startPos: 0.5,
-                endPos: 1.5,
-                color: '#FFA4E5',
-              }
+      Stack({ alignContent: Alignment.Top }) {
+        Scroll(this.scrollerForScroll) {
+          Column() {
+            GridComponent({ gridData: featureGridData })
+            this.myBuilder();
+            List({ scroller: this.scrollerForList }) {
+              ForEach(otherGridDataList, (item: GridData, index: number) => {
+                GridComponent({ gridData: item, isLastItem: index === otherGridDataList.length - 1 })
+              }, (item: GridData,index:number) =>index+JSON.stringify(item))
             }
-          })
-          .buildEffect())
-      Button($r('app.string.pick'))
-        .margin({ top: 10 })
-        .onClick(() => {
-          this.pixelMap = undefined;
-          let content: string = this.networkVideoSrc;
-          let options: generateBarcode.CreateOptions = {
-            scanType: scanCore.ScanType.QR_CODE,
-            height: 200,
-            width: 200
+            .padding({ bottom: $r('app.float.list_bottom_padding') })
+            .width(CommonConstants.FULL_PERCENT)
+            .edgeEffect(EdgeEffect.None)
+            .scrollBar(BarState.Off)
+            // Triggers when the start position is reached.
+            .onReachStart(() => {
+              this.listPosition = ScrollPosition.start;
+            })
+            // Triggers when the end position is reached.
+            .onReachEnd(() => {
+              this.listPosition = ScrollPosition.end;
+            })
+            // Obtains the index value of the first subcomponent in the display area of the List component.
+            .onScrollIndex((start: number) => {
+              this.currentIndex = start
+              this.scrollerForTitle.scrollToIndex(this.currentIndex);
+            })
+            .onScrollFrameBegin((offset: number) => {
+              if (this.currentIndex === ListDataConstants.TITLE_LIST.length - 1 && offset > 0) {
+                return { offsetRemain: 0 }
+              }
+              // When sliding to the middle of the list
+              if (!((this.listPosition === ScrollPosition.start && offset < 0) ||
+                (this.listPosition === ScrollPosition.end && offset > 0))) {
+                this.listPosition = ScrollPosition.center;
+              }
+              // If the page has scrolled to the bottom, the list is not at the top or the list has a positive offset
+              if (this.scrollPosition === ScrollPosition.end &&
+                (this.listPosition != ScrollPosition.start || offset > 0)) {
+                return { offsetRemain: offset };
+              } else {
+                this.scrollerForScroll.scrollBy(0, offset)
+                return { offsetRemain: offset };
+              }
+            })
+            .width(CommonConstants.FULL_PERCENT)
+            .height("calc(100% - 56vp)")
           }
-          try {
-            generateBarcode.createBarcode(content, options).then((pixelMap: image.PixelMap) => {
-              this.pixelMap = pixelMap;
-              // 码图生成接口，成功返回PixelMap格式图片
-              hilog.info(0x0001, '[Scan Sample]', `Succeeded in getting PixelMap by promise with options`);
-            }).catch((error: BusinessError) => {
-              hilog.error(0x0001, '[Scan Sample]',
-                `Failed to get PixelMap by promise with options. Code: ${error.code}, message: ${error.message}`);
-            });
-          } catch (error) {
-            hilog.error(0x0001, '[Scan Sample]', `Failed to generateBarcode. Code: ${error.code}, message: ${error.message}`);
+        }
+        .scrollBar(BarState.Off)
+        .width(CommonConstants.FULL_PERCENT)
+        .height(CommonConstants.FULL_PERCENT)
+        .onWillScroll((yOffset: number) => {
+          // If the page is not at the top or bottom, it is in the middle.
+          if (!((this.scrollPosition === ScrollPosition.start && yOffset < 0)
+            || (this.scrollPosition === ScrollPosition.end && yOffset > 0))) {
+            this.scrollPosition = ScrollPosition.center;
           }
         })
-      // 获取生成码后显示
-      if (this.pixelMap) {
-        Image(this.pixelMap).width(300).height(300).objectFit(ImageFit.Contain)
-          .margin({ top: 10 })
+        .onScrollEdge((side: Edge) => {
+          if (side === Edge.Top) {
+            // Page is at the top
+            this.scrollPosition = ScrollPosition.start;
+          } else if (side === Edge.Bottom) {
+            // Page is at the bottom
+            this.scrollPosition = ScrollPosition.end;
+          }
+        })
+        .onScrollFrameBegin(offset => {
+          if (this.scrollPosition === ScrollPosition.end) {
+            return { offsetRemain: 0 };
+          } else {
+            return { offsetRemain: offset };
+          }
+        })
       }
+      .width(CommonConstants.FULL_PERCENT)
+      .height(CommonConstants.FULL_PERCENT)
     }
-    .width('100%')
-    //.height(400)
-    .justifyContent(FlexAlign.Center)
-    .layoutWeight(1)  // 动态分配剩余空间
+    .backgroundColor($r('app.color.main_page_color'))
   }
 
-  createByCallback() {
-    let extraParam: Record<string, string> = { 'style': 'interaction-broadcast', 'locate': 'CN', 'name': 'EngineName' };
-    let initParamsInfo: textToSpeech.CreateEngineParams = {
-      language: 'zh-CN',
-      person: 0,
-      online: 1,
-      extraParams: extraParam
-    };
-    textToSpeech.createEngine(initParamsInfo,
-      (err: BusinessError, textToSpeechEngine: textToSpeech.TextToSpeechEngine) => {
-        if (!err) {
-          ttsEngine = textToSpeechEngine;
-          this.createCount++;
-          this.speak();
-        } else {
-          console.log('Fail to createEngine.');
-        }
-      });
-  };
+  @Builder
+  myBuilder() {
+    Row() {
+      List({ space: CommonConstants.LIST_SPACE_SIZE, scroller: this.scrollerForTitle }) {
+        ForEach(ListDataConstants.TITLE_LIST, (item: string, index) => {
+          ListItem() {
+            Column() {
+              Text(item)
+                .fontColor(this.currentIndex === index ? $r('app.color.isChick_title_color') :
+                  $r('app.color.noChick_title_color'))
+                .fontSize($r('app.float.title_list_item_font_size'))
+                .fontWeight(this.currentIndex === index ? FontWeight.Bold : FontWeight.Normal)
+                .margin({ top: $r('app.float.title_list_top_margin') })
 
-  speak() {
-    let speakListener: textToSpeech.SpeakListener = {
-      onStart(requestId: string, response: textToSpeech.StartResponse) {
-        console.log('onStart');
-        AppStorage.setOrCreate('isPlaying', true);
-      },
-      onComplete(requestId: string, response: textToSpeech.CompleteResponse) {
-        console.log('onComplete');
-        AppStorage.setOrCreate('isPlaying', true);
-      },
-      onStop(requestId: string, response: textToSpeech.StopResponse) {
-        console.log('onStop');
-        AppStorage.setOrCreate('isPlaying', false);
-        ttsEngine?.shutdown();
-      },
-      onData(requestId: string, audio: ArrayBuffer, response: textToSpeech.SynthesisResponse) {
-        console.log('onData');
-      },
-      onError(requestId: string, errorCode: number, errorMessage: string) {
-        console.log('onError');
-        AppStorage.setOrCreate('isPlaying', false);
-        ttsEngine?.shutdown();
+              if (this.currentIndex === index) {
+                Divider()
+                  .color($r('app.color.isChick_title_color'))
+                  .strokeWidth(CommonConstants.DIVIDER_STROKE_WIDTH)
+                  .width($r('app.float.divider_width'))
+                  .margin({ top: $r('app.float.divider_top_margin') })
+              }
+            }
+            .justifyContent(FlexAlign.Center)
+            .onClick(() => {
+              this.scrollerForList.scrollToIndex(index);
+              this.scrollerForScroll.scrollEdge(Edge.Bottom);
+              this.scrollerForTitle.scrollToIndex(index);
+              this.currentIndex = index;
+            })
+          }
+        }, (item: string, index: number) => index + JSON.stringify(item))
       }
-    };
-    ttsEngine?.setListener(speakListener);
-    let extraParam: Record<string, string | number> = {
-      'queueMode': 0,
-      'speed': 1,
-      'volume': 2,
-      'pitch': 1,
-      'languageContext': 'zh-CN',
-      'audioType': 'pcm',
-      'soundChannel': 3,
-      'playType': 1
+      .width(CommonConstants.FULL_PERCENT)
+      .height($r('app.float.title_list_height'))
+      .listDirection(Axis.Horizontal)
+      .scrollBar(BarState.Off)
     }
-    let speakParams: textToSpeech.SpeakParams = {
-      requestId: '123456-a',
-      extraParams: extraParam
-    };
-    ttsEngine?.speak(this.networkVideoSrc, speakParams);//originalText
-  };
+    .margin({ top: $r('app.float.title_list_top_margin') })
+    .padding({ left: $r('app.float.title_list_padding'), right: $r('app.float.title_list_padding') })
+  }
 }

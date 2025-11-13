@@ -11,6 +11,138 @@
     {
       "name": "safe_area_bottom",
       "value": "100vp"
+    },
+    {
+      "name": "button_height",
+      "value": "55vp"
+    },
+    {
+      "name": "button_margin",
+      "value": "12vp"
+    },
+    {
+      "name": "image_width",
+      "value": "24vp"
+    },
+    {
+      "name": "image_height",
+      "value": "24vp"
+    },
+    {
+      "name": "back_margin_left",
+      "value": "12vp"
+    },
+    {
+      "name": "back_margin_top",
+      "value": "8vp"
+    },
+    {
+      "name": "page_title_font_size",
+      "value": "20fp"
+    },
+    {
+      "name": "page_title_height",
+      "value": "40vp"
+    },
+    {
+      "name": "page_title_left_margin",
+      "value": "16vp"
+    },
+    {
+      "name": "title_padding",
+      "value": "24vp"
+    },
+    {
+      "name": "title_list_padding",
+      "value": "28vp"
+    },
+    {
+      "name": "title_list_height",
+      "value": "56vp"
+    },
+    {
+      "name": "title_list_item_font_size",
+      "value": "16fp"
+    },
+    {
+      "name": "title_list_top_margin",
+      "value": "16vp"
+    },
+    {
+      "name": "title_list_bottom_margin",
+      "value": "16vp"
+    },
+    {
+      "name": "divider_top_margin",
+      "value": "7vp"
+    },
+    {
+      "name": "divider_width",
+      "value": "65vp"
+    },
+    {
+      "name": "list_bottom_padding",
+      "value": "40vp"
+    },
+    {
+      "name": "grid_title_font_size",
+      "value": "20fp"
+    },
+    {
+      "name": "grid_title_height",
+      "value": "30vp"
+    },
+    {
+      "name": "grid_item_height",
+      "value": "64vp"
+    },
+    {
+      "name": "grid_item_image_size",
+      "value": "40vp"
+    },
+    {
+      "name": "grid_item_name_font_size",
+      "value": "12fp"
+    },
+    {
+      "name": "grid_item_name_height",
+      "value": "17vp"
+    },
+    {
+      "name": "grid_item_name_top_margin",
+      "value": "4vp"
+    },
+    {
+      "name": "grid_left_margin",
+      "value": "12vp"
+    },
+    {
+      "name": "grid_right_margin",
+      "value": "12vp"
+    },
+    {
+      "name": "grid_top_margin",
+      "value": "8vp"
+    },
+    {
+      "name": "grid_border_radius",
+      "value": "16vp"
+    },
+    {
+      "name": "image_border_radius",
+      "value": "12vp"
+    },
+    {
+      "name": "grid_item_border_radius",
+      "value": "8vp"
+    },
+    {
+      "name": "grid_padding_size",
+      "value": "12vp"
+    },
+    {
+      "name": "grid_rows_gap_size",
+      "value": "8vp"
     }
   ]
 }

@@ -39,6 +39,22 @@
     {
       "name": "info",
       "value": "#F1F3F5"
+    },
+    {
+      "name": "isChick_title_color",
+      "value": "#007DFF"
+    },
+    {
+      "name": "noChick_title_color",
+      "value": "#182431"
+    },
+    {
+      "name": "main_page_color",
+      "value": "#F1F3F5"
+    },
+    {
+      "name": "pressed_color",
+      "value": "#E5E5E5"
     }
   ]
 }

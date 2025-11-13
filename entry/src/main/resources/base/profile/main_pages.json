@@ -3,9 +3,11 @@
     "pages/Index",
     "pages/HomePage",
     "pages/SecondPage",
+    "pages/ReadQR",
     "pages/MinePage",
     "pages/infoPage",
     "pages/ShareUIPage",
-    "pages/ShareExtDialog"
+    "pages/ShareExtDialog",
+    "pages/DetailPage"
   ]
 }
