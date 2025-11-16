@@ -175,6 +175,7 @@ export struct MinePage {
                 },
                 (item: SettingMenu) => item.id.toString());
             }
+            .scrollBar(BarState.Auto)
             .divider({
               strokeWidth: $r('app.float.stroke_width'),
               color: $r('app.color.font_color_00000'),

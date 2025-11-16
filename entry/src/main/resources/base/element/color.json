@@ -37,6 +37,10 @@
       "value": "#F1F3F5"
     },
     {
+      "name": "second",
+      "value": "#F1F3F5"
+    },
+    {
       "name": "info",
       "value": "#F1F3F5"
     },
@@ -49,12 +53,28 @@
       "value": "#182431"
     },
     {
-      "name": "main_page_color",
-      "value": "#F1F3F5"
-    },
-    {
       "name": "pressed_color",
       "value": "#E5E5E5"
+    },
+    {
+      "name": "White",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "tab_background",
+      "value": "#0D000000"
+    },
+    {
+      "name": "tab_background_selected",
+      "value": "#0A59F7"
+    },
+    {
+      "name": "tab_text_color",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "tab_text_color_unselected",
+      "value": "#E6000000"
     }
   ]
 }

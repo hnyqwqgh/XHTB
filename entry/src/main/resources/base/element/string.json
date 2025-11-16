@@ -62,7 +62,7 @@
 		},
 		{
 			"name":"aboutpage",
-			"value":"aboutpage"
+			"value":"我的"
 		},
 		{
 			"name":"Home",
@@ -658,6 +658,14 @@
 		{
 			"name": "Internet2success",
 			"value": "显示 空白界面 即表示已连接到互联网，否则会自动跳转登录页面"
+		},
+		{
+			"name": "Internetmsnsuccess",
+			"value": "显示 MSN主页 即表示已连接到互联网，否则会自动跳转登录页面"
+		},
+		{
+			"name": "Internetapplesuccess",
+			"value": "显示 空白界面或Success 即表示已连接到互联网，否则会自动跳转登录页面"
 		},
 		{
 			"name": "Internet3success",

@@ -51,14 +51,14 @@ struct BackgroundLightTab {
         .margin({ right: 5 })
       Text(tabName)
         .fontSize(13)
-        .fontColor(tabIndex === this.focusIndex ? Color.White : '#E6000000')
+        .fontColor(tabIndex === this.focusIndex ? $r('app.color.tab_text_color') : $r('app.color.tab_text_color_unselected'))
         .id(tabIndex.toString())
         .textAlign(TextAlign.Center)
     }
     .justifyContent(FlexAlign.Center)
     .alignItems(VerticalAlign.Center)
     .width(125)
-    .backgroundColor(tabIndex === this.focusIndex ? '#0A59F7' : '#0D000000')
+    .backgroundColor(tabIndex === this.focusIndex ? $r('app.color.tab_background_selected') : $r('app.color.tab_background'))
     .borderRadius(21)
     .height(40)
     .margin({ left: 4, right: 4 })
@@ -117,13 +117,13 @@ struct BackgroundLightTab {
                 } else if (index === 1) {
                   Text('http://www.msftconnecttest.com/redirect')
                     .text()
-                  Text($r('app.string.Internet2success'))
+                  Text($r('app.string.Internetmsnsuccess'))
                     .text()
                   Web({ src: 'http://www.msftconnecttest.com/redirect', controller: this.WebController })
                 } else if (index === 2) {
                   Text('http://captive.apple.com')
                     .text()
-                  Text($r('app.string.Internet2success'))
+                  Text($r('app.string.Internetapplesuccess'))
                     .text()
                   Web({ src: 'http://captive.apple.com', controller: this.WebController })
                 } else if (index === 3) {
@@ -226,7 +226,7 @@ struct BackgroundLightTab {
               .height('100%')
               .alignItems(HorizontalAlign.Center)
             }
-            .backgroundColor(Color.White)
+            .backgroundColor($r('app.color.White'))
           }, (item: TabItem, index: number) => JSON.stringify(item) + index)
       }
       .width('100%')

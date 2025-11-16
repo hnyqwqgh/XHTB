@@ -26,11 +26,47 @@
     },
     {
       "name": "mine",
-      "value": "#d6bd8d"
+      "value": "#8da2e0"
+    },
+    {
+      "name": "second",
+      "value": "#232323"
     },
     {
       "name": "info",
-      "value": "#d6bd8d"
+      "value": "#455b98"
+    },
+    {
+      "name": "isChick_title_color",
+      "value": "#007DFF"
+    },
+    {
+      "name": "noChick_title_color",
+      "value": "#003e81"
+    },
+    {
+      "name": "pressed_color",
+      "value": "#E5E5E5"
+    },
+    {
+      "name": "White",
+      "value": "#000000"
+    },
+    {
+      "name": "tab_background",
+      "value": "#333333"
+    },
+    {
+      "name": "tab_background_selected",
+      "value": "#0A59F7"
+    },
+    {
+      "name": "tab_text_color",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "tab_text_color_unselected",
+      "value": "#CCCCCC"
     }
   ]
 }

@@ -107,7 +107,7 @@ export struct SecondPage {
       .width(CommonConstants.FULL_PERCENT)
       .height(CommonConstants.FULL_PERCENT)
     }
-    .backgroundColor($r('app.color.color_info'))
+    .backgroundColor($r('app.color.White'))
   }
 
   @Builder
