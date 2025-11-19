@@ -1,24 +1,24 @@
-# **Video**
+# **Xinghe Tool Box**
 
 > 测试运行环境：
 
 >> nova 14 Ultra MRT-AL10
 
->>> HarmonyOS版本：HarmonyOS 6.0.0.110 (SP8C00E110R5P5patch08)
+>>> HarmonyOS版本：HarmonyOS 6.0.0.112 (SP12C00E112R5P5)
 
->>> API版本：6.0.0(20)
+>>> API版本：6.0.1(21)
 
 >> HUAWEI Mate 60 BRA-AL00
 
->>> HarmonyOS版本：HarmonyOS 6.0.0.110 (SP98C00E110R4P6log)
+>>> HarmonyOS版本：HarmonyOS 6.0.0.112 (SP12C00E112R4P6log)
 
->>> API版本：6.0.1(21) Beta1
+>>> API版本：6.0.1(21)
 
 >> HUAWEI MatePad Pro 12.2" MRO-W00
 
->>> HarmonyOS版本：HarmonyOS 6.0.0.110 (SP8C00E110R1P3patch06)
+>>> HarmonyOS版本：HarmonyOS 6.0.0.112 (SP12C00E112R1P4)
 
->>> API版本：6.0.0(20)
+>>> API版本：6.0.1(21)
 
 > 可运行环境：
 
