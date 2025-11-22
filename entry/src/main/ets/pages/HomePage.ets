@@ -251,6 +251,24 @@ export struct HomePage {
     return pattern.test(url);
   }
 
+  // 从文本中提取链接
+  extractUrlFromText(text: string): string | null {
+    // 匹配 http 或 https 链接的正则表达式
+    const urlRegex = /https?:\/\/[^\s"<>\u4e00-\u9fa5]+/g;
+    const matches = text.match(urlRegex);
+    
+    if (matches && matches.length > 0) {
+      // 返回第一个有效的链接
+      for (let i = 0; i < matches.length; i++) {
+        if (this.isValidUrl(matches[i])) {
+          return matches[i];
+        }
+      }
+    }
+    
+    return null;
+  }
+
   onPageHide(): void { //隔空传送
     let uiContext: UIContext = this.getUIContext();
     let context: Context = uiContext.getHostContext() as Context;
@@ -516,8 +534,15 @@ export struct HomePage {
           //.height(50)
           .margin({ right: 10 })
           .onChange((networkVideoSrc: string) => {
-            this.networkVideoSrc = networkVideoSrc;
-            AppStorage.set('networkVideoSrc', networkVideoSrc);
+            // 尝试从输入文本中提取链接
+            const extractedUrl = this.extractUrlFromText(networkVideoSrc);
+            if (extractedUrl) {
+              this.networkVideoSrc = extractedUrl;
+              AppStorage.set('networkVideoSrc', extractedUrl);
+            } else {
+              this.networkVideoSrc = networkVideoSrc;
+              AppStorage.set('networkVideoSrc', networkVideoSrc);
+            }
           })
           .visualEffect(new hdsEffect.HdsEffectBuilder()
             .shaderEffect({
