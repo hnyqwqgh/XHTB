@@ -143,6 +143,10 @@
     {
       "name": "grid_rows_gap_size",
       "value": "8vp"
+    },
+    {
+      "name": "list_friction",
+      "value": "0.6"
     }
   ]
 }

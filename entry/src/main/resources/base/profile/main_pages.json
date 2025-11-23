@@ -9,6 +9,7 @@
     "pages/ShareExtDialog",
     "XHTB/ReadQR",
     "XHTB/DetailPage",
-    "XHTB/Internet"
+    "XHTB/Internet",
+    "XHTB/Metro"
   ]
 }

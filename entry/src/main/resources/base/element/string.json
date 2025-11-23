@@ -641,7 +641,7 @@
 		},
 		{
 			"name": "Internet5",
-			"value": "1.1.1.1"
+			"value": "1.1.1.1\n可切换账号"
 		},
 		{
 			"name": "Internet6",
@@ -674,6 +674,34 @@
 		{
 			"name": "Internetselfsuccess",
 			"value": "自动播放intro视频 即表示已连接到互联网，否则会无法播放"
+		},
+		{
+			"name": "line1",
+			"value": "1号线"
+		},
+		{
+			"name": "line2",
+			"value": "2号线"
+		},
+		{
+			"name": "line3",
+			"value": "3号线"
+		},
+		{
+			"name": "line4",
+			"value": "4号线"
+		},
+		{
+			"name": "line5",
+			"value": "5号线"
+		},
+		{
+			"name": "line6",
+			"value": "6号线"
+		},
+		{
+			"name": "line7",
+			"value": "7号线"
 		}
 	]
 }
