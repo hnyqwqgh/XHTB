@@ -10,19 +10,25 @@ struct MetroIcon {
 
   build() {
     Row() {
-      // 创建一个模拟的地铁图标，包含圆圈和数字
+      // 使用自定义的地铁图标组件，包含SVG图标和数字
       Row() {
-        Text(this.number)
-          .fontSize(10)
-          .fontColor('#FFFFFF')
-          .textAlign(TextAlign.Center)
+        // 使用Stack布局将数字放置在SVG图标上
+        Stack({ alignContent: Alignment.Center }) {
+          // SVG图标
+          Image($r('app.media.cdmetro'))
+            .width(50)
+            .height(50)
+            .fillColor(this.color)  // 更改SVG颜色
+            
+          // 数字编号
+          Text(this.number)
+            .fontSize(16)
+            .fontColor(this.color)
+            .textAlign(TextAlign.Center)
+        }
+        .width(50)
+        .height(50)
       }
-      .width(20)
-      .height(20)
-      .borderRadius(10)
-      .backgroundColor(this.color)
-      .justifyContent(FlexAlign.Center)
-      .alignItems(VerticalAlign.Center)
     }
   }
 }
