@@ -702,6 +702,46 @@
 		{
 			"name": "line7",
 			"value": "7号线"
+		},
+		{
+			"name": "line8",
+			"value": "8号线"
+		},
+		{
+			"name": "line9",
+			"value": "9号线"
+		},
+		{
+			"name": "line10",
+			"value": "10号线"
+		},
+		{
+			"name": "line13",
+			"value": "13号线"
+		},
+		{
+			"name": "line17",
+			"value": "17号线"
+		},
+		{
+			"name": "line18",
+			"value": "18号线"
+		},
+		{
+			"name": "line19",
+			"value": "19号线"
+		},
+		{
+			"name": "line30",
+			"value": "30号线"
+		},
+		{
+			"name": "lineS3",
+			"value": "S3资阳线"
+		},
+		{
+			"name": "line92",
+			"value": "蓉2号线"
 		}
 	]
 }

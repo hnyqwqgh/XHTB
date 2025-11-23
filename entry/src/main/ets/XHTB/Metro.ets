@@ -2,12 +2,37 @@ import { initSideData } from './Metro/TabViewModel';
 import { ClassifyModel } from './Metro/TabItem';
 
 import router from '@ohos.router';
+
+@Component
+struct MetroIcon {
+  @Prop number: string;
+  @Prop color: string = '#182431';
+
+  build() {
+    Row() {
+      // 创建一个模拟的地铁图标，包含圆圈和数字
+      Row() {
+        Text(this.number)
+          .fontSize(10)
+          .fontColor('#FFFFFF')
+          .textAlign(TextAlign.Center)
+      }
+      .width(20)
+      .height(20)
+      .borderRadius(10)
+      .backgroundColor(this.color)
+      .justifyContent(FlexAlign.Center)
+      .alignItems(VerticalAlign.Center)
+    }
+  }
+}
+
 @Component
 struct ClassifyItem {
   @Prop isSelected: boolean = false;
-  classifyName?: string | Resource;
-  onClickAction = (): void => {
-  }
+  @Prop classifyName: string | Resource;
+  @Prop index: number;
+  @Prop currentClassify: number;
 
   build() {
     Text(this.classifyName)
@@ -19,7 +44,6 @@ struct ClassifyItem {
       .backgroundColor(this.isSelected ? '#FFFFFF' : '')
       .width('100%')
       .height(52)
-      .onClick(this.onClickAction)
   }
 }
 
@@ -28,17 +52,77 @@ struct ClassifyItem {
 struct SideTab {
   @State currentClassify: number = 0;
   @State ClassifyArray: Array<ClassifyModel> = initSideData();
+  // 为每个分类创建独立的站点数据（使用真实的成都地铁站点数据）
+  @State stationData: Array<Array<string>> = [
+    // 1号线站点
+    ['韦家碾', '升仙湖', '火车北站', '人民北路', '文殊院', '天府广场', '锦江宾馆', '华西坝', '省体育馆', '倪家桥',
+     '火车南站', '金融城', '孵化园', '锦城广场', '世纪城', '广都', '四河', '华府大道', '五根松', '红石公园', '科学城'],
+    // 2号线站点
+    ['犀浦', '金科北路', '金周路', '百草路', '天河路', '迎宾大道', '茶店子客运站', '羊犀立交', '一品天下', '蜀汉路东',
+     '白果汉', '中医大省医院', '通惠门', '人民公园', '天府广场', '春熙路', '东门大桥', '牛王庙', '牛市口', '东大路',
+     '塔子山公园', '成都东客站', '成渝立交', '惠王陵', '洪河', '成都行政学院', '大面铺', '连山坡', '界牌', '书房',
+     '龙平路', '龙泉驿'],
+    // 3号线站点
+    ['成都医学院', '石油大学', '钟楼', '马超西路', '团结新区', '金水河', '三河场', '金华寺东路', '植物园', '军区总医院',
+     '熊猫大道', '动物园', '昭觉寺南路', '驷马桥', '李家沱', '前锋路', '红星桥', '市二医院', '春熙路', '新南门',
+     '磨子桥', '衣冠庙', '高升桥', '太平园', '浆洗街', '红牌楼', '武侯祠', '龙桥路', '双凤桥', '黄水', '迎春桥',
+     '航都大街', '双流广场', '常乐', '东升', '双流西'],
+    // 4号线站点
+    ['万盛', '温江大学城', '杨柳河', '南熏大道', '非遗博览园', '蔡桥', '中坝', '马厂坝', '中医大省医院', '宽窄巷子',
+     '西月城街', '太升南路', '市二医院', '玉双路', '双桥路', '万年场', '槐树店', '保和', '来龙', '十陵', '东林',
+     '祥和', '西河'],
+    // 5号线站点
+    ['华桂路', '柏水场', '廖家湾', '北部商贸城', '幸福桥', '九道堰', '杜家碾', '大丰', '石犀公园', '皇花园',
+     '陆家桥', '泉水路', '洞子口', '福宁路', '五块石', '赛云台', '北站西二路', '西北桥', '花牌坊', '抚琴',
+     '中医大省医院', '青羊宫', '省骨科医院', '高升桥', '科园', '九兴大道', '神仙树', '石羊立交', '市一医院',
+     '交子大道', '锦城大道', '锦城湖', '大源', '民乐', '骑龙', '警官学院', '二江寺', '南湖立交', '怡心湖',
+     '龙马路', '回龙'],
+    // 6号线站点
+    ['望丛祠', '檬梓', '尚锦路', '安靖', '轻工职业技术学院', '纺织高等专科学校', '郫都校区', '西区大道', '犀浦',
+     '地铁车辆段', '府通路', '蜀汉路', '沙湾', '梁家巷', '建设北路', '前锋路', '高笋塘', '八里庄', '列五中学',
+     '动物园', '龙湖三千集', '万象城', '理工大学', '上东阳光', '沙河', '琉三路', '琉新路', '麓山大道', '陆肖',
+     '生物城', '秦皇寺', '牧华路', '双华路', '公兴', '花源', '花桥', '新兴', '瓦窑滩', '明光', '白佛桥', '九江北',
+     '兰家沟'],
+    // 7号线站点（环线）
+    ['火车北站', '驷马桥', '八里小区', '东区医院', '二仙桥', '成都理工', '成华大道', '崔家店', '万年场', '建材南路',
+     '成都东客站', '沙河铺', '狮子山', '川师', '琉璃场', '科华南路', '火车南站', '太平园', '龙爪堰', '东坡路',
+     '机头桥', '机投桥', '武青南路', '簇桥', '华兴', '太平寺', '应龙', '金花', '双流机场1航站楼', '双流机场2航站楼',
+     '双流西', '应天寺', '黄水', '花源', '新津', '花桥', '五津', '儒林路', '刘家碾', '新平'],
+    // 8号线站点
+    ['龙港', '龙潭寺', '同乐', '白莲池', '地铁学院', '荆竹坝', '十里店', '杉板桥', '跳蹬河', '万年场', '双桥路',
+     '东大路', '东光', '倪家桥', '桐梓林', '火车南站', '永丰', '九兴大道', '高朋大道', '顺江', '三瓦窑', '石羊场',
+     '金融城东', '心岛', '孵化园', '锦城大道', '三元', '太平寺', '华兴', '簇桥', '武青南路', '机投桥', '培风',
+     '成都西站', '黄田坝'],
+    // 9号线站点
+    ['黄田坝', '培风', '机投桥', '武青南路', '簇桥', '华兴', '太平寺', '三元', '锦城大道', '心岛', '金融城东'],
+    // 10号线站点
+    ['武侯祠', '红牌楼', '浆洗街', '太平园', '簇锦', '华兴', '金花', '双流机场1航站楼', '双流机场2航站楼', '双流西',
+     '应天寺', '黄水', '花源', '新津', '花桥', '五津', '儒林路', '刘家碾', '新平'],
+    // 13号线站点
+    ['瓦窑滩', '白佛桥', '九江北', '明光', '温泉大道', '凤溪河', '市五医院', '黄石', '金星', '龙安'],
+    // 17号线站点
+    ['九江北', '白佛桥', '明光', '温泉大道', '凤溪河', '市五医院', '黄石', '金星', '龙安'],
+    // 18号线站点
+    ['火车北站', '骡马市', '天府广场', '省体育馆', '倪家桥', '火车南站', '孵化园', '锦城广场', '世纪城', '海昌路',
+     '博览城', '兴隆', '天府新站', '三岔湖', '福田', 'T3T4', 'T1T2', '天府机场北'],
+    // 19号线站点
+    ['金星', '黄石', '市五医院', '凤溪河', '温泉大道', '明光', '九江北', '机投桥', '太平寺', '双流机场2航站楼东',
+     '天府机场1号2号航站楼', '天府机场北']
+  ];
   private classifyScroller: Scroller = new Scroller();
   private scroller: Scroller = new Scroller();
 
-  classifyChangeAction(index: number, isClassify: boolean): void {
-    if (this.currentClassify !== index) {
+  classifyChangeAction(index: number): void {
+    if (this.currentClassify !== index && index !== undefined) {
       this.currentClassify = index;
-      if (isClassify) {
-        this.scroller.scrollToIndex(index);
-      } else {
-        this.classifyScroller.scrollToIndex(index);
-      }
+      this.classifyScroller.scrollToIndex(index);
+    }
+  }
+
+  // 修改站点名称的方法
+  modifyStationName(classifyIndex: number, stationIndex: number, newName: string): void {
+    if (this.stationData[classifyIndex] && this.stationData[classifyIndex][stationIndex]) {
+      this.stationData[classifyIndex][stationIndex] = newName;
     }
   }
 
@@ -50,29 +134,84 @@ struct SideTab {
             ListItem() {
               ClassifyItem({
                 classifyName: item.classifyName,
-                isSelected: this.currentClassify === index,
-                onClickAction: () => {
-                  if (index !== undefined) {
-                    this.classifyChangeAction(index, true);
-                  }
+                isSelected: this.currentClassify === (index !== undefined ? index : -1),
+                index: index !== undefined ? index : -1,
+                currentClassify: this.currentClassify
+              })
+              .onClick(() => {
+                if (index !== undefined) {
+                  this.classifyChangeAction(index);
                 }
               })
             }
-          }, (item: ClassifyModel, index: number) => JSON.stringify(item) + index)
+          }, (item: ClassifyModel, index: number) => JSON.stringify(item) + index.toString())
         }
         .height('110%')
         .width('27.8%')
         .backgroundColor('#F1F3F5')
         .scrollBar(BarState.Off)
-        .margin({ top: 135 })
+        .margin({ top: 94 })
 
-        Column() {
-          ForEach(this.ClassifyArray, (item: ClassifyModel, index: number) => {
-            Text(this.currentClassify === index ? item.classifyName : '')
-              .fontSize(30)
-          },(item: ClassifyModel, index: number) => JSON.stringify(item) + index)
+        List() {
+          // 添加安全检查，确保stationData[currentClassify]存在
+          ForEach(
+            (this.stationData && this.stationData[this.currentClassify]) ? 
+            this.stationData[this.currentClassify] : 
+            [], 
+            (stationName: string, index: number) => {
+            ListItem() {
+              Column() {
+                Row() {
+                  Text(stationName)
+                    .fontSize(18)
+                    .fontColor('#182431')
+                    .margin({ left: 20 })
+                  Blank()
+                  // 添加地铁图标
+                  MetroIcon({
+                    number: (index + 1).toString(),
+                    color: this.currentClassify === 0 ? '#E30613' : 
+                           this.currentClassify === 1 ? '#00629B' : 
+                           this.currentClassify === 2 ? '#ABC233' : 
+                           this.currentClassify === 3 ? '#97D700' : 
+                           this.currentClassify === 4 ? '#663399' : 
+                           this.currentClassify === 5 ? '#D3A13B' : 
+                           this.currentClassify === 6 ? '#808080' :
+                           this.currentClassify === 7 ? '#33A3DC' :
+                           this.currentClassify === 8 ? '#A1A3A6' :
+                           this.currentClassify === 9 ? '#F7941D' :
+                           this.currentClassify === 10 ? '#009944' :
+                           this.currentClassify === 11 ? '#D71345' :
+                           this.currentClassify === 12 ? '#00A0E9' :
+                           this.currentClassify === 13 ? '#8FC31F' :
+                           '#182431'
+                  })
+                  .margin({ right: 20 })
+                }
+                .height(60)
+                .alignItems(VerticalAlign.Center)
+                .backgroundColor('#FFFFFF')
+                // 点击行可以修改内容（示例）
+                .onClick(() => {
+                  // 这里可以添加修改逻辑，例如弹出输入框
+                  console.log(`点击了 ${stationName}，可以在这里添加修改逻辑`);
+                })
+                
+                // 添加灰色分割线（除了最后一项）
+                // 添加安全检查，确保数组存在
+                if (this.stationData && 
+                    this.stationData[this.currentClassify] && 
+                    index < this.stationData[this.currentClassify].length - 1) {
+                  Divider()
+                    .color('#E5E5E5')
+                    .strokeWidth(1)
+                }
+              }
+            }
+          }, (stationName: string, index: number) => stationName + index.toString())
         }
         .width('72.2%')
+        .scrollBar(BarState.Off)
         // [End Side_tab_list]
       }
       .backgroundColor('#FFFFFF')
