@@ -211,7 +211,7 @@ export struct HomePage {
       try {
         // 根据URL确定图片扩展名（再次确认）
         this.updateImageExtension();
-        
+
         // 先删除旧文件（如果存在）
         try {
           await fs.unlink(filesDir + '/pengyipeng' + this.imageExtension);
@@ -256,7 +256,7 @@ export struct HomePage {
     // 匹配 http 或 https 链接的正则表达式
     const urlRegex = /https?:\/\/[^\s"<>\u4e00-\u9fa5]+/g;
     const matches = text.match(urlRegex);
-    
+
     if (matches && matches.length > 0) {
       // 返回第一个有效的链接
       for (let i = 0; i < matches.length; i++) {
@@ -265,7 +265,7 @@ export struct HomePage {
         }
       }
     }
-    
+
     return null;
   }
 
@@ -413,6 +413,37 @@ export struct HomePage {
     Scroll()
     {
       Column() {
+        Stack() {
+          Row() {
+            Image(this.sharepng)
+            //.width('1100px')
+              .height('1500px')
+              .width('90%')
+              .margin({ left: '5%', right: '5%' })
+              .margin({ bottom: '3%' }) // 图片下方留白
+              .objectFit(ImageFit.ScaleDown)
+          }
+          .clip(true) // 如这里不设置clip为true，则Row组件的圆角不会限制其中的Image组件，Image组件的四个角会超出Row
+          .borderRadius(20)
+
+          Text($r('app.string.pengyipeng_title'))
+            .fontWeight(600)
+            .fontSize('20fp')
+            .margin({ top: 120 })
+            .fontWeight(FontWeight.Bold)
+          Text($r('app.string.pengyipeng_description'))
+            .fontWeight(600)
+            .fontSize('10fp')
+            .margin({ top: 170 })
+            .opacity(0.5)
+            .fontColor($r('app.color.version_color_182431'))
+          Image($r('app.media.CIcon'))
+            .width(20)
+            .height(20)
+            .margin({ top: 220 })
+        }
+        .width('100%')
+        .height(300)
         Row()
         {
           Text($r('app.string.sharepngon'))
