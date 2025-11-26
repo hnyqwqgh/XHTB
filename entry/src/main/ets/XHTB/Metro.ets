@@ -424,26 +424,26 @@ struct MultiLineMetroIcon {
       ForEach(this.lineInfos, (info: LineInfo, index: number) => {
         Stack({ alignContent: Alignment.Center }) {
           Image($r('app.media.cdmetro'))
-            .width(20)
-            .height(20)
+            .width(30)
+            .height(30)
             .objectFit(ImageFit.Contain)
             .fillColor(info.color)
             .margin({ left: 2 })
 
           Row() {
             Text(`${info.lineNumber.padStart(2, '0')}`)
-              .fontSize(6)
+              .fontSize(7)
               .fontColor(info.color)
               .textAlign(TextAlign.Center)
-              .margin({ left: 1, right: 4 })
+              .margin({ left: 1, right: 5 })
             Text(`${info.stationNumber.padStart(2, '0')}`)
-              .fontSize(6)
+              .fontSize(7)
               .fontColor(info.color)
               .textAlign(TextAlign.Center)
           }
         }
-        .width(20)
-        .height(20)
+        .width(30)
+        .height(30)
       }, (info: LineInfo) => JSON.stringify(info))
     }
     .width('hug')
