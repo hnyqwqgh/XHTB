@@ -3,6 +3,13 @@ import { ClassifyModel } from './Metro/TabItem';
 
 import router from '@ohos.router';
 
+// 定义线路信息接口
+interface LineInfo {
+  lineNumber: string;
+  stationNumber: string;
+  color: string;
+}
+
 @Component
 struct MetroIcon {
   @Prop lineNumber: string;
@@ -39,6 +46,41 @@ struct MetroIcon {
         .width(60)
         .height(60)
       }
+    }
+  }
+}
+
+// 添加一个多线路图标组件，用于显示换乘站的信息
+@Component
+struct MultiLineMetroIcon {
+  @Prop lineInfos: LineInfo[];
+
+  build() {
+    Row() {
+      ForEach(this.lineInfos, (info: LineInfo, index: number) => {
+        Stack({ alignContent: Alignment.Center }) {
+          Image($r('app.media.cdmetro'))
+            .width(40)
+            .height(40)
+            .objectFit(ImageFit.Contain)
+            .fillColor(info.color)
+            .margin({ left: 2 })
+
+          Row() {
+            Text(`${info.lineNumber.padStart(2, '0')}`)
+              .fontSize(8)
+              .fontColor(info.color)
+              .textAlign(TextAlign.Center)
+              .margin({ left: 1, right: 6 })
+            Text(`${info.stationNumber.padStart(2, '0')}`)
+              .fontSize(8)
+              .fontColor(info.color)
+              .textAlign(TextAlign.Center)
+          }
+        }
+        .width(40)
+        .height(40)
+      }, (info: LineInfo) => JSON.stringify(info))
     }
   }
 }
@@ -180,6 +222,50 @@ struct SideTab {
     }
   }
 
+  // 获取线路颜色的方法
+  getLineColors(lineIndex: number): string {
+    const colors = [
+      '#380096', '#FA633B', '#D6026B', '#00AF60', '#8E3981',
+      '#8A7530', '#72D1DD', '#9AC316', '#E9AD00', '#0750A3',
+      '#B2A222', '#8CCA9E', '#0B6267', '#9C9ECE', '#8FC31F', '#E3718E'
+    ];
+    return colors[lineIndex] || '#838382';
+  }
+
+  // 判断是否为换乘站
+  isTransferStation(stationName: string): boolean {
+    let count = 0;
+    for (let i = 0; i < this.stationData.length; i++) {
+      // 注意：有些站点名称带"（暂未开通）"后缀，需要特殊处理
+      const cleanStationName = stationName.replace('（暂未开通）', '');
+      for (let j = 0; j < this.stationData[i].length; j++) {
+        if (this.stationData[i][j].includes(cleanStationName)) {
+          count++;
+          break;
+        }
+      }
+    }
+    return count > 1;
+  }
+
+  // 获取换乘站涉及的线路信息
+  getTransferStationLines(stationName: string): LineInfo[] {
+    let lines: LineInfo[] = [];
+    const cleanStationName = stationName.replace('（暂未开通）', '');
+    
+    for (let i = 0; i < this.stationData.length; i++) {
+      const stationIndex = this.stationData[i].findIndex(name => name.includes(cleanStationName));
+      if (stationIndex !== -1) {
+        lines.push({
+          lineNumber: this.getClassifyName(i),
+          stationNumber: (stationIndex + 1).toString(),
+          color: this.getLineColors(i)
+        });
+      }
+    }
+    return lines;
+  }
+
   build() {
     Stack() {
       Row() {
@@ -221,29 +307,21 @@ struct SideTab {
                     .fontColor('#182431')
                     .margin({ left: 20 })
                   Blank()
-                  // 添加地铁图标
-                  MetroIcon({
-                    lineNumber: this.getClassifyName(this.currentClassify),
-                    stationNumber: (index + 1).toString(),
-                    color: this.currentClassify === 0 ? '#380096' :
-                           this.currentClassify === 1 ? '#FA633B' :
-                           this.currentClassify === 2 ? '#D6026B' :
-                           this.currentClassify === 3 ? '#00AF60' :
-                           this.currentClassify === 4 ? '#8E3981' :
-                           this.currentClassify === 5 ? '#8A7530' :
-                           this.currentClassify === 6 ? '#72D1DD' :
-                           this.currentClassify === 7 ? '#9AC316' :
-                           this.currentClassify === 8 ? '#E9AD00' :
-                           this.currentClassify === 9 ? '#0750A3' :
-                           this.currentClassify === 10 ? '#B2A222' :
-                           this.currentClassify === 11 ? '#8CCA9E' :
-                           this.currentClassify === 12 ? '#0B6267' :
-                           this.currentClassify === 13 ? '#9C9ECE' :
-                           this.currentClassify === 14 ? '#8FC31F' :
-                           this.currentClassify === 15 ? '#E3718E' :
-                           '#838382'
-                  })
-                  .margin({ right: 20 })
+                  // 检查是否是换乘站并显示对应的多个线路图标
+                  if (this.isTransferStation(stationName)) {
+                    MultiLineMetroIcon({
+                      lineInfos: this.getTransferStationLines(stationName)
+                    })
+                    .margin({ right: 20 })
+                  } else {
+                    // 添加地铁图标
+                    MetroIcon({
+                      lineNumber: this.getClassifyName(this.currentClassify),
+                      stationNumber: (index + 1).toString(),
+                      color: this.getLineColors(this.currentClassify)
+                    })
+                    .margin({ right: 20 })
+                  }
                 }
                 .height(60)
                 .alignItems(VerticalAlign.Center)

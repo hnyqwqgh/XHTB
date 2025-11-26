@@ -23,6 +23,7 @@ const ClassifyData: ClassifyModel[] = [
   new ClassifyModel(6, $r('app.string.line17')),
   new ClassifyModel(6, $r('app.string.line18')),
   new ClassifyModel(6, $r('app.string.line19')),
+  new ClassifyModel(6, $r('app.string.line27')),
   new ClassifyModel(6, $r('app.string.line30')),
   new ClassifyModel(6, $r('app.string.lineS3')),
   new ClassifyModel(6, $r('app.string.line92'))
