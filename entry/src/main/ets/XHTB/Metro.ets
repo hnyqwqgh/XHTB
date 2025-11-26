@@ -16,8 +16,9 @@ struct MetroIcon {
         Stack({ alignContent: Alignment.Center }) {
           // SVG图标
           Image($r('app.media.cdmetro'))
-            .width(50)
-            .height(50)
+            .width(60)
+            .height(60)
+            .objectFit(ImageFit.Contain)
             .fillColor(this.color)  // 更改SVG颜色
             
           // 数字编号
@@ -26,8 +27,8 @@ struct MetroIcon {
             .fontColor(this.color)
             .textAlign(TextAlign.Center)
         }
-        .width(50)
-        .height(50)
+        .width(60)
+        .height(60)
       }
     }
   }
