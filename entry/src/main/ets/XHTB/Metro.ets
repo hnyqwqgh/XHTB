@@ -321,7 +321,7 @@ const StationTranslations = new Map<string, string>([
   ['娇子立交', 'Jiaozi Flyover'],
   ['九眼桥', 'Jiuyan Bridge'],
   ['文翁石室', 'Wenweng Shishi'],
-  ['小南街', 'Xiao Nan Street'],
+  ['小南街', 'Xiaonan Street'],
   ['杜甫草堂', 'Du Fu Thatched Cottage'],
   ['光华村', 'Guanghuacun'],
   ['万寿桥', 'Wanshou Bridge'],
