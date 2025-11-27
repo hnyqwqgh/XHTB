@@ -10,6 +10,13 @@ interface LineInfo {
   color: string;
 }
 
+// 定义搜索结果接口
+interface SearchResult {
+  lineIndex: number;
+  stationIndex: number;
+  stationName: string;
+}
+
 // 使用Map来存储站点翻译，避免索引签名问题
 const StationTranslations = new Map<string, string>([
   // 1号线
@@ -588,6 +595,10 @@ struct SideTab {
      '天映路', '安埠', '天欣路', '合作路', '合信路', '天润路（暂未开通）', '电子科大', '新达路（暂未开通）', '锦城学院', '新业路',
      '土龙路', '两河路（暂未开通）', '清淳（暂未开通）', '联工', '成都西站'],
   ];
+  // 添加搜索相关状态
+  @State searchQuery: string = '';
+  @State searchResults: Array<SearchResult> = [];
+  @State isSearching: boolean = false;
   private classifyScroller: Scroller = new Scroller();
   private scroller: Scroller = new Scroller();
 
@@ -673,115 +684,236 @@ struct SideTab {
     return lines;
   }
 
+  // 搜索功能方法
+  performSearch(query: string): void {
+    if (!query) {
+      this.isSearching = false;
+      this.searchResults = [];
+      return;
+    }
+
+    this.isSearching = true;
+    this.searchResults = [];
+    
+    // 遍历所有线路和站点查找匹配项
+    for (let lineIndex = 0; lineIndex < this.stationData.length; lineIndex++) {
+      for (let stationIndex = 0; stationIndex < this.stationData[lineIndex].length; stationIndex++) {
+        const stationName = this.stationData[lineIndex][stationIndex];
+        const englishName = StationTranslations.get(stationName) || '';
+        
+        // 处理带有"（暂未开通）"后缀的站点名称
+        const cleanStationName = stationName.replace('（暂未开通）', '');
+        const cleanQuery = query.replace('（暂未开通）', '');
+        
+        // 如果中英文名包含搜索关键词，则添加到结果中
+        if (stationName.includes(query) || englishName.toLowerCase().includes(query.toLowerCase()) ||
+            cleanStationName.includes(cleanQuery) || 
+            (cleanQuery && stationName.includes(cleanQuery))) {
+          this.searchResults.push({
+            lineIndex: lineIndex,
+            stationIndex: stationIndex,
+            stationName: stationName
+          });
+        }
+      }
+    }
+  }
+
   build() {
     Stack() {
-      Row() {
-        List({ scroller: this.classifyScroller }) {
-          ForEach(this.ClassifyArray, (item: ClassifyModel, index?: number) => {
-            ListItem() {
-              ClassifyItem({
-                classifyName: item.classifyName,
-                isSelected: this.currentClassify === (index !== undefined ? index : -1),
-                index: index !== undefined ? index : -1,
-                currentClassify: this.currentClassify
-              })
-              .onClick(() => {
-                if (index !== undefined) {
-                  this.classifyChangeAction(index);
-                }
-              })
-            }
-          }, (item: ClassifyModel, index: number) => JSON.stringify(item) + index.toString())
+      Column() {
+        // 添加搜索栏和返回按钮行
+        Row() {
+          // 返回按钮
+          Text('󰃚')
+            .fontSize(35)
+            .margin({ left: 20 })
+            .onClick(() => {
+              router.back();
+            })
+          
+          // 搜索框
+          TextInput({ 
+            text: this.searchQuery, 
+            placeholder: '搜索站点（中英文名）' 
+          })
+            .placeholderFont({ size: 14 })
+            .fontSize(14)
+            .width('70%')
+            .height(40)
+            .margin({ left: 10, right: 20 })
+            .onChange((value: string) => {
+              this.searchQuery = value;
+              this.performSearch(value);
+            })
         }
-        .height('100%')
-        .width('27.8%')
-        .backgroundColor('#F1F3F5')
-        .scrollBar(BarState.Off)
-        .margin({ top: 94 })
-
-        List({ scroller: this.scroller }) {
-          // 添加安全检查，确保stationData[currentClassify]存在
-          ForEach(
-            (this.stationData && this.stationData[this.currentClassify]) ? 
-            this.stationData[this.currentClassify] : 
-            [], 
-            (stationName: string, index: number) => {
-            ListItem() {
-              Column() {
-                Row() {
-                  Column() {
-                    Text(stationName)
-                      .fontSize(16)
-                      .fontColor('#182431')
-                      .margin({ left: 20 })
-                      .draggable(true)
-                      .copyOption(CopyOptions.LocalDevice)
-                    Text(StationTranslations.get(stationName) || '')
-                      .fontSize(12)
-                      .fontColor('#999999')
-                      .margin({ left: 20, top: 2 })
-                      .draggable(true)
-                      .copyOption(CopyOptions.LocalDevice)
-                  }
-                  .layoutWeight(1)
-                  .justifyContent(FlexAlign.Center)
-                  .alignItems(HorizontalAlign.Start)
-                  
-                  Blank()
-                  // 检查是否是换乘站并显示对应的多个线路图标
-                  if (this.isTransferStation(stationName)) {
-                    MultiLineMetroIcon({
-                      lineInfos: this.getTransferStationLines(stationName)
-                    })
-                    .margin({ right: 20 })
-                  } else {
-                    // 添加地铁图标
-                    MetroIcon({
-                      lineNumber: this.getClassifyName(this.currentClassify),
-                      stationNumber: (index + 1).toString(),
-                      color: this.getLineColors(this.currentClassify)
-                    })
-                    .margin({ right: 20 })
-                  }
-                }
-                .height(60)
-                .alignItems(VerticalAlign.Center)
-                .backgroundColor('#FFFFFF')
-                .width('100%')
-                // 点击行可以修改内容（示例）
-                .onClick(() => {
-                  // 这里可以添加修改逻辑，例如弹出输入框
-                  console.log(`点击了 ${stationName}，可以在这里添加修改逻辑`);
+        .width('100%')
+        .height(60)
+        .backgroundColor('#FFFFFF')
+        .alignItems(VerticalAlign.Center)
+        
+        // 主要内容区域
+        Row() {
+          List({ scroller: this.classifyScroller }) {
+            ForEach(this.ClassifyArray, (item: ClassifyModel, index?: number) => {
+              ListItem() {
+                ClassifyItem({
+                  classifyName: item.classifyName,
+                  isSelected: this.currentClassify === (index !== undefined ? index : -1),
+                  index: index !== undefined ? index : -1,
+                  currentClassify: this.currentClassify
                 })
-                
-                // 添加灰色分割线（除了最后一项）
-                // 添加安全检查，确保数组存在
-                if (this.stationData && 
-                    this.stationData[this.currentClassify] && 
-                    index < this.stationData[this.currentClassify].length - 1) {
-                  Divider()
-                    .color('#E5E5E5')
-                    .strokeWidth(1)
-                }
+                .onClick(() => {
+                  if (index !== undefined) {
+                    this.classifyChangeAction(index);
+                  }
+                })
               }
+            }, (item: ClassifyModel, index: number) => JSON.stringify(item) + index.toString())
+          }
+          .height('100%')
+          .width('27.8%')
+          .backgroundColor('#F1F3F5')
+          .scrollBar(BarState.Off)
+          .margin({ top: 0 })
+
+          List({ scroller: this.scroller }) {
+            // 根据是否在搜索状态决定显示什么内容
+            if (this.isSearching) {
+              // 显示搜索结果
+              ForEach(this.searchResults, (result: SearchResult, index: number) => {
+                ListItem() {
+                  Column() {
+                    Row() {
+                      Column() {
+                        Text(result.stationName)
+                          .fontSize(16)
+                          .fontColor('#182431')
+                          .margin({ left: 20 })
+                          .draggable(true)
+                          .copyOption(CopyOptions.LocalDevice)
+                        Text(StationTranslations.get(result.stationName) || '')
+                          .fontSize(12)
+                          .fontColor('#999999')
+                          .margin({ left: 20, top: 2 })
+                          .draggable(true)
+                          .copyOption(CopyOptions.LocalDevice)
+                      }
+                      .layoutWeight(1)
+                      .justifyContent(FlexAlign.Center)
+                      .alignItems(HorizontalAlign.Start)
+                      
+                      Blank()
+                      // 检查是否是换乘站并显示对应的多个线路图标
+                      if (this.isTransferStation(result.stationName)) {
+                        MultiLineMetroIcon({
+                          lineInfos: this.getTransferStationLines(result.stationName)
+                        })
+                        .margin({ right: 20 })
+                      } else {
+                        // 显示地铁图标
+                        MetroIcon({
+                          lineNumber: this.getClassifyName(result.lineIndex),
+                          stationNumber: (result.stationIndex + 1).toString(),
+                          color: this.getLineColors(result.lineIndex)
+                        })
+                        .margin({ right: 20 })
+                      }
+                    }
+                    .height(60)
+                    .alignItems(VerticalAlign.Center)
+                    .backgroundColor('#FFFFFF')
+                    .width('100%')
+                    
+                    // 添加灰色分割线（除了最后一项）
+                    if (index < this.searchResults.length - 1) {
+                      Divider()
+                        .color('#E5E5E5')
+                        .strokeWidth(1)
+                    }
+                  }
+                }
+              }, (result: SearchResult, index: number) => 
+                 `${result.lineIndex}-${result.stationIndex}-${index}`)
+            } else {
+              // 显示原始线路站点列表
+              // 添加安全检查，确保stationData[currentClassify]存在
+              ForEach(
+                (this.stationData && this.stationData[this.currentClassify]) ? 
+                this.stationData[this.currentClassify] : 
+                [], 
+                (stationName: string, index: number) => {
+                ListItem() {
+                  Column() {
+                    Row() {
+                      Column() {
+                        Text(stationName)
+                          .fontSize(16)
+                          .fontColor('#182431')
+                          .margin({ left: 20 })
+                          .draggable(true)
+                          .copyOption(CopyOptions.LocalDevice)
+                        Text(StationTranslations.get(stationName) || '')
+                          .fontSize(12)
+                          .fontColor('#999999')
+                          .margin({ left: 20, top: 2 })
+                          .draggable(true)
+                          .copyOption(CopyOptions.LocalDevice)
+                      }
+                      .layoutWeight(1)
+                      .justifyContent(FlexAlign.Center)
+                      .alignItems(HorizontalAlign.Start)
+                      
+                      Blank()
+                      // 检查是否是换乘站并显示对应的多个线路图标
+                      if (this.isTransferStation(stationName)) {
+                        MultiLineMetroIcon({
+                          lineInfos: this.getTransferStationLines(stationName)
+                        })
+                        .margin({ right: 20 })
+                      } else {
+                        // 添加地铁图标
+                        MetroIcon({
+                          lineNumber: this.getClassifyName(this.currentClassify),
+                          stationNumber: (index + 1).toString(),
+                          color: this.getLineColors(this.currentClassify)
+                        })
+                        .margin({ right: 20 })
+                      }
+                    }
+                    .height(60)
+                    .alignItems(VerticalAlign.Center)
+                    .backgroundColor('#FFFFFF')
+                    .width('100%')
+                    // 点击行可以修改内容（示例）
+                    .onClick(() => {
+                      // 这里可以添加修改逻辑，例如弹出输入框
+                      console.log(`点击了 ${stationName}，可以在这里添加修改逻辑`);
+                    })
+                    
+                    // 添加灰色分割线（除了最后一项）
+                    // 添加安全检查，确保数组存在
+                    if (this.stationData && 
+                        this.stationData[this.currentClassify] && 
+                        index < this.stationData[this.currentClassify].length - 1) {
+                      Divider()
+                        .color('#E5E5E5')
+                        .strokeWidth(1)
+                    }
+                  }
+                }
+              }, (stationName: string, index: number) => stationName + index.toString())
             }
-          }, (stationName: string, index: number) => stationName + index.toString())
+          }
+          .width('72.2%')
+          .height('100%')
+          .scrollBar(BarState.Off)
+          .margin({ top: 0 })
+          // [End Side_tab_list]
         }
-        .width('72.2%')
-        .height('100%')
-        .scrollBar(BarState.Off)
-        .margin({ top: 94 })
-        // [End Side_tab_list]
+        .height('calc(100% - 60px)')
+        .backgroundColor('#FFFFFF')
       }
-      .backgroundColor('#FFFFFF')
-      
-      Text('󰃚') // 自定义返回图标
-        .fontSize(35)
-        .margin({ left: 20 }) // 左侧留白
-        .onClick(() => {
-          router.back();
-        })
-        .position({ x: 0, y: 0 })
     }
   }
 }
