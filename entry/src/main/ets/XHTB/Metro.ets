@@ -398,7 +398,7 @@ const StationTranslations = new Map<string, string>([
   ['益州大道', 'Yizhou Avenue'],
   ['金融城北', 'Financial City North'],
   ['府城桥', 'Fucheng Bridge'],
-  ['棬子树', 'Quanzishu'],
+  ['棬子树', 'Juanzishu'],
   ['锦逸', 'Jinyi'],
   ['海桐街', 'Haitong Street'],
   ['航天立交', 'Hangtian Flyover'],
