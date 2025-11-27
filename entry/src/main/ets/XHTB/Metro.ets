@@ -366,7 +366,7 @@ const StationTranslations = new Map<string, string>([
   ['牧华路', 'Muhua Road'],
   ['正兴湾', 'Zhengxingwan'],
   ['红莲', 'Honglian'],
-  ['蓝家店', 'Lanjaidian'],
+  ['蓝家店', 'Lanjiadian'],
   // 27号线
   ['石佛', 'Shifo'],
   ['慈义', 'Ciyi'],
