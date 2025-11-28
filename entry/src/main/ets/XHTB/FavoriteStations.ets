@@ -454,10 +454,16 @@ struct FavoriteStations {
       Column() {
         // 页面标题（不含返回按钮）
         Row() {
-          Text('彩蛋站点')
-            .fontSize(18)
-            .fontWeight(FontWeight.Bold)
-            .margin({ left: 20 })
+          Column(){
+            Text('彩蛋站点')
+              .fontSize(18)
+              .fontWeight(FontWeight.Bold)
+            Text('来源均为官方文章，仅供娱乐，侵权立删')
+              .fontSize(12)
+              .fontColor('#666666')
+              .textAlign(TextAlign.Start)
+              .margin({ top: 2 })
+          }
         }
         .height(60)
         .alignItems(VerticalAlign.Center)

@@ -810,7 +810,7 @@ struct SideTab {
             .fontSize(14)
             .width('70%')
             .height(40)
-            .margin({ left: 10, right: 20 })
+            .margin({ left: 10, right: 10 })
             .onChange((value: string) => {
               this.searchQuery = value;
               this.performSearch(value);
@@ -819,7 +819,6 @@ struct SideTab {
           // 返回按钮
           Text('󰙲')
             .fontSize(35)
-            .margin({ right: 30 })
             .onClick(() => {
               router.pushUrl({ url: 'XHTB/FavoriteStations' }).catch((error: BusinessError) => {
                 console.error('Failed to navigate to FavoriteStations page. Cause: ' + error.message);
