@@ -646,6 +646,8 @@ struct SideTab {
   @State searchQuery: string = '';
   @State searchResults: Array<SearchResult> = [];
   @State isSearching: boolean = false;
+  // 添加tab相关状态
+  @State currentTab: number = 0; // 0: 正常显示(首末站); 1: 倒序显示
   private classifyScroller: Scroller = new Scroller();
   private scroller: Scroller = new Scroller();
 
@@ -731,6 +733,24 @@ struct SideTab {
       }
     }
     return lines;
+  }
+
+  // 获取要显示的站点列表（根据currentTab决定是否倒序）
+  getStationsToShow(): Array<string> {
+    let stationsToShow = this.stationData && this.stationData[this.currentClassify] ?
+      this.stationData[this.currentClassify] : [];
+    if (this.currentTab === 1) {
+      return [...stationsToShow].reverse();
+    }
+    return stationsToShow;
+  }
+
+  // 计算实际的站点索引（考虑倒序情况）
+  getActualStationIndex(index: number): number {
+    if (this.currentTab === 1) {
+      return this.stationData[this.currentClassify].length - 1 - index;
+    }
+    return index;
   }
 
   // 搜索功能方法
@@ -827,6 +847,52 @@ struct SideTab {
           .margin({ top: 0 })
 
           List({ scroller: this.scroller }) {
+            // 添加tab选项卡
+            ListItem() {
+              Row() {
+                // 正常显示tab
+                Row() {
+                  Text(`${this.stationData[this.currentClassify][0]} - ${this.stationData[this.currentClassify][this.stationData[this.currentClassify].length - 1]}`)
+                    .fontSize(14)
+                    .fontColor(this.currentTab === 0 ? '#FFFFFF' : '#182431')
+                    .fontWeight(FontWeight.Medium)
+                    .layoutWeight(1)
+                    .textAlign(TextAlign.Center)
+                }
+                .width('50%')
+                .height(40)
+                .backgroundColor(this.currentTab === 0 ? '#182431' : '#F1F3F5')
+                .borderRadius(8)
+                .margin({ left: 5, right: 2.5 })
+                .alignItems(VerticalAlign.Center)
+                .onClick(() => {
+                  this.currentTab = 0;
+                })
+
+                // 倒序显示tab
+                Row() {
+                  Text(`${this.stationData[this.currentClassify][this.stationData[this.currentClassify].length - 1]} - ${this.stationData[this.currentClassify][0]}`)
+                    .fontSize(14)
+                    .fontColor(this.currentTab === 1 ? '#FFFFFF' : '#182431')
+                    .fontWeight(FontWeight.Medium)
+                    .layoutWeight(1)
+                    .textAlign(TextAlign.Center)
+                }
+                .width('50%')
+                .height(40)
+                .backgroundColor(this.currentTab === 1 ? '#182431' : '#F1F3F5')
+                .borderRadius(8)
+                .margin({ left: 2.5, right: 5 })
+                .alignItems(VerticalAlign.Center)
+                .onClick(() => {
+                  this.currentTab = 1;
+                })
+              }
+              .width('100%')
+              .height(50)
+              .margin({ left: 10, right: 10, top: 5, bottom: 5 })
+            }
+            
             // 根据是否在搜索状态决定显示什么内容
             if (this.isSearching) {
               // 显示搜索结果
@@ -886,12 +952,8 @@ struct SideTab {
                  `${result.lineIndex}-${result.stationIndex}-${index}`)
             } else {
               // 显示原始线路站点列表
-              // 添加安全检查，确保stationData[currentClassify]存在
-              ForEach(
-                (this.stationData && this.stationData[this.currentClassify]) ? 
-                this.stationData[this.currentClassify] : 
-                [], 
-                (stationName: string, index: number) => {
+              // 根据currentTab的值决定是否倒序显示
+              ForEach(this.getStationsToShow(), (stationName: string, index: number) => {
                 ListItem() {
                   Column() {
                     Row() {
@@ -922,9 +984,11 @@ struct SideTab {
                         .margin({ right: 20 })
                       } else {
                         // 添加地铁图标
+                        // 计算正确的站点索引（考虑倒序情况）
+                        
                         MetroIcon({
                           lineNumber: this.getClassifyName(this.currentClassify),
-                          stationNumber: (index + 1).toString(),
+                          stationNumber: (this.getActualStationIndex(index) + 1).toString(),
                           color: this.getLineColors(this.currentClassify)
                         })
                         .margin({ right: 20 })
@@ -942,16 +1006,14 @@ struct SideTab {
                     
                     // 添加灰色分割线（除了最后一项）
                     // 添加安全检查，确保数组存在
-                    if (this.stationData && 
-                        this.stationData[this.currentClassify] && 
-                        index < this.stationData[this.currentClassify].length - 1) {
+                    if (index < this.stationData[this.currentClassify].length - 1) {
                       Divider()
                         .color('#E5E5E5')
                         .strokeWidth(1)
                     }
                   }
                 }
-              }, (stationName: string, index: number) => stationName + index.toString())
+              }, (stationName: string, index: number) => stationName + index.toString() + this.currentClassify.toString() + this.currentTab.toString())
             }
           }
           .width('72.2%')
