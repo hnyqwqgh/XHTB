@@ -645,9 +645,9 @@ struct SideTab {
     const colors = [
       '#380096', '#FA633B', '#D6026B', '#00AF60', '#8E3981',
       '#8A7530', '#72D1DD', '#9AC316', '#E9AD00', '#0750A3',
-      '#B2A222', '#8CCA9E', '#0B6267', '#9C9ECE', '#8FC31F', '#E3718E'
+      '#B2A222', '#8CCA9E', '#0B6267', '#9C9ECE', '#8FC31F', '#E3718E', '#838382'
     ];
-    return colors[lineIndex] || '#838382';
+    return colors[lineIndex] || '#7CBA27';
   }
 
   // 判断是否为换乘站
