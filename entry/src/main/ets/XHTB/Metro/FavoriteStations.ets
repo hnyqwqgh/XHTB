@@ -482,19 +482,20 @@ struct FavoriteStations {
             router.back();
           })
           .margin({ left: 20 })
+          .width(35)
 
-        Column() {
+        // 标题区域
+        Flex({ direction: FlexDirection.Column, alignItems: ItemAlign.Center, justifyContent: FlexAlign.Center }) {
           Text('彩蛋站点')
             .fontSize(18)
             .fontWeight(FontWeight.Bold)
           Text('来源均为官方文章，仅供娱乐，侵权立删')
             .fontSize(12)
             .fontColor('#666666')
-            .textAlign(TextAlign.Start)
+            .textAlign(TextAlign.Center)
             .margin({ top: 2 })
         }
         .layoutWeight(1)
-        .alignItems(HorizontalAlign.Center)
 
         // 占位元素，保持标题居中
         Blank()
@@ -516,7 +517,7 @@ struct FavoriteStations {
                 .fontSize(12)
                 .fontColor('#666666')
                 .margin({ left: 20, top: 10, right: 20 })
-                .textAlign(TextAlign.Center)
+                .textAlign(TextAlign.Start)
 
               FavoriteStationItem({
                 stationName: station.name,

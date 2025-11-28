@@ -303,7 +303,7 @@ const StationTranslations = new Map<string, string>([
   ['簇锦', 'Cujin'],
   ['金花', 'Jinhua'],
   ['双流机场1航站楼', 'Terminal 1 of Shuangliu International Airport'],
-  ['双流机场2航站楼（出闸换乘）', 'Terminal 2 of Shuangliu International Airport'],
+  ['双流机场2航站楼（出闸换乘）', 'Terminal 2 of Shuangliu International Airport (Transfer outside the fare gates)'],
   ['应天寺', 'Yingtian Temple'],
   ['黄水', 'Huangshui'],
   ['花源', 'Huayuan'],
@@ -361,7 +361,7 @@ const StationTranslations = new Map<string, string>([
   ['市五医院', 'Chengdu Fifth People\'s Hospital'],
   ['温泉大道', 'Wenquan Avenue'],
   ['明光', 'Mingguang'],
-  ['双流机场2航站楼东（出闸换乘）', 'East of Terminal 2 of Shuangliu International Airport'],
+  ['双流机场2航站楼东（出闸换乘）', 'East of Terminal 2 of Shuangliu International Airport (Transfer outside the fare gates)'],
   ['温家山', 'Wenjiashan'],
   ['牧华路', 'Muhua Road'],
   ['正兴湾', 'Zhengxingwan'],
@@ -405,7 +405,7 @@ const StationTranslations = new Map<string, string>([
   ['玉石', 'Yushi'],
   ['分水', 'Fenshui'],
   ['玉虹路', 'Yuhong Road'],
-  ['龙泉驿火车站南（出闸换乘）', 'Longquanyi Railway Station South'],
+  ['龙泉驿火车站南（出闸换乘）', 'Longquanyi Railway Station South (Transfer outside the fare gates)'],
   // S3（资阳）线
   ['资阳临空', 'Ziyang Airport Economic Zone'],
   ['幸福大道', 'Xingfu Avenue'],
@@ -773,7 +773,7 @@ struct SideTab {
         // 处理带有"（暂未开通）"后缀的站点名称
         const cleanStationName = stationName.replace('（暂未开通）', '');
         const cleanQuery = query.replace('（暂未开通）', '');
-        
+
         // 如果中英文名包含搜索关键词，则添加到结果中
         if (stationName.includes(query) || englishName.toLowerCase().includes(query.toLowerCase()) ||
             cleanStationName.includes(cleanQuery) || 
