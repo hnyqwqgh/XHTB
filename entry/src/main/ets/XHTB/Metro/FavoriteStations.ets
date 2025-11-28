@@ -455,7 +455,7 @@ struct FavoriteStations {
       lineColor: getLineColor(0),
       description: '乘客您好 18号线开往天府机场北方向的列车即将进站\n' +
         '请先下后上 小心列车与站台之间的空隙\nDear passengers\n' +
-        'The train bound for\n' +
+        'The train on line 18 bound for\n' +
         'Tianfu International Airport North\n' +
         'is arriving\n' +
         'Let riders get off before you board\n' +
@@ -472,25 +472,42 @@ struct FavoriteStations {
   ];
 
   build() {
-    Scroll() {
-      Column() {
-        Column() {
-          // 页面标题（不含返回按钮）
-          Row() {
-            Column() {
-              Text('彩蛋站点')
-                .fontSize(18)
-                .fontWeight(FontWeight.Bold)
-              Text('来源均为官方文章，仅供娱乐，侵权立删')
-                .fontSize(12)
-                .fontColor('#666666')
-                .textAlign(TextAlign.Start)
-                .margin({ top: 2 })
-            }
-          }
-          .height(60)
-          .alignItems(VerticalAlign.Center)
+    Column() {
+      // 页面标题（固定在顶部）
+      Row() {
+        // 返回按钮
+        Text('󰃚')
+          .fontSize(35)
+          .onClick(() => {
+            router.back();
+          })
+          .margin({ left: 20 })
 
+        Column() {
+          Text('彩蛋站点')
+            .fontSize(18)
+            .fontWeight(FontWeight.Bold)
+          Text('来源均为官方文章，仅供娱乐，侵权立删')
+            .fontSize(12)
+            .fontColor('#666666')
+            .textAlign(TextAlign.Start)
+            .margin({ top: 2 })
+        }
+        .layoutWeight(1)
+        .alignItems(HorizontalAlign.Center)
+
+        // 占位元素，保持标题居中
+        Blank()
+          .width(35)
+          .margin({ right: 20 })
+      }
+      .height(60)
+      .alignItems(VerticalAlign.Center)
+      .backgroundColor('#FFFFFF')
+
+      // 可滚动的内容区域
+      Scroll() {
+        Column() {
           // 站点列表项
           ForEach(this.favoriteStations, (station: StationInfo, index: number) => {
             Column() {
@@ -498,8 +515,8 @@ struct FavoriteStations {
               Text(station.description)
                 .fontSize(12)
                 .fontColor('#666666')
-                .margin({ left: 20, top: 5, right: 20 })
-                .textAlign(TextAlign.Start)
+                .margin({ left: 20, top: 10, right: 20 })
+                .textAlign(TextAlign.Center)
 
               FavoriteStationItem({
                 stationName: station.name,
@@ -517,16 +534,11 @@ struct FavoriteStations {
             }
           })
         }
-        .height('100%')
+        .width('100%')
       }
+      .layoutWeight(1)
     }
-
-    // 固定在左上角的返回按钮
-    Text('󰃚')
-      .fontSize(35)
-      .position({ x: 20, y: 10 })
-      .onClick(() => {
-        router.back();
-      })
+    .width('100%')
+    .height('100%')
   }
 }
