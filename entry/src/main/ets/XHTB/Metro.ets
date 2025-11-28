@@ -412,6 +412,53 @@ const StationTranslations = new Map<string, string>([
   ['苌弘广场', 'Changhong Square'],
   ['宝台', 'Baotai'],
   ['资阳北站', 'Ziyang Bei Station'],
+  // 蓉2号线
+  ['郫县西站', 'Pixian West Railway Station'],
+  ['菠萝滩（暂未开通）', 'Boluotan (Not yet in service)'],
+  ['梨园路', 'Liyuan Road'],
+  ['和兴街（暂未开通）', 'Hexing Street (Not yet in service)'],
+  ['望丛中路（暂未开通）', 'Wangcong Middle Road (Not yet in service)'],
+  ['何公路', 'Hegong Road'],
+  ['晨光', 'Chengguang'],
+  ['花石', 'Huashi'],
+  ['大禹东路', 'Dayu East Road'],
+  ['红展东路', 'Hongzhan East Road'],
+  ['红旗大道', 'Hongqi Avenue'],
+  ['德富大道', 'Defu Avenue'],
+  ['安泰五路（暂未开通）', '5th Antai Road (Not yet in service)'],
+  ['安泰二路（暂未开通）', '2nd Antai Road (Not yet in service)'],
+  ['康强四路（暂未开通）', '4th Kangqiang Road (Not yet in service)'],
+  ['蜀新大道（暂未开通）', 'Shuxin Avenue (Not yet in service)'],
+  ['天源路', 'Tianyuan Road'],
+  ['天映路', 'Tianying Road'],
+  ['安埠', 'Anbu'],
+  ['天欣路', 'Tianxin Road'],
+  ['合作路', 'Hezuo Road'],
+  ['合信路', 'Hexin Road'],
+  ['天润路（暂未开通）', 'Tianrun Road (Not yet in service)'],
+  ['电子科大', 'University of Electronic Science and Technology of China'],
+  ['新达路（暂未开通）', 'Xinda Road'],
+  ['锦城学院', 'Chengdu Jincheng College'],
+  ['新业路', 'Xinye Road'],
+  ['土龙路', 'Tulong Road'],
+  ['两河路（暂未开通）', 'Lianghe Road (Not yet in service)'],
+  ['清淳（暂未开通）', 'Qingchun (Not yet in service)'],
+  ['联工', 'Liangong'],
+  // 蓉2号线（支线）
+  ['百叶路', 'Baiye Road'],
+  ['晨风', 'Chenfeng'],
+  ['天河路', 'Tianhe Road'],
+  ['犀安路（暂未开通）', 'Xi\'an Road (Not yet in service)'],
+  ['龙吟', 'Longyin'],
+  ['交大犀浦校区', 'Xipu Campus,Southwest Jiaotong University'],
+  ['犀方路', 'Xifang Road'],
+  ['国宁', 'Guoning'],
+  ['大田', 'Datian'],
+  ['西华大学', 'Xihua University'],
+  ['双林村', 'Shuanglin Village'],
+  ['金土', 'Jintu'],
+  ['技师学院', 'Chengdu Technician College'],
+  ['仁和', 'Renhe'],
 ]);
 
 @Component
@@ -636,6 +683,8 @@ struct SideTab {
       case 13: return "19";
       case 14: return "27";
       case 15: return "30";
+      case 16: return "S3";
+      case 17: return "92";
       default: return (index + 1).toString();
     }
   }
