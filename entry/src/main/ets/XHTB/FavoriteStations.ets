@@ -248,6 +248,9 @@ struct FavoriteStationItem {
         console.error(`${this.tag}: player error, error: ${JSON.stringify(error)}`);
         this.isPlaying = false;
       });
+      
+      // 立即准备播放器
+      await this.avPlayer.prepare();
     } catch (error) {
       console.error(`${this.tag}: init player failed, error: ${JSON.stringify(error)}`);
     }
@@ -270,41 +273,9 @@ struct FavoriteStationItem {
           // 设置初始 isPlaying 状态为 true，提供即时反馈
           this.isPlaying = true;
           
-          // 使用 Promise 确保 prepare 完成后再播放
-          await new Promise<void>((resolve, reject) => {
-            const player = this.avPlayer as media.AVPlayer;
-            if (!player) {
-              this.isPlaying = false;
-              reject(new Error("Player is null"));
-              return;
-            }
-            
-            // 监听 prepared 状态
-            const stateChangeHandler = (state: media.AVPlayerState) => {
-              if (state === 'prepared') {
-                player.off('stateChange', stateChangeHandler);
-                // 准备就绪后开始播放
-                player.play().then(() => {
-                  resolve();
-                }).catch((err: Error) => {
-                  this.isPlaying = false;
-                  reject(err);
-                });
-              } else if (state === 'error') {
-                this.isPlaying = false;
-                player.off('stateChange', stateChangeHandler);
-                reject(new Error("Player entered error state during preparation"));
-              }
-            };
-            
-            player.on('stateChange', stateChangeHandler);
-            
-            // 准备播放器
-            player.prepare().catch((err: Error) => {
-              this.isPlaying = false;
-              reject(err);
-            });
-          });
+          // 播放器已准备好，直接播放
+          const player = this.avPlayer as media.AVPlayer;
+          await player.play();
         }
       } else {
         const player = this.avPlayer as media.AVPlayer;
