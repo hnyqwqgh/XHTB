@@ -200,12 +200,12 @@ struct FavoriteStationItem {
   aboutToAppear() {
     // 初始化音频URL
     const audioUrls: Map<string, string> = new Map([
-      ['天府广场', 'http://www.hnyqwq.cn/hvideo/audios/LongpingRoad.mp3'],
-      ['火车北站', 'https://example.com/audio/north_railway_station.mp3'],
-      ['火车南站', 'https://example.com/audio/south_railway_station.mp3'],
-      ['春熙路', 'https://example.com/audio/chunxi_road.mp3'],
-      ['人民公园', 'https://example.com/audio/peoples_park.mp3'],
-      ['市二医院', 'https://example.com/audio/second_peoples_hospital.mp3']
+      ['龙平路', 'http://www.hnyqwq.cn/hvideo/audios/LongpingRoad.mp3'],
+      ['界牌', 'http://www.hnyqwq.cn/hvideo/audios/Jiepai.mp3'],
+      ['成都行政学院', 'http://www.hnyqwq.cn/hvideo/audios/ChengduAcademyofGovernance.mp3'],
+      ['塔子山公园', 'vhttp://www.hnyqwq.cn/hvideo/audios/TazishanPark.mp3'],
+      ['白果林', 'http://www.hnyqwq.cn/hvideo/audios/Baiguolin.mp3'],
+      ['一品天下', 'http://www.hnyqwq.cn/hvideo/audios/Yipingtianxia.mp3']
     ]);
     
     this.audioUrl = audioUrls.get(this.stationName) || '';
@@ -231,9 +231,9 @@ struct FavoriteStationItem {
     }
 
     try {
-      const player: media.AVPlayer = await media.createAVPlayer();
-      player.url = this.audioUrl;
-      this.avPlayer = player;
+      // 使用 await 确保 AVPlayer 创建完成
+      this.avPlayer = await media.createAVPlayer();
+      this.avPlayer.url = this.audioUrl;
       
       // 监听播放完成事件
       this.avPlayer.on('stateChange', (state: string) => {
@@ -261,11 +261,35 @@ struct FavoriteStationItem {
 
     try {
       if (!this.avPlayer) {
+        // 初始化播放器并等待其完成
         await this.initPlayer();
-        // 确保播放器已创建
+        
+        // 确保播放器已创建且可以使用
         if (this.avPlayer) {
+          // 使用 Promise 确保 prepare 完成后再播放
+          await new Promise<void>((resolve, reject) => {
+            const player = this.avPlayer as media.AVPlayer;
+            if (!player) {
+              reject(new Error("Player is null"));
+              return;
+            }
+            
+            // 监听 prepared 状态
+            const stateChangeHandler = (state: string) => {
+              if (state === 'prepared') {
+                player.off('stateChange', stateChangeHandler);
+                resolve();
+              }
+            };
+            
+            player.on('stateChange', stateChangeHandler);
+            
+            // 准备播放器
+            player.prepare().catch(reject);
+          });
+          
+          // 开始播放
           const player = this.avPlayer as media.AVPlayer;
-          await player.prepare();
           await player.play();
           this.isPlaying = true;
         }
@@ -275,7 +299,7 @@ struct FavoriteStationItem {
           await player.pause();
           this.isPlaying = false;
         } else {
-          // 检查播放器状态，如果是已完成状态，则重新准备
+          // 如果处于完成状态，需要重新准备
           await player.prepare();
           await player.play();
           this.isPlaying = true;
@@ -283,6 +307,7 @@ struct FavoriteStationItem {
       }
     } catch (error) {
       console.error(`${this.tag}: toggle play failed, error: ${JSON.stringify(error)}`);
+      this.isPlaying = false;
     }
   }
 
@@ -356,51 +381,47 @@ struct FavoriteStationItem {
 struct FavoriteStations {
   // 常用站点列表 - 从Metro.ets中获取数据构建
   @State favoriteStations: Array<StationInfo> = [
-    // 从各条线路中选取部分站点作为收藏站点
-    // 1号线站点
+    {
+      name: '龙平路',
+      englishName: 'Longping Road',
+      lineNumber: '2',
+      stationNumber: '2',
+      lineColor: getLineColor(1)
+    },
     { 
-      name: '天府广场',
-      englishName: 'Tianfu Square',
-      lineNumber: '1',
+      name: '界牌',
+      englishName: 'Jiepai',
+      lineNumber: '2',
+      stationNumber: '4',
+      lineColor: getLineColor(1)
+    },
+    { 
+      name: '成都行政学院',
+      englishName: 'Chengdu Academy of Governance',
+      lineNumber: '2',
       stationNumber: '7',
-      lineColor: getLineColor(0)
+      lineColor: getLineColor(1)
     },
     { 
-      name: '火车北站', 
-      englishName: 'North Railway Station',
-      lineNumber: '1',
-      stationNumber: '3',
-      lineColor: getLineColor(0)
-    },
-    { 
-      name: '火车南站', 
-      englishName: 'South Railway Station',
-      lineNumber: '1',
+      name: '塔子山公园',
+      englishName: 'Tazishan Park',
+      lineNumber: '2',
       stationNumber: '12',
-      lineColor: getLineColor(0)
-    },
-    // 2号线站点
-    { 
-      name: '春熙路', 
-      englishName: 'Chunxi Road',
-      lineNumber: '2',
-      stationNumber: '17',
       lineColor: getLineColor(1)
     },
     { 
-      name: '人民公园', 
-      englishName: 'People\'s Park',
+      name: '白果林',
+      englishName: 'Baiguolin',
       lineNumber: '2',
-      stationNumber: '19',
+      stationNumber: '22',
       lineColor: getLineColor(1)
     },
-    // 3号线站点
     { 
-      name: '市二医院', 
-      englishName: 'Chengdu Second People\'s Hospital',
-      lineNumber: '3',
-      stationNumber: '19',
-      lineColor: getLineColor(2)
+      name: '一品天下',
+      englishName: 'Yipingtianxia',
+      lineNumber: '2',
+      stationNumber: '24',
+      lineColor: getLineColor(1)
     }
   ];
 
