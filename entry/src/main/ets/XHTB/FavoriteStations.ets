@@ -335,7 +335,7 @@ struct FavoriteStationItem {
               .fontSize(8)
               .fontColor(this.lineColor)
               .textAlign(TextAlign.Center)
-              .margin({ left: 1, right: 5 })
+              .margin({ left: 1, right: 8 })
             Text(`${this.stationNumber.padStart(2, '0')}`)
               .fontSize(8)
               .fontColor(this.lineColor)
