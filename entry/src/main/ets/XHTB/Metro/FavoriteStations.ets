@@ -391,7 +391,7 @@ struct FavoriteStations {
       lineColor: getLineColor(1),
       description: '小乔提醒您：“恋爱和战斗，都要勇往直前，龙平路站到了。”'
     },
-    { 
+    {
       name: '界牌',
       englishName: 'Jiepai',
       lineNumber: '2',
@@ -399,7 +399,7 @@ struct FavoriteStations {
       lineColor: getLineColor(1),
       description: '貂蝉提醒您：“星光化作翅膀，长久闪烁，界牌站到了。”'
     },
-    { 
+    {
       name: '成都行政学院',
       englishName: 'Chengdu Academy of Governance',
       lineNumber: '2',
@@ -407,7 +407,7 @@ struct FavoriteStations {
       lineColor: getLineColor(1),
       description: '瑶提醒您：“这是谁的小鹿，真厉害，成都行政学院站到了。”'
     },
-    { 
+    {
       name: '塔子山公园',
       englishName: 'Tazishan Park',
       lineNumber: '2',
@@ -415,7 +415,7 @@ struct FavoriteStations {
       lineColor: getLineColor(1),
       description: '李白提醒您：“大河之剑天上来，塔子山公园站到了。”'
     },
-    { 
+    {
       name: '白果林',
       englishName: 'Baiguolin',
       lineNumber: '2',
@@ -423,7 +423,7 @@ struct FavoriteStations {
       lineColor: getLineColor(1),
       description: '曜提醒您：“星光荡开宇宙，本人闪耀其中，白果林站到了。”'
     },
-    { 
+    {
       name: '一品天下',
       englishName: 'Yipingtianxia',
       lineNumber: '2',
@@ -453,7 +453,13 @@ struct FavoriteStations {
       lineNumber: '',
       stationNumber: '',
       lineColor: getLineColor(0),
-      description: '列车到站前，车站广播会不间断播放线路线别、列车编组及终点站提示信息，其中18号线采用女声播报，19号线采用男声播报，乘客可通过男女声音区分18、19号线列车。'
+      description: '乘客您好 18号线开往天府机场北方向的列车即将进站\n' +
+        '请先下后上 小心列车与站台之间的空隙\nDear passengers\n' +
+        'The train bound for\n' +
+        'Tianfu International Airport North\n' +
+        'is arriving\n' +
+        'Let riders get off before you board\n' +
+        'Please watch the gap between the train and the platform'
     },
     {
       name: '19号线语音播报',
@@ -465,62 +471,62 @@ struct FavoriteStations {
     }
   ];
 
-  build()
-  {
-    Column()
-    {
+  build() {
+    Scroll() {
       Column() {
-        // 页面标题（不含返回按钮）
-        Row() {
-          Column(){
-            Text('彩蛋站点')
-              .fontSize(18)
-              .fontWeight(FontWeight.Bold)
-            Text('来源均为官方文章，仅供娱乐，侵权立删')
-              .fontSize(12)
-              .fontColor('#666666')
-              .textAlign(TextAlign.Start)
-              .margin({ top: 2 })
+        Column() {
+          // 页面标题（不含返回按钮）
+          Row() {
+            Column() {
+              Text('彩蛋站点')
+                .fontSize(18)
+                .fontWeight(FontWeight.Bold)
+              Text('来源均为官方文章，仅供娱乐，侵权立删')
+                .fontSize(12)
+                .fontColor('#666666')
+                .textAlign(TextAlign.Start)
+                .margin({ top: 2 })
+            }
           }
+          .height(60)
+          .alignItems(VerticalAlign.Center)
+
+          // 站点列表项
+          ForEach(this.favoriteStations, (station: StationInfo, index: number) => {
+            Column() {
+              // 添加描述文字
+              Text(station.description)
+                .fontSize(12)
+                .fontColor('#666666')
+                .margin({ left: 20, top: 5, right: 20 })
+                .textAlign(TextAlign.Start)
+
+              FavoriteStationItem({
+                stationName: station.name,
+                stationEnglishName: station.englishName,
+                lineNumber: station.lineNumber,
+                stationNumber: station.stationNumber,
+                lineColor: station.lineColor,
+                description: station.description
+              })
+
+              // 分割线
+              Divider()
+                .color('#E5E5E5')
+                .strokeWidth(1)
+            }
+          })
         }
-        .height(60)
-        .alignItems(VerticalAlign.Center)
-
-        // 站点列表项
-        ForEach(this.favoriteStations, (station: StationInfo, index: number) => {
-          Column() {
-            // 添加描述文字
-            Text(station.description)
-              .fontSize(12)
-              .fontColor('#666666')
-              .margin({ left: 20, top: 5, right: 20 })
-              .textAlign(TextAlign.Start)
-              
-            FavoriteStationItem({
-              stationName: station.name,
-              stationEnglishName: station.englishName,
-              lineNumber: station.lineNumber,
-              stationNumber: station.stationNumber,
-              lineColor: station.lineColor,
-              description: station.description
-            })
-
-            // 分割线
-            Divider()
-              .color('#E5E5E5')
-              .strokeWidth(1)
-          }
-        })
+        .height('100%')
       }
-      .height('100%')
-      
-      // 固定在左上角的返回按钮
-      Text('󰃚')
-        .fontSize(35)
-        .position({ x: 20, y: 10 })
-        .onClick(() => {
-          router.back();
-        })
     }
+
+    // 固定在左上角的返回按钮
+    Text('󰃚')
+      .fontSize(35)
+      .position({ x: 20, y: 10 })
+      .onClick(() => {
+        router.back();
+      })
   }
 }
