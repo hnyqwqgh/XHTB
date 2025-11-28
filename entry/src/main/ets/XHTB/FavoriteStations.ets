@@ -9,6 +9,7 @@ interface StationInfo {
   lineNumber: string;
   stationNumber: string;
   lineColor: string;
+  description: string;
 }
 
 // 定义线路信息接口
@@ -193,6 +194,7 @@ struct FavoriteStationItem {
   @Prop lineNumber: string;
   @Prop stationNumber: string;
   @Prop lineColor: string;
+  @Prop description: string;
   @State isPlaying: boolean = false; // 播放状态
   private avPlayer: media.AVPlayer | null = null;
   private audioUrl: string = '';
@@ -382,42 +384,48 @@ struct FavoriteStations {
       englishName: 'Longping Road',
       lineNumber: '2',
       stationNumber: '2',
-      lineColor: getLineColor(1)
+      lineColor: getLineColor(1),
+      description: '小乔提醒您：“恋爱和战斗，都要勇往直前，龙平路站到了。”'
     },
     { 
       name: '界牌',
       englishName: 'Jiepai',
       lineNumber: '2',
       stationNumber: '4',
-      lineColor: getLineColor(1)
+      lineColor: getLineColor(1),
+      description: '貂蝉提醒您：“星光化作翅膀，长久闪烁，界牌站到了。”'
     },
     { 
       name: '成都行政学院',
       englishName: 'Chengdu Academy of Governance',
       lineNumber: '2',
       stationNumber: '7',
-      lineColor: getLineColor(1)
+      lineColor: getLineColor(1),
+      description: '瑶提醒您：“这是谁的小鹿，真厉害，成都行政学院站到了。”'
     },
     { 
       name: '塔子山公园',
       englishName: 'Tazishan Park',
       lineNumber: '2',
       stationNumber: '12',
-      lineColor: getLineColor(1)
+      lineColor: getLineColor(1),
+      description: '李白提醒您：“大河之剑天上来，塔子山公园站到了。”'
     },
     { 
       name: '白果林',
       englishName: 'Baiguolin',
       lineNumber: '2',
       stationNumber: '22',
-      lineColor: getLineColor(1)
+      lineColor: getLineColor(1),
+      description: '曜提醒您：“星光荡开宇宙，本人闪耀其中，白果林站到了。”'
     },
     { 
       name: '一品天下',
       englishName: 'Yipingtianxia',
       lineNumber: '2',
       stationNumber: '24',
-      lineColor: getLineColor(1)
+      lineColor: getLineColor(1),
+      description: '李信提醒您：“吾持剑锋，以筑长城，一品天下站到了。”'
     }
   ];
 
@@ -439,12 +447,20 @@ struct FavoriteStations {
         // 站点列表项
         ForEach(this.favoriteStations, (station: StationInfo, index: number) => {
           Column() {
+            // 添加描述文字
+            Text(station.description)
+              .fontSize(12)
+              .fontColor('#666666')
+              .margin({ left: 20, top: 5 })
+              .textAlign(TextAlign.Start)
+              
             FavoriteStationItem({
               stationName: station.name,
               stationEnglishName: station.englishName,
               lineNumber: station.lineNumber,
               stationNumber: station.stationNumber,
               lineColor: station.lineColor,
+              description: station.description
             })
 
             // 分割线
