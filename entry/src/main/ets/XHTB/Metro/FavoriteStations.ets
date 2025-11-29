@@ -512,13 +512,6 @@ struct FavoriteStations {
           // 站点列表项
           ForEach(this.favoriteStations, (station: StationInfo, index: number) => {
             Column() {
-              // 添加描述文字
-              Text(station.description)
-                .fontSize(12)
-                .fontColor('#666666')
-                .margin({ left: 20, top: 10, right: 20 })
-                .textAlign(TextAlign.Center)
-
               FavoriteStationItem({
                 stationName: station.name,
                 stationEnglishName: station.englishName,
@@ -527,6 +520,13 @@ struct FavoriteStations {
                 lineColor: station.lineColor,
                 description: station.description
               })
+              
+              // 添加描述文字
+              Text(station.description)
+                .fontSize(12)
+                .fontColor('#666666')
+                .margin({ left: 20, right: 20 , bottom: 10 })
+                .textAlign(TextAlign.Center)
 
               // 分割线
               Divider()

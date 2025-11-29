@@ -238,7 +238,7 @@ const StationTranslations = new Map<string, string>([
   ['天府商务区', 'Tianfu Commercial District'],
   ['秦皇寺', 'Qinhuangsi'],
   ['松林', 'Songlin'],
-  ['芦角', 'Lujaio'],
+  ['芦角', 'Lujiao'],
   ['钓鱼嘴', 'Diaoyuzui'],
   ['兰家沟', 'Lanjiagou'],
   // 7号线
@@ -957,7 +957,11 @@ struct SideTab {
                     .backgroundColor('#FFFFFF')
                     .width('100%')
                     .padding({ top: 10, bottom: 10 })
-                    
+                    // 根据是否为换乘站设置不同的内边距来间接调整视觉高度
+                    /*.padding({
+                      top: this.isTransferStation(result.stationName) ? 10 : 5,
+                      bottom: this.isTransferStation(result.stationName) ? 10 : 5
+                    })*/
                     // 添加灰色分割线（除了最后一项）
                     if (index < this.searchResults.length - 1) {
                       Divider()
@@ -1019,7 +1023,14 @@ struct SideTab {
                     .alignItems(VerticalAlign.Center)
                     .backgroundColor('#FFFFFF')
                     .width('100%')
-                    .padding({ top: 10, bottom: 10 })
+                    //.padding({ top: 10, bottom: 10 })
+
+                    // 根据是否为换乘站或站点名称过长设置不同的内边距来间接调整视觉高度
+                    .padding({
+                      top: this.isTransferStation(stationName) ? 10 : (stationName.length > 6 ? 8 : 2),
+                      bottom: this.isTransferStation(stationName) ? 10 : (stationName.length > 6 ? 8 : 2)
+                    })
+
                     // 点击行可以修改内容（示例）
                     .onClick(() => {
                       // 这里可以添加修改逻辑，例如弹出输入框
