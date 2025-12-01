@@ -808,7 +808,7 @@ struct SideTab {
           })
             .placeholderFont({ size: 14 })
             .fontSize(14)
-            .width('70%')
+            .layoutWeight(1)
             .height(40)
             .margin({ left: 10, right: 10 })
             .onChange((value: string) => {
@@ -816,9 +816,10 @@ struct SideTab {
               this.performSearch(value);
             })
 
-          // 返回按钮
+          // 收藏按钮
           Text('󰙲')
             .fontSize(35)
+            .margin({ right: 20 })
             .onClick(() => {
               router.pushUrl({ url: 'XHTB/Metro/FavoriteStations' }).catch((error: BusinessError) => {
                 console.error('Failed to navigate to FavoriteStations page. Cause: ' + error.message);
@@ -870,7 +871,6 @@ struct SideTab {
                       .layoutWeight(1)
                       .textAlign(TextAlign.Center)
                   }
-                  .width('50%')
                   .backgroundColor(this.currentTab === 0 ? '#182431' : '#F1F3F5')
                   .borderRadius(8)
                   .alignItems(VerticalAlign.Center)
@@ -880,6 +880,7 @@ struct SideTab {
                   })
                   .margin({ left: 5, right: 2.5 })
                   .padding({ top: 8, bottom: 8 })
+                  .constraintSize({ maxWidth: '45%' })
 
                   // 倒序显示tab
                   Row() {
@@ -890,7 +891,6 @@ struct SideTab {
                       .layoutWeight(1)
                       .textAlign(TextAlign.Center)
                   }
-                  .width('50%')
                   .backgroundColor(this.currentTab === 1 ? '#182431' : '#F1F3F5')
                   .borderRadius(8)
                   .alignItems(VerticalAlign.Center)
@@ -900,6 +900,7 @@ struct SideTab {
                   })
                   .margin({ left: 2.5, right: 5 })
                   .padding({ top: 8, bottom: 8 })
+                  .constraintSize({ maxWidth: '45%' })
                 }
                 .width('100%')
                 .alignItems(VerticalAlign.Center)
