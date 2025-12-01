@@ -651,22 +651,6 @@ struct FavoriteStations {
       description: '李信提醒您：“吾持剑锋，以筑长城，一品天下站到了。”'
     },
     {
-      name: '文明乘车',
-      englishName: '',
-      lineNumber: '',
-      stationNumber: '',
-      lineColor: getLineColor(0),
-      description: '“文明乘车，关爱他人。和谐共处，共建平安。乘客您好，请爱护公共卫生及设备设施，成都地铁邀您一路文明出行。”'
-    },
-    {
-      name: '文明乘车日',
-      englishName: '',
-      lineNumber: '',
-      stationNumber: '',
-      lineColor: getLineColor(0),
-      description: '“每月11日是成都地铁文明乘车日，敬老爱幼，礼让和谐，传递温暖，共享平安，让我们一同文明出行。”'
-    },
-    {
       name: '18号线语音播报',
       englishName: 'Line 18',
       lineNumber: '18',
@@ -689,12 +673,44 @@ struct FavoriteStations {
       description: '列车到站前，车站广播会不间断播放线路线别、列车编组及终点站提示信息，其中18号线采用女声播报，19号线采用男声播报，乘客可通过男女声音区分18、19号线列车。'
     },
     {
+      name: '文明乘车',
+      englishName: '',
+      lineNumber: '',
+      stationNumber: '',
+      lineColor: getLineColor(0),
+      description: '“文明乘车，关爱他人。和谐共处，共建平安。乘客您好，请爱护公共卫生及设备设施，成都地铁邀您一路文明出行。”'
+    },
+    {
+      name: '文明乘车日',
+      englishName: '',
+      lineNumber: '',
+      stationNumber: '',
+      lineColor: getLineColor(0),
+      description: '“每月11日是成都地铁文明乘车日，敬老爱幼，礼让和谐，传递温暖，共享平安，让我们一同文明出行。”'
+    },
+    {
       name: '扶梯',
       englishName: '',
       lineNumber: '',
       stationNumber: '',
       lineColor: getLineColor(0),
-      description: 'ft'
+      description: '请握紧扶手，注意脚下，不要倚靠扶梯，不要看手机。'
+    },
+    {
+      name: '扶梯',
+      englishName: '',
+      lineNumber: '',
+      stationNumber: '',
+      lineColor: getLineColor(0),
+      description: '供多开循环播放使用。'
+    },
+    {
+      name: '扶梯',
+      englishName: '',
+      lineNumber: '',
+      stationNumber: '',
+      lineColor: getLineColor(0),
+      description: '供多开循环播放使用。'
     }
   ];
 
