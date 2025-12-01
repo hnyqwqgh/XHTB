@@ -198,6 +198,8 @@ struct FavoriteStationItem {
   @State isPlaying: boolean = false; // 播放状态
   private avPlayer: media.AVPlayer | null = null;
   private audioUrl: string = '';
+  private shouldRepeat: boolean = false; // 是否应该重复播放
+  private repeatTimeoutId: number | null = null; // 重复播放的定时器ID
   tag: string = 'FavoriteStationItem';
 
   aboutToAppear() {
@@ -229,6 +231,13 @@ struct FavoriteStationItem {
         console.error(`${this.tag}: release player failed, error: ${JSON.stringify(error)}`);
       });
     }
+    // 清除定时器
+    if (this.repeatTimeoutId) {
+      clearTimeout(this.repeatTimeoutId);
+      this.repeatTimeoutId = null;
+    }
+    // 重置循环播放标志
+    this.shouldRepeat = false;
   }
 
   // 播放音频（总是从头开始播放）
@@ -253,15 +262,23 @@ struct FavoriteStationItem {
       console.log(`${this.tag}: AVPlayer created, setting url: ${this.audioUrl}`);
       this.avPlayer.url = this.audioUrl;
       
-      // 监听播放完成事件
-      this.avPlayer.on('stateChange', (state: string) => {
-        console.log(`${this.tag}: player state changed to: ${state}`);
-        if (state === 'completed') {
-          this.isPlaying = false;
-          // 播放完成后重置播放器以便重复播放
-          this.avPlayer?.reset();
-        }
-      });
+      // 如果是扶梯音频，启动循环播放
+      if (this.stationName === '扶梯') {
+        this.shouldRepeat = true;
+        this.startEscalatorLoop();
+      }
+      
+      // 监听播放完成事件 - 仅为非扶梯音频注册监听器
+      if (this.stationName !== '扶梯') {
+        const onPlaybackCompleted = (state: string) => {
+          console.log(`${this.tag}: player state changed to: ${state}`);
+          if (state === 'completed') {
+            this.isPlaying = false;
+          }
+        };
+        
+        this.avPlayer.on('stateChange', onPlaybackCompleted);
+      }
       
       // 监听错误事件
       this.avPlayer.on('error', (error: BusinessError) => {
@@ -279,6 +296,66 @@ struct FavoriteStationItem {
     } catch (error) {
       console.error(`${this.tag}: play audio failed, error: ${JSON.stringify(error)}`);
       this.isPlaying = false;
+    }
+  }
+
+  // 重复播放音频（用于扶梯音频的循环播放）
+  private async replayAudio() {
+    console.log(`${this.tag}: replayAudio called`);
+    try {
+      if (this.avPlayer && this.shouldRepeat) {
+        // 重置播放器
+        await this.avPlayer.reset();
+        // 设置URL
+        this.avPlayer.url = this.audioUrl;
+        // 准备并播放
+        await this.avPlayer.prepare();
+        await this.avPlayer.play();
+        // 更新播放状态
+        this.isPlaying = true;
+        console.log(`${this.tag}: escalator audio replayed successfully`);
+        
+        // 重新注册循环播放监听器
+        this.startEscalatorLoop();
+      }
+    } catch (error) {
+      console.error(`${this.tag}: replay audio failed, error: ${JSON.stringify(error)}`);
+      this.isPlaying = false;
+    }
+  }
+
+  // 开始循环播放扶梯音频
+  private startEscalatorLoop() {
+    console.log(`${this.tag}: startEscalatorLoop called`);
+    if (this.stationName !== '扶梯') return;
+    
+    this.shouldRepeat = true;
+    
+    // 监听播放完成事件，用于循环播放
+    const onPlaybackCompleted = (state: string) => {
+      console.log(`${this.tag}: player state changed to: ${state}`);
+      if (state === 'completed' && this.stationName === '扶梯' && this.shouldRepeat) {
+        console.log(`${this.tag}: escalator audio completed, will replay in 2 seconds`);
+        // 设置播放状态为false，表示当前未播放
+        this.isPlaying = false;
+        // 清除之前的定时器（如果有）
+        if (this.repeatTimeoutId) {
+          clearTimeout(this.repeatTimeoutId);
+          this.repeatTimeoutId = null;
+        }
+        // 2秒后重新播放
+        this.repeatTimeoutId = setTimeout(() => {
+          if (this.avPlayer && this.shouldRepeat) {
+            console.log(`${this.tag}: 2 seconds passed, starting replay`);
+            this.replayAudio();
+          }
+        }, 2000);
+      }
+    };
+    
+    // 注册播放完成事件监听器
+    if (this.avPlayer) {
+      this.avPlayer.on('stateChange', onPlaybackCompleted);
     }
   }
 
@@ -317,10 +394,34 @@ struct FavoriteStationItem {
           const player: media.AVPlayer = this.avPlayer as media.AVPlayer;
           await player.pause();
           this.isPlaying = false;
+          // 如果是扶梯音频，停止重复播放
+          if (this.stationName === '扶梯') {
+            this.shouldRepeat = false;
+            // 清除定时器
+            if (this.repeatTimeoutId) {
+              clearTimeout(this.repeatTimeoutId);
+              this.repeatTimeoutId = null;
+            }
+          }
         }
       } else {
         // 当前未播放，需要播放
         console.log(`${this.tag}: currently not playing, will play`);
+        // 如果是扶梯音频且已有播放器实例，直接播放而不需要重新创建
+        if (this.stationName === '扶梯' && this.avPlayer) {
+          console.log(`${this.tag}: reusing existing player for escalator audio`);
+          // 重置并重新播放
+          await this.avPlayer.reset();
+          this.avPlayer.url = this.audioUrl;
+          await this.avPlayer.prepare();
+          await this.avPlayer.play();
+          this.isPlaying = true;
+          // 启动循环播放
+          this.shouldRepeat = true;
+          this.startEscalatorLoop();
+          return;
+        }
+        
         // 如果已经有播放器实例，先释放它
         if (this.avPlayer) {
           console.log(`${this.tag}: releasing existing player`);
@@ -339,13 +440,23 @@ struct FavoriteStationItem {
         this.avPlayer = await media.createAVPlayer() as media.AVPlayer;
         this.avPlayer.url = this.audioUrl;
         
-        // 监听播放完成事件
-        this.avPlayer.on('stateChange', (state: string) => {
-          console.log(`${this.tag}: player state changed to: ${state}`);
-          if (state === 'completed') {
-            this.isPlaying = false;
-          }
-        });
+        // 如果是扶梯音频，启动循环播放
+        if (this.stationName === '扶梯') {
+          this.shouldRepeat = true;
+          this.startEscalatorLoop();
+        }
+        
+        // 监听播放完成事件 - 仅为非扶梯音频注册监听器
+        if (this.stationName !== '扶梯') {
+          const onPlaybackCompleted = (state: string) => {
+            console.log(`${this.tag}: player state changed to: ${state}`);
+            if (state === 'completed') {
+              this.isPlaying = false;
+            }
+          };
+          
+          this.avPlayer.on('stateChange', onPlaybackCompleted);
+        }
         
         // 监听错误事件
         this.avPlayer.on('error', (error: BusinessError) => {
