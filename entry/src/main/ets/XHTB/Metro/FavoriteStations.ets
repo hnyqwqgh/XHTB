@@ -304,23 +304,48 @@ struct FavoriteStationItem {
     console.log(`${this.tag}: replayAudio called`);
     try {
       if (this.avPlayer && this.shouldRepeat) {
-        // 重置播放器
+        // 确保播放器处于可重置状态
         await this.avPlayer.reset();
         // 设置URL
         this.avPlayer.url = this.audioUrl;
+        
+        // 确保播放器处于正确状态后再准备
+        await new Promise<void>(resolve => setTimeout(resolve, 100));
+        
         // 准备并播放
         await this.avPlayer.prepare();
         await this.avPlayer.play();
+        
         // 更新播放状态
         this.isPlaying = true;
         console.log(`${this.tag}: escalator audio replayed successfully`);
-        
-        // 重新注册循环播放监听器
-        this.startEscalatorLoop();
       }
     } catch (error) {
       console.error(`${this.tag}: replay audio failed, error: ${JSON.stringify(error)}`);
       this.isPlaying = false;
+      
+      // 如果是状态错误，尝试重新初始化整个播放流程
+      if (this.avPlayer && this.shouldRepeat) {
+        try {
+          await this.avPlayer.release();
+          this.avPlayer = null;
+          
+          // 重新创建播放器
+          this.avPlayer = await media.createAVPlayer();
+          this.avPlayer.url = this.audioUrl;
+          
+          // 确保播放器处于正确状态后再准备
+          await new Promise<void>(resolve => setTimeout(resolve, 100));
+          
+          await this.avPlayer.prepare();
+          await this.avPlayer.play();
+          
+          this.isPlaying = true;
+          console.log(`${this.tag}: escalator audio replayed successfully after re-initialization`);
+        } catch (reinitError) {
+          console.error(`${this.tag}: replay audio failed after re-initialization, error: ${JSON.stringify(reinitError)}`);
+        }
+      }
     }
   }
 
@@ -336,8 +361,6 @@ struct FavoriteStationItem {
       console.log(`${this.tag}: player state changed to: ${state}`);
       if (state === 'completed' && this.stationName === '扶梯' && this.shouldRepeat) {
         console.log(`${this.tag}: escalator audio completed, will replay in 2 seconds`);
-        // 设置播放状态为false，表示当前未播放
-        this.isPlaying = false;
         // 清除之前的定时器（如果有）
         if (this.repeatTimeoutId) {
           clearTimeout(this.repeatTimeoutId);
@@ -349,12 +372,14 @@ struct FavoriteStationItem {
             console.log(`${this.tag}: 2 seconds passed, starting replay`);
             this.replayAudio();
           }
-        }, 2000);
+        }, 1000);
       }
     };
     
     // 注册播放完成事件监听器
     if (this.avPlayer) {
+      // 先移除已有的监听器，避免重复注册
+      this.avPlayer.off('stateChange', onPlaybackCompleted);
       this.avPlayer.on('stateChange', onPlaybackCompleted);
     }
   }
@@ -410,16 +435,24 @@ struct FavoriteStationItem {
         // 如果是扶梯音频且已有播放器实例，直接播放而不需要重新创建
         if (this.stationName === '扶梯' && this.avPlayer) {
           console.log(`${this.tag}: reusing existing player for escalator audio`);
-          // 重置并重新播放
-          await this.avPlayer.reset();
-          this.avPlayer.url = this.audioUrl;
-          await this.avPlayer.prepare();
-          await this.avPlayer.play();
-          this.isPlaying = true;
-          // 启动循环播放
-          this.shouldRepeat = true;
-          this.startEscalatorLoop();
-          return;
+          try {
+            // 重置并重新播放
+            await this.avPlayer.reset();
+            this.avPlayer.url = this.audioUrl;
+            await this.avPlayer.prepare();
+            await this.avPlayer.play();
+            this.isPlaying = true;
+            // 启动循环播放
+            this.shouldRepeat = true;
+            this.startEscalatorLoop();
+            return;
+          } catch (error) {
+            console.error(`${this.tag}: reuse player failed, error: ${JSON.stringify(error)}`);
+            // 如果重用失败，释放播放器并重新创建
+            await this.avPlayer.release();
+            this.avPlayer = null;
+            // 继续执行后续创建新播放器的逻辑
+          }
         }
         
         // 如果已经有播放器实例，先释放它
