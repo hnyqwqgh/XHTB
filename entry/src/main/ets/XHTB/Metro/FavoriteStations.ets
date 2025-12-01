@@ -215,7 +215,8 @@ struct FavoriteStationItem {
       ['文明乘车日', 'http://www.hnyqwq.cn/hvideo/audios/metro/11.mp3'],
       ['18号线语音播报', 'http://www.hnyqwq.cn/hvideo/audios/metro/18.mp3'],
       ['19号线语音播报', 'http://www.hnyqwq.cn/hvideo/audios/metro/19.mp3'],
-      ['扶梯', 'http://www.hnyqwq.cn/hvideo/audios/metro/ft.mp3']
+      ['扶梯', 'http://www.hnyqwq.cn/hvideo/audios/metro/ft.mp3'],
+      ['扶梯（单次）', 'http://www.hnyqwq.cn/hvideo/audios/metro/ft.mp3']
     ]);
     
     this.audioUrl = audioUrls.get(this.stationName) || '';
@@ -687,6 +688,14 @@ struct FavoriteStations {
       stationNumber: '',
       lineColor: getLineColor(0),
       description: '“每月11日是成都地铁文明乘车日，敬老爱幼，礼让和谐，传递温暖，共享平安，让我们一同文明出行。”'
+    },
+    {
+      name: '扶梯（单次）',
+      englishName: '',
+      lineNumber: '',
+      stationNumber: '',
+      lineColor: getLineColor(0),
+      description: '请握紧扶手，注意脚下，不要倚靠扶梯，不要看手机。'
     },
     {
       name: '扶梯',
