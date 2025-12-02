@@ -6,12 +6,12 @@
         "type": "HarmonyOS",
         "material": {
           "storeFile": "D:/Huawei/xh/xh.p12",
-          "storePassword": "00000018D16CDDE1E8982484A7A7DC0D55D47EA18E7E83378476176DE698A1AC774425A2CEF03F29",
+          "storePassword": "0000001800C5E40B635D29A44D13AC96AF253EBEA6B0A9268A3A4151AF939B91F9A5D90DDFC88EDD",
           "keyAlias": "hvideo",
-          "keyPassword": "000000181E56CD685A49C96F24A0B107A4D949F4B88CDEE499A2F8429504965AAF4772C9CEB83FB5",
+          "keyPassword": "0000001891A916CA7727B5E32B4593DA7EBC4FD1C2C973C02443097F534F411B97254D860D82D645",
           "signAlg": "SHA256withECDSA",
-          "profile": "D:/Huawei/xh/xhdebugDebug.p7b",
-          "certpath": "D:/Huawei/xh/xhdebug.cer"
+          "profile": "D:/HUAWEI/xh/xhRelease.p7b",
+          "certpath": "D:/HUAWEI/xh/xh.cer"
         }
       }
     ],
@@ -19,7 +19,7 @@
       {
         "name": "default",
         "signingConfig": "default",
-        "compatibleSdkVersion": "6.0.0(20)",
+        "compatibleSdkVersion": "5.0.0(12)",
         "targetSdkVersion": "6.0.1(21)",
         "runtimeOS": "HarmonyOS",
         "buildOption": {
