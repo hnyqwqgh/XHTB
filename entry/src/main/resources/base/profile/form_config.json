@@ -3,7 +3,7 @@
     {
       "name": "startApp",
       "description": "Click to start app",
-      "src": "./ets/StartApp/pages/StartApp.ets",
+      "src": "./ets/Cards/pages/StartApp.ets",
       "uiSyntax": "arkts",
       "window": {
         "designWidth": 720,
