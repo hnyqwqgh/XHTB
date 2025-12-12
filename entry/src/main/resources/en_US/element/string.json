@@ -462,6 +462,14 @@
     {
       "name": "Internetselfsuccess",
       "value": "The intro video will automatically play, indicating that you have connected to the Internet; otherwise, it will not be able to play"
+    },
+    {
+      "name": "sub_title2_value2",
+      "value": "Create QR Code"
+    },
+    {
+      "name": "sub_title2_value3",
+      "value": "OCR"
     }
   ]
 }

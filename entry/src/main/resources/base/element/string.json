@@ -402,7 +402,15 @@
 		},
 		{
 			"name": "sub_title2_value1",
-			"value": "朗读&生成二维码"
+			"value": "朗读文字"
+		},
+		{
+			"name": "sub_title2_value2",
+			"value": "生成二维码"
+		},
+		{
+			"name": "sub_title2_value3",
+			"value": "文本OCR"
 		},
 		{
 			"name": "sub_title3_value1",

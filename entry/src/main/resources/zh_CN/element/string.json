@@ -462,6 +462,14 @@
     {
       "name": "Internetselfsuccess",
       "value": "自动播放intro视频 即表示已连接到互联网，否则会无法播放"
+    },
+    {
+      "name": "sub_title2_value2",
+      "value": "生成二维码"
+    },
+    {
+      "name": "sub_title2_value3",
+      "value": "文本OCR"
     }
   ]
 }
