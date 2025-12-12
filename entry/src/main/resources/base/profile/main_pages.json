@@ -8,6 +8,7 @@
     "pages/ShareUIPage",
     "pages/ShareExtDialog",
     "XHTB/ReadQR",
-    "XHTB/Internet"
+    "XHTB/Internet",
+    "XHTB/DocScan/OCR"
   ]
 }
