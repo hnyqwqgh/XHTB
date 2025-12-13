@@ -4,19 +4,19 @@
 
 >> nova 14 Ultra MRT-AL10
 
->>> HarmonyOS版本：HarmonyOS 6.0.0.115 (SP16C00E115R5P5patch03)
+>>> HarmonyOS版本：HarmonyOS 6.0.0.115 (SP16C00E115R5P5patch08)
 
 >>> API版本：6.0.1(21)
 
 >> HUAWEI Mate 60 BRA-AL00
 
->>> HarmonyOS版本：HarmonyOS 6.0.0.115 (SP16C00E117R4P6patch03)
+>>> HarmonyOS版本：HarmonyOS 6.0.0.115 (SP16C00E117R4P6patch10)
 
 >>> API版本：6.0.1(21)
 
 >> HUAWEI MatePad Pro 12.2" MRO-W00
 
->>> HarmonyOS版本：HarmonyOS 6.0.0.115 (SP8C00E115R1P4patch05)
+>>> HarmonyOS版本：HarmonyOS 6.0.0.115 (SP8C00E115R1P4patch10)
 
 >>> API版本：6.0.1(21)
 
@@ -26,7 +26,7 @@
 >> - **折叠屏**：HUAWEI Mate X6 / HUAWEI Mate X7
 >> - **阔折叠**：HUAWEI Pura X
 >> - **三折叠**：HUAWEI Mate XTs | Ultimate Design
->> - **平板**：HUAWEI MatePad Pro 13.2" 2025 / HUAWEI MatePad Pro 12.2" 2025 / HUAWEI MatePad mini
+>> - **平板**：HUAWEI MatePad Pro 13.2" 2025 / HUAWEI MatePad Pro 12.2" 2025 / HUAWEI MatePad mini / HUAWEI MatePad Edge
 >> - **2in1**：HUAWEI MateBook Pro
 >> - **折叠2in1**：HUAWEI MateBook Fold Ultimate Design
 >> - **穿戴设备**：
