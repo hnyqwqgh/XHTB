@@ -13,7 +13,7 @@ export struct QRCodePage {
   build() {
     Column({ space: 0 }) {
       Row() {
-        Text('󰃚') // 自定义返回图标
+        SymbolGlyph($r('sys.symbol.chevron_left_circle')) // 自定义返回图标
           .fontSize(35)
           .margin({ left: 20 }) // 左侧留白
           .onClick(() => {

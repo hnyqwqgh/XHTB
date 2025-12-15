@@ -185,12 +185,16 @@ export struct OCR {
   build() {
     Column() {
       Row() {
-        SymbolGlyph($r('sys.symbol.chevron_left_circle'))
+        SymbolGlyph($r('sys.symbol.chevron_left_circle')) // 自定义返回图标
           .fontSize(35)
-          .margin({ left: 20 })
+          .margin({ left: 20 }) // 左侧留白
           .onClick(() => {
             router.back();
           })
+      }
+      .width('100%')
+
+      Row() {
         CollaborationServiceStateDialog({
           onState: (stateCode: number, bufferType: string, buffer: ArrayBuffer): void => this.doInsertPicture(stateCode,
             bufferType, buffer)
