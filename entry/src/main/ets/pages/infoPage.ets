@@ -90,7 +90,7 @@ export struct infoPage {
         Column() {
           Row()
           {
-            Text('󰃚') // 自定义返回图标
+            SymbolGlyph($r('sys.symbol.chevron_left_circle')) // 自定义返回图标
               .fontSize(35)
               .margin({ left: 20 }) // 左侧留白
               .onClick(() => {
@@ -156,6 +156,7 @@ export struct infoPage {
               Image($r('app.media.CIcon'))
                 .width(60)
                 .height(60)
+                .draggable(false)
               /*Text(versionSegsr)
                 .fontWeight(700)
                 .fontSize('16fp')
