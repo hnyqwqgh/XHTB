@@ -184,6 +184,12 @@ export struct OCR {
   build() {
     Column() {
       Row() {
+        Text('󰃚') // 自定义返回图标
+          .fontSize(35)
+          .margin({ left: 20 }) // 左侧留白
+          .onClick(() => {
+            router.back();
+          })
         CollaborationServiceStateDialog({
           onState: (stateCode: number, bufferType: string, buffer: ArrayBuffer): void => this.doInsertPicture(stateCode,
             bufferType, buffer)
