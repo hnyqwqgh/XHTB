@@ -222,7 +222,7 @@
     },
     {
       "name":"pick",
-      "value":"\uDB80\uDD28 Create QRCode"
+      "value": "\uDB81\uDCE5 Pick"
     },
     {
       "name":"takephotos",
@@ -470,6 +470,10 @@
     {
       "name": "sub_title2_value3",
       "value": "OCR"
+    },
+    {
+      "name": "createqrcode",
+      "value": "\uDB80\uDD28 Create QR Code"
     }
   ]
 }

@@ -222,7 +222,7 @@
     },
     {
       "name":"pick",
-      "value":"\uDB80\uDD28 生成二维码"
+      "value": "\uDB81\uDCE5 选图"
     },
     {
       "name":"takephotos",
@@ -470,6 +470,10 @@
     {
       "name": "sub_title2_value3",
       "value": "文本OCR"
+    },
+    {
+      "name": "createqrcode",
+      "value": "\uDB80\uDD28 生成二维码"
     }
   ]
 }

@@ -38,7 +38,7 @@ export struct QRCodePage {
             AppStorage.set('networkVideoSrc', networkVideoSrc);
           })
 
-        Button($r('app.string.pick'))
+        Button($r('app.string.createqrcode'))
           .margin({ top: 10 })
           .onClick(() => {
             this.pixelMap = undefined;

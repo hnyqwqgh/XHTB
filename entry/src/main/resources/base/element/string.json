@@ -221,8 +221,12 @@
 			"value": "③当前准备分享 ↓"
 		},
 		{
-			"name":"pick",
+			"name":"createqrcode",
 			"value":"\uDB80\uDD28 生成二维码"
+		},
+		{
+			"name":"pick",
+			"value":"\uDB81\uDCE5 Pick"
 		},
 		{
 			"name":"takephotos",
