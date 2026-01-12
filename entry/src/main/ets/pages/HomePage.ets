@@ -49,7 +49,7 @@ export struct HomePage {
   @StorageLink('networkVideoSrc') networkVideoSrc: string = '';
   @State isPlaying: boolean = true;
   @State picture: PixelMap | undefined = undefined;
-  //@State networkPreviewUri: string = 'https://alliance-communityfile-drcn.dbankcdn.com/FileServer/getFile/cmtyPub/011/111/111/0000000000011111111.20250814201313.54764824779401317176433540350951:50001231000000:2800:0987A5ACC48494286FD28FDE9DDACFBCA0C24FD30400A3FE0AD75E2BC2A9EB2D.png'; // 默认网络预览图
+  //@State networkPreviewUri: string = ''; // 默认网络预览图
   @State sharepng: string = 'https://www.hnyqwq.cn/hvideo/share.png'
   //@State networkPreviewUri: Resource = $r('app.media.homepageback');
   @State savefileUri: string = ' ';
