@@ -127,7 +127,7 @@ export struct HomePage {
   private async share() {
     let uiContext: UIContext = this.getUIContext();
     if (!this.networkVideoSrc) {
-      promptAction.showToast({ message: $r('app.string.nopeng') });
+      promptAction.showToast({ message: this.context.resourceManager.getStringSync($r('app.string.nopeng').id) });
       return;
     }
     let contextFaker: Context = uiContext.getHostContext() as Context;
@@ -452,14 +452,14 @@ export struct HomePage {
       harmonyShare.on('knockShare', (sharableTarget: harmonyShare.SharableTarget) => {
         // 在回调中检查 networkVideoSrc 是否为有效链接
         if (!this.isValidUrl(this.networkVideoSrc)) {
-          sharableTarget.clarifyNonShare({ message: '请在支持碰一碰分享的界面再试' });
+          sharableTarget.clarifyNonShare({ message: this.context.resourceManager.getStringSync($r('app.string.nopengsystem').id) });
         } else {
           this.whiteCallback(sharableTarget);
         }
       });
       this.whiteStatus = true;
     } else {
-      promptAction.showToast({ message: $r('app.string.nopeng') });
+      promptAction.showToast({ message: this.context.resourceManager.getStringSync($r('app.string.nopeng').id) });
     }
   }
 

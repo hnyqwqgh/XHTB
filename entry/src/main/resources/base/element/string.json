@@ -42,11 +42,11 @@
 		},
 		{
 			"name": "shareinfo",
-			"value": "文本/链接分享"
+			"value": "链接分享"
 		},
 		{
 			"name": "pengyipeng_title",
-			"value": "分享当前的文本/链接"
+			"value": "分享当前的链接"
 		},
 		{
 			"name": "pengyipeng_description",
@@ -57,8 +57,12 @@
 			"value": "星河工具盒 · 隔空传送分享"
 		},
 		{
+			"name":"nopengsystem",
+			"value":"请确保分享的内容为可打开的链接 ⪩ ⪨"
+		},
+		{
 			"name":"nopeng",
-			"value":"没有可以分享的文本/链接 ⪩ ⪨"
+			"value": "没有可以分享的链接 ⪩ ⪨"
 		},
 		{
 			"name":"aboutpage",
@@ -114,7 +118,7 @@
 		},
 		{
 			"name":"testinput",
-			"value":"\uDB81\uDC94 输入文本/链接"
+			"value": "\uDB81\uDC94 输入链接"
 		},
 		{
 			"name":"scancode",

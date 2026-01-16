@@ -42,11 +42,11 @@
     },
     {
       "name": "shareinfo",
-      "value": "Share text or Link"
+      "value": "Share Link"
     },
     {
       "name": "pengyipeng_title",
-      "value": "Share text or Link"
+      "value": "Share Link"
     },
     {
       "name": "pengyipeng_description",
@@ -58,7 +58,7 @@
     },
     {
       "name":"nopeng",
-      "value": "It seems there's no text or link to share at the moment. ⪩ ⪨"
+      "value": "It seems there's no link to share at the moment. ⪩ ⪨"
     },
     {
       "name":"aboutpage",
@@ -114,7 +114,7 @@
     },
     {
       "name":"testinput",
-      "value":"\uDB81\uDC94 Text or link to share"
+      "value": "\uDB81\uDC94 Enter link to share"
     },
     {
       "name":"scancode",
@@ -474,6 +474,10 @@
     {
       "name": "createqrcode",
       "value": "\uDB80\uDD28 Create QR Code"
+    },
+    {
+      "name": "nopengsystem",
+      "value": "Please ensure that the content you share is a clickable link ⪩ ⪨"
     }
   ]
 }
