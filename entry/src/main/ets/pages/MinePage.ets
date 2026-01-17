@@ -3,6 +3,7 @@ import { BusinessError } from '@kit.BasicServicesKit';
 import router from '@ohos.router';
 import { commentManager } from '@kit.AppGalleryKit';
 import { hilog } from '@kit.PerformanceAnalysisKit';
+import { GlobalInfoModel } from '../common/GlobalInfoModel';
 
 @Observed
 class SettingMenu {
@@ -267,7 +268,7 @@ export struct MinePage {
       }
       .width('100%')
       .height('100%')
-      .padding({ top: 30 }) // 为标题栏留出空间
+      .padding({ top: 30 + (AppStorage.get<GlobalInfoModel>('GlobalInfoModel')?.statusBarHeight ?? 0) }) // 为标题栏留出空间并添加安全区
     }
     .width('100%')
     .height('100%')

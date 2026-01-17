@@ -8,6 +8,7 @@ import { deviceInfo } from '@kit.BasicServicesKit';
 
 import { AppUtil } from '@pura/harmony-utils';
 import { promptAction } from '@kit.ArkUI';
+import { GlobalInfoModel } from '../common/GlobalInfoModel';
 
 let bundleName = AppUtil.getBundleName();
 let versionCode = AppUtil.getVersionCode();
@@ -244,7 +245,7 @@ export struct infoPage {
       .width('100%')
       .height('100%')
       //.backgroundColor($r('app.color.start_window_background'))
-      .padding({ top: 10 }) // 为标题栏留出空间
+      .padding({ top: 10 + (AppStorage.get<GlobalInfoModel>('GlobalInfoModel')?.statusBarHeight ?? 0) }) // 为标题栏留出空间并添加安全区
     }
     .scrollable(ScrollDirection.Vertical)
     .height('100%')

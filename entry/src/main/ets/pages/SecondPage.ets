@@ -3,6 +3,7 @@ import { CommonConstants, ScrollPosition } from '../constants/CommonConstants';
 import { ListDataConstants } from '../constants/ListDataConstants';
 import GridComponent from '../model/GridComponent';
 import { featureGridData, GridData, otherGridDataList } from '../model/GridListDataSources';
+import { GlobalInfoModel } from '../common/GlobalInfoModel';
 
 @Entry
 @Component
@@ -23,10 +24,11 @@ export struct SecondPage {
           .fontSize($r('app.float.page_title_font_size'))
           .fontWeight(FontWeight.Bold)
       }
-      .margin({ top: 10 })
+      .margin({ top: 10, bottom: 10 })
       .justifyContent(FlexAlign.Center)
       .width(CommonConstants.FULL_PERCENT)
       .height($r('app.float.page_title_height'))
+      .padding({ top: (AppStorage.get<GlobalInfoModel>('GlobalInfoModel')?.statusBarHeight ?? 0) })
 
       Stack({ alignContent: Alignment.Top }) {
         Scroll(this.scrollerForScroll) {

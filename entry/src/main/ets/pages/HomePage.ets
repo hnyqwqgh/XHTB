@@ -22,6 +22,7 @@ import { fileIo } from '@kit.CoreFileKit';
 import { photoAccessHelper } from '@kit.MediaLibraryKit';
 import MediaFileUri from '../media/MediaFileUri';
 import KnockShareGuideCard, { CardRes } from '../model/KnockShareGuideCard';
+import { GlobalInfoModel } from '../common/GlobalInfoModel';
 
 //点光源效果
 /*import { hdsEffect } from '@kit.UIDesignKit';*/
@@ -593,8 +594,8 @@ export struct HomePage {
           Image(this.sharepng)
             .width(this.imageAspectRatio < 1 ? '60%' : '80%')
             .height(this.imageAspectRatio < 1 ? 'auto' : '80%')
-            .margin({ 
-              bottom: '3%' 
+            .margin({
+              bottom: '3%'
             })
             .objectFit(ImageFit.Contain)
             .blur(0) // 设置图片模糊效果为不模糊
@@ -624,6 +625,7 @@ export struct HomePage {
         }
         .width('100%')
         .height(this.imageAspectRatio < 1 ? 'auto' : 300)
+        .margin({ top: (AppStorage.get<GlobalInfoModel>('GlobalInfoModel')?.statusBarHeight ?? 0) })
         Row()
         {
           Text($r('app.string.sharepngon'))
