@@ -50,6 +50,7 @@ export struct HomePage {
   @StorageLink('networkVideoSrc') networkVideoSrc: string = '';
   @State isPlaying: boolean = true;
   @State picture: PixelMap | undefined = undefined;
+  @State localPixelMap: PixelMap | undefined = undefined; // 本地图片的PixelMap
   //@State networkPreviewUri: string = ''; // 默认网络预览图
   @State sharepng: string = 'https://www.hnyqwq.cn/hvideo/share.png'
   //@State networkPreviewUri: Resource = $r('app.media.homepageback');
@@ -71,6 +72,7 @@ export struct HomePage {
   // 添加一个状态来存储图片的宽高比
   @State imageAspectRatio: number = 1; // 默认为1:1
   @State isImageLoaded: boolean = false; // 图片是否已加载
+  @State imageKey: string = ''; // 图片key用于强制刷新
 
   //隔空投送
   private immersiveListening() {
@@ -142,9 +144,19 @@ export struct HomePage {
       // 验证文件是否真的存在
       const stat = fileIo.statSync(targetPath);
       hilog.info(0x0000, 'localsharepng' , 'File verified, size: ' + stat.size);
+
+      // 直接加载为 PixelMap
+      const imageSource = image.createImageSource(targetPath);
+      this.localPixelMap = await imageSource.createPixelMap();
+      hilog.info(0x0000, 'localsharepng' , 'PixelMap created: ' + (this.localPixelMap ? 'success' : 'failed'));
     } catch (error) {
       hilog.error(0x0000, 'localsharepng' , 'Copy failed: ' + JSON.stringify(error));
     }
+
+    // 强制刷新图片显示
+    this.imageKey = Date.now().toString();
+    // 重新获取图片宽高比以更新显示
+    await this.getImageAspectRatio();
   }
 
   private openPhoto(): Promise<string> {
@@ -591,22 +603,36 @@ export struct HomePage {
 
         Stack() {
           // 根据宽高比动态决定图片尺寸
-          Image(this.sharepng)
-            .width(this.imageAspectRatio < 1 ? '60%' : '80%')
-            .height(this.imageAspectRatio < 1 ? 'auto' : '80%')
-            .margin({
-              bottom: '3%'
-            })
-            .objectFit(ImageFit.Contain)
-            .blur(0) // 设置图片模糊效果为不模糊
-            .linearGradientBlur(this.imageAspectRatio < 1 ? 60 : 60,
-              { fractionStops: [[0, 0], [0, 0.33], [1, 0.66], [1, 1]], direction: GradientDirection.Bottom })
-            .borderRadius(20) // 图片圆角
-            .onComplete(() => {
-              // 图片加载完成后尝试获取其宽高比
-              // 使用异步方法获取图片信息
-              this.getImageAspectRatio();
-            })
+          if (this.localPixelMap) {
+            // 使用 PixelMap 显示本地选择的图片
+            Image(this.localPixelMap)
+              .width(this.imageAspectRatio < 1 ? '60%' : '80%')
+              .height(this.imageAspectRatio < 1 ? 'auto' : '80%')
+              .margin({
+                bottom: '3%'
+              })
+              .objectFit(ImageFit.Contain)
+              .blur(0)
+              .linearGradientBlur(this.imageAspectRatio < 1 ? 60 : 60,
+                { fractionStops: [[0, 0], [0, 0.33], [1, 0.66], [1, 1]], direction: GradientDirection.Bottom })
+              .borderRadius(20)
+          } else {
+            // 使用 URL 显示图片
+            Image(this.sharepng)
+              .width(this.imageAspectRatio < 1 ? '60%' : '80%')
+              .height(this.imageAspectRatio < 1 ? 'auto' : '80%')
+              .margin({
+                bottom: '3%'
+              })
+              .objectFit(ImageFit.Contain)
+              .blur(0)
+              .linearGradientBlur(this.imageAspectRatio < 1 ? 60 : 60,
+                { fractionStops: [[0, 0], [0, 0.33], [1, 0.66], [1, 1]], direction: GradientDirection.Bottom })
+              .borderRadius(20)
+              .onComplete(() => {
+                this.getImageAspectRatio();
+              })
+          }
           Text(this.pengtitle)
             .fontWeight(600)
             .fontSize('20fp')
