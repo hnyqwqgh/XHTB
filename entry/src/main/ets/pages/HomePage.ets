@@ -304,23 +304,23 @@ export struct HomePage {
     if (!text || text.trim() === '') {
       return null;
     }
-    
+
     const trimmedText = text.trim();
     let startIndex = -1;
-    
+
     // 查找 http:// 或 https:// 的起始位置
     for (let i = 0; i < trimmedText.length - 6; i++) {
-      if (trimmedText.substr(i, 7) === 'http://' || 
+      if (trimmedText.substr(i, 7) === 'http://' ||
           (i < trimmedText.length - 7 && trimmedText.substr(i, 8) === 'https://')) {
         startIndex = i;
         break;
       }
     }
-    
+
     if (startIndex === -1) {
       return null;
     }
-    
+
     // 提取URL直到遇到空白字符或常见结束符
     let endIndex = startIndex;
     const endChars = [' ', '\n', '\t', '"', "'", '<', '>', '，', '。', '！', '？', '【', '】'];
@@ -331,14 +331,14 @@ export struct HomePage {
       }
       endIndex++;
     }
-    
+
     const extractedUrl = trimmedText.substring(startIndex, endIndex);
-    
+
     // 验证提取的URL是否有效
     if (this.isValidUrl(extractedUrl)) {
       return extractedUrl;
     }
-    
+
     return null;
   }
 
@@ -493,6 +493,44 @@ export struct HomePage {
     Scroll()
     {
       Column() {
+
+        Stack() {
+          Row() {
+            Image(this.sharepng)
+            //.width('1100px')
+              .height('1500px')
+              .height('80%')
+              .width('80%')
+              .margin({ left: '5%', right: '5%' })
+              .margin({ bottom: '3%' }) // 图片下方留白
+              .objectFit(ImageFit.ScaleDown)
+              .blur(0) // 设置图片模糊效果为不模糊
+              .linearGradientBlur(60,
+                { fractionStops: [[0, 0], [0, 0.33], [1, 0.66], [1, 1]], direction: GradientDirection.Bottom })
+
+          }
+          .margin({ top: 20 })
+          .clip(true) // 如这里不设置clip为true，则Row组件的圆角不会限制其中的Image组件，Image组件的四个角会超出Row
+          .borderRadius(20)
+          .justifyContent(FlexAlign.Center) // 垂直方向上居中
+          Text($r('app.string.pengyipeng_title'))
+            .fontWeight(600)
+            .fontSize('20fp')
+            .margin({ top: 120 })
+            .fontWeight(FontWeight.Bold)
+          Text($r('app.string.pengyipeng_description'))
+            .fontWeight(600)
+            .fontSize('10fp')
+            .margin({ top: 170 })
+            .opacity(0.5)
+            .fontColor($r('app.color.version_color_182431'))
+          Image($r('app.media.CIcon'))
+            .width(20)
+            .height(20)
+            .margin({ top: 220 })
+        }
+        .width('100%')
+        .height(300)
         Row()
         {
           Text($r('app.string.sharepngon'))
@@ -616,7 +654,7 @@ export struct HomePage {
           .onChange((networkVideoSrc: string) => {
             // 清除之前的防抖定时器
             clearTimeout(this.urlDebounceTimer);
-            
+
             // 设置新的防抖定时器，300ms后执行
             this.urlDebounceTimer = setTimeout(() => {
               // 尝试从输入文本中提取链接
