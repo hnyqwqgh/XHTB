@@ -641,7 +641,7 @@ export struct HomePage {
               Image(this.localPixelMap)
                 .width(this.imageAspectRatio < 1 ? '60%' : '80%')
                 .height(this.imageAspectRatio < 1 ? 'auto' : '80%')
-                .objectFit(ImageFit.Cover)
+                .objectFit(ImageFit.Contain)
                 .blur(0)
                 .linearGradientBlur(this.imageAspectRatio < 1 ? 60 : 60,
                   { fractionStops: [[0, 0], [0, 0.33], [1, 0.66], [1, 1]], direction: GradientDirection.Bottom })
@@ -649,13 +649,14 @@ export struct HomePage {
             }
             .border({ width: 1, color: 0xCCCCCC })
             .borderRadius(20)
+            .margin({ top: this.imageAspectRatio < 1 ? 0 : 0 })
           } else {
             // 使用 URL 显示图片
             Column() {
               Image(this.sharepng)
                 .width(this.imageAspectRatio < 1 ? '60%' : '80%')
                 .height(this.imageAspectRatio < 1 ? 'auto' : '80%')
-                .objectFit(this.imageAspectRatio < 1 ? ImageFit.Contain : ImageFit.Cover)
+                .objectFit(ImageFit.Contain)
                 .blur(0)
                 .linearGradientBlur(this.imageAspectRatio < 1 ? 60 : 60,
                   { fractionStops: [[0, 0], [0, 0.33], [1, 0.66], [1, 1]], direction: GradientDirection.Bottom })
@@ -666,6 +667,7 @@ export struct HomePage {
             }
             .border({ width: 1, color: 0xCCCCCC })
             .borderRadius(20)
+            .margin({ top: this.imageAspectRatio < 1 ? 0 : 0 })
           }
           Text(this.pengtitle)
             .fontWeight(600)
