@@ -16,6 +16,7 @@ import { fileUri } from '@kit.CoreFileKit';
 import request from '@ohos.request';
 import router from '@ohos.router';
 import { image } from '@kit.ImageKit';
+import { effectKit } from '@kit.ArkGraphics2D';
 
 //本地
 import { fileIo } from '@kit.CoreFileKit';
@@ -88,6 +89,9 @@ export struct HomePage {
   // 顶部胶囊按钮
   @State selectedShareMode: number = 0; // 0: 碰一碰, 1: 隔空传输
   @State currentDescription: Resource = $r('app.string.pengyipeng_description'); // 当前显示的描述
+
+  // 主颜色获取相关
+  @State mainColor: string = '#FFFFFF'; // 获取的主颜色，用于文字背景
 
   //隔空投送
   private immersiveListening() {
@@ -188,6 +192,11 @@ export struct HomePage {
     this.imageKey = Date.now().toString();
     // 重新获取图片宽高比以更新显示
     await this.getImageAspectRatio();
+
+    // 如果是横屏+隔空模式，获取主颜色
+    if (this.imageAspectRatio >= 1 && this.selectedShareMode === 1) {
+      await this.extractMainColor();
+    }
 
     console.log('=== selectImage 结束 ===');
   }
@@ -606,6 +615,10 @@ export struct HomePage {
         this.debugFileExists = true;
         this.sharepng = 'file://' + imagePath;
         console.log('图片文件已找到并更新: ' + imagePath);
+        // 如果是横屏+隔空模式，获取主颜色
+        if (this.imageAspectRatio >= 1 && this.selectedShareMode === 1) {
+          this.extractMainColor();
+        }
       }
     } catch (error) {
       // 文件不存在,不更新图片
@@ -632,7 +645,7 @@ export struct HomePage {
     try {
       let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
       let imageSource: image.ImageSource;
-      
+
       if (this.sharepng.startsWith('http://') || this.sharepng.startsWith('https://')) {
         // 如果是网络图片，使用本地缓存文件
         let imagePath = context.filesDir + '/pengyipeng' + this.imageExtension;
@@ -655,6 +668,57 @@ export struct HomePage {
       console.error('Failed to get image info: ' + JSON.stringify(error));
       // 如果获取失败，默认按原始方式处理
       this.isImageLoaded = true;
+    }
+  }
+
+  // 使用 ColorPicker 获取图片主颜色
+  private async extractMainColor(): Promise<void> {
+    try {
+      let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
+      let pixelMap: PixelMap;
+
+      if (this.localPixelMap) {
+        // 使用本地选择的 PixelMap
+        pixelMap = this.localPixelMap;
+      } else {
+        // 从文件加载 PixelMap
+        let imagePath: string;
+        if (this.sharepng.startsWith('file://')) {
+          imagePath = this.sharepng.substring(7); // 移除 'file://' 前缀
+        } else {
+          imagePath = context.filesDir + '/pengyipeng' + this.imageExtension;
+        }
+
+        const imageSource = image.createImageSource(imagePath);
+        pixelMap = await imageSource.createPixelMap();
+      }
+
+      // 使用 ColorPicker 获取主颜色
+      effectKit.createColorPicker(pixelMap, (err: BusinessError, colorPicker: effectKit.ColorPicker) => {
+        if (err) {
+          console.error('创建 ColorPicker 失败: ' + err.message);
+          this.mainColor = '#FFFFFF';
+          return;
+        }
+
+        try {
+          const mainColor = colorPicker.getMainColorSync();
+          // 将颜色转换为 ARGB 格式的十六进制字符串
+          const alpha: string = (mainColor.alpha ?? 255).toString(16).padStart(2, '0');
+          const red: string = (mainColor.red ?? 255).toString(16).padStart(2, '0');
+          const green: string = (mainColor.green ?? 255).toString(16).padStart(2, '0');
+          const blue: string = (mainColor.blue ?? 255).toString(16).padStart(2, '0');
+          this.mainColor = `#${alpha}${red}${green}${blue}`;
+          console.log('获取到主颜色: ' + this.mainColor);
+        } catch (error) {
+          console.error('获取主颜色失败: ' + JSON.stringify(error));
+          this.mainColor = '#FFFFFF';
+        }
+      });
+    } catch (error) {
+      console.error('获取主颜色失败: ' + JSON.stringify(error));
+      // 失败时使用默认白色
+      this.mainColor = '#FFFFFF';
     }
   }
 
@@ -698,17 +762,20 @@ export struct HomePage {
                 .fontSize(20)
                 .fontWeight(FontWeight.Bold)
                 .margin({ bottom: 8 })
+                .blur(0) // 文字不模糊
 
               // 描述
               Text(this.currentDescription)
                 .fontSize(16)
                 .fontColor(0xCCCCCC)
                 .margin({ bottom: 5 })
+                .blur(0) // 文字不模糊
 
               Image($r('app.media.CIcon'))
                 .width(20)
                 .height(20)
                 .margin({ bottom: 5 })
+                .blur(0) // 图标不模糊
             }
             .width('auto')
             .height('auto')
@@ -719,7 +786,7 @@ export struct HomePage {
             .alignItems(HorizontalAlign.Center)
             .justifyContent(FlexAlign.Start)
           } else if (this.imageAspectRatio >= 1 && this.selectedShareMode === 1) {
-            // 横屏图片 + 隔空模式：使用卡片样式
+            // 横屏图片 + 隔空模式：使用主颜色背景填充整个卡片
             Column() {
               // 图片
               if (this.localPixelMap) {
@@ -729,9 +796,10 @@ export struct HomePage {
                   .margin({ bottom: 12 })
                   .objectFit(ImageFit.Cover)
                   .borderRadius(10)
-                  .blur(0)
-                  .linearGradientBlur(60,
-                    { fractionStops: [[0, 0], [0, 0.6], [1, 0.8], [1, 1]], direction: GradientDirection.Bottom })
+                  .onComplete(() => {
+                    this.getImageAspectRatio();
+                    this.extractMainColor(); // 获取主颜色
+                  })
 
               } else {
                 Image(this.sharepng)
@@ -742,10 +810,8 @@ export struct HomePage {
                   .borderRadius(10)
                   .onComplete(() => {
                     this.getImageAspectRatio();
+                    this.extractMainColor(); // 获取主颜色
                   })
-                  .blur(0)
-                  .linearGradientBlur(60,
-                    { fractionStops: [[0, 0], [0, 0.6], [1, 0.8], [1, 1]], direction: GradientDirection.Bottom })
               }
 
               // 标题
@@ -753,22 +819,25 @@ export struct HomePage {
                 .fontSize(20)
                 .fontWeight(FontWeight.Bold)
                 .margin({ bottom: 8 })
+                .blur(0) // 文字不模糊
 
               // 描述
               Text(this.currentDescription)
                 .fontSize(16)
                 .fontColor(0xCCCCCC)
                 .margin({ bottom: 5 })
+                .blur(0) // 文字不模糊
 
               Image($r('app.media.CIcon'))
                 .width(20)
                 .height(20)
                 .margin({ bottom: 5 })
+                .blur(0) // 图标不模糊
             }
             .width('auto')
             .height('auto')
-            .padding(0)
-            .backgroundColor(0xFFFFFF)
+            .padding(10)
+            .backgroundColor(this.mainColor) // 使用主颜色填充整个卡片
             .borderRadius(20)
             .border({ width: 2, color: 0xCCCCCC })
             .alignItems(HorizontalAlign.Center)
