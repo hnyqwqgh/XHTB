@@ -23,6 +23,7 @@ import { photoAccessHelper } from '@kit.MediaLibraryKit';
 import MediaFileUri from '../media/MediaFileUri';
 import KnockShareGuideCard, { CardRes } from '../model/KnockShareGuideCard';
 import { GlobalInfoModel } from '../common/GlobalInfoModel';
+import { DeviceSegmentButton } from '../components/DeviceSegmentButton';
 
 //点光源效果
 /*import { hdsEffect } from '@kit.UIDesignKit';*/
@@ -83,6 +84,8 @@ export struct HomePage {
   @State debugFileExists: boolean = false;
   @State debugFileStat: string = '';
   @State debugFileError: string = '';
+
+  //顶部胶囊按钮
 
   //隔空投送
   private immersiveListening() {
@@ -657,9 +660,11 @@ export struct HomePage {
     Scroll()
     {
       Column() {
-
+        // 布局选择胶囊按钮
+        DeviceSegmentButton()
+          .margin({ top: 10 + (AppStorage.get<GlobalInfoModel>('GlobalInfoModel')?.statusBarHeight ?? 0) , bottom : 5 })
         Stack() {
-          // 根据宽高比动态决定图片尺寸
+          // 图片区域
           if (this.localPixelMap) {
             // 使用 PixelMap 显示本地选择的图片
             Column() {
@@ -674,7 +679,7 @@ export struct HomePage {
             }
             .border({ width: 1, color: 0xCCCCCC })
             .borderRadius(20)
-            .margin({ top: this.imageAspectRatio < 1 ? 0 : 0 })
+            .alignSelf(ItemAlign.Start)
           } else {
             // 使用 URL 显示图片
             Column() {
@@ -692,29 +697,34 @@ export struct HomePage {
             }
             .border({ width: 1, color: 0xCCCCCC })
             .borderRadius(20)
-            .margin({ top: this.imageAspectRatio < 1 ? 0 : 0 })
+            .alignSelf(ItemAlign.Start)
           }
-          Text(this.pengtitle)
-            .fontWeight(600)
-            .fontSize('20fp')
-            .margin({ bottom: 70 })
-            .fontWeight(FontWeight.Bold)
-          Text($r('app.string.pengyipeng_description'))
-            .fontWeight(400)
-            .fontSize('13vp')
-            .margin({ bottom: 50 })
-            .fontWeight(FontWeight.Medium)
-            .opacity(0.5)
-            .fontColor($r('app.color.version_color_182431'))
-          Image($r('app.media.CIcon'))
-            .width(20)
-            .height(20)
-            .margin({ bottom: 20 })
+          // 文字区域
+          Column() {
+            Text(this.pengtitle)
+              .fontWeight(600)
+              .fontSize('20fp')
+              .fontWeight(FontWeight.Bold)
+            Text($r('app.string.pengyipeng_description'))
+              .fontWeight(400)
+              .fontSize('13vp')
+              .margin({ top: 5, bottom: 5 })
+              .fontWeight(FontWeight.Medium)
+              .opacity(0.5)
+              .fontColor($r('app.color.version_color_182431'))
+            Image($r('app.media.CIcon'))
+              .width(20)
+              .height(20)
+              .margin({ top: 5, bottom: 10 })
+          }
+          .width('100%')
+          .alignItems(HorizontalAlign.Center)
+          .align(Alignment.Bottom)
+          .constraintSize({ maxWidth: '100%' })
         }
         .width('100%')
         .height(this.imageAspectRatio < 1 ? 'auto' : 300)
         .alignContent(Alignment.Bottom)
-        .margin({ top: (AppStorage.get<GlobalInfoModel>('GlobalInfoModel')?.statusBarHeight ?? 0) })
         .margin({ bottom: 20 })
 
         // 卡片容器：包含从图片组件往下到碰一碰引导提示组件以上的所有内容

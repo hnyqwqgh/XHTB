@@ -1,0 +1,29 @@
+import { CapsuleSegmentButtonV2, SegmentButtonV2Items } from '@kit.ArkUI';
+
+@ComponentV2
+export struct DeviceSegmentButton {
+  @Local selectedIndex: number = 0;
+  @Param initialIndex: number = 0;
+
+  private textItems: SegmentButtonV2Items = new SegmentButtonV2Items([
+    { text: '碰一碰传送预览' },
+    { text: '隔空传送预览' },
+  ]);
+
+  onIndexChange?: (index: number) => void;
+
+  build() {
+    CapsuleSegmentButtonV2({
+      items: this.textItems,
+      selectedIndex: this.selectedIndex,
+      onItemClicked: (index: number) => {
+        this.selectedIndex = index;
+        if (this.onIndexChange) {
+          this.onIndexChange(index);
+        }
+      }
+    })
+      .width('100%')
+      .height(40)
+  }
+}
