@@ -87,6 +87,7 @@ export struct HomePage {
 
   // 顶部胶囊按钮
   @State selectedShareMode: number = 0; // 0: 碰一碰, 1: 隔空传输
+  @State currentDescription: Resource = $r('app.string.pengyipeng_description'); // 当前显示的描述
 
   //隔空投送
   private immersiveListening() {
@@ -662,7 +663,11 @@ export struct HomePage {
     {
       Column() {
         // 布局选择胶囊按钮
-        DeviceSegmentButton()
+        DeviceSegmentButton({
+          onIndexChange: (index: number) => {
+            this.handleShareModeChange(index);
+          }
+        })
           .margin({ top: 10 + (AppStorage.get<GlobalInfoModel>('GlobalInfoModel')?.statusBarHeight ?? 0) , bottom : 5 })
         Stack() {
           // 横屏图片 + 碰一碰模式：使用卡片样式
@@ -695,7 +700,7 @@ export struct HomePage {
                 .margin({ bottom: 8 })
 
               // 描述
-              Text($r('app.string.pengyipeng_description'))
+              Text(this.currentDescription)
                 .fontSize(16)
                 .fontColor(0xCCCCCC)
                 .margin({ bottom: 5 })
@@ -713,6 +718,61 @@ export struct HomePage {
             .border({ width: 2, color: 0xCCCCCC })
             .alignItems(HorizontalAlign.Center)
             .justifyContent(FlexAlign.Start)
+          } else if (this.imageAspectRatio >= 1 && this.selectedShareMode === 1) {
+            // 横屏图片 + 隔空模式：使用卡片样式
+            Column() {
+              // 图片
+              if (this.localPixelMap) {
+                Image(this.localPixelMap)
+                  .width(300)
+                  .height(200)
+                  .margin({ bottom: 12 })
+                  .objectFit(ImageFit.Cover)
+                  .borderRadius(10)
+                  .blur(0)
+                  .linearGradientBlur(60,
+                    { fractionStops: [[0, 0], [0, 0.6], [1, 0.8], [1, 1]], direction: GradientDirection.Bottom })
+
+              } else {
+                Image(this.sharepng)
+                  .width(300)
+                  .height(200)
+                  .margin({ bottom: 12 })
+                  .objectFit(ImageFit.Cover)
+                  .borderRadius(10)
+                  .onComplete(() => {
+                    this.getImageAspectRatio();
+                  })
+                  .blur(0)
+                  .linearGradientBlur(60,
+                    { fractionStops: [[0, 0], [0, 0.6], [1, 0.8], [1, 1]], direction: GradientDirection.Bottom })
+              }
+
+              // 标题
+              Text(this.pengtitle)
+                .fontSize(20)
+                .fontWeight(FontWeight.Bold)
+                .margin({ bottom: 8 })
+
+              // 描述
+              Text(this.currentDescription)
+                .fontSize(16)
+                .fontColor(0xCCCCCC)
+                .margin({ bottom: 5 })
+
+              Image($r('app.media.CIcon'))
+                .width(20)
+                .height(20)
+                .margin({ bottom: 5 })
+            }
+            .width('auto')
+            .height('auto')
+            .padding(0)
+            .backgroundColor(0xFFFFFF)
+            .borderRadius(20)
+            .border({ width: 2, color: 0xCCCCCC })
+            .alignItems(HorizontalAlign.Center)
+            .justifyContent(FlexAlign.Start)
           } else {
             // 其他模式：保持原有 Stack 样式
             // 图片区域
@@ -721,27 +781,27 @@ export struct HomePage {
               Column() {
                 Image(this.localPixelMap)
                   .width(this.imageAspectRatio < 1 ? '60%' : '80%')
-                  .height(this.imageAspectRatio < 1 ? 'auto' : (this.selectedShareMode === 1 ? 'auto' : '80%'))
+                  .height(this.imageAspectRatio < 1 ? 'auto' : (this.selectedShareMode === 1 && this.imageAspectRatio >= 1 ? '80%' : '80%'))
                   .objectFit(ImageFit.Contain)
                   .blur(0)
-                  .linearGradientBlur(this.imageAspectRatio < 1 ? 60 : (this.selectedShareMode === 1 ? 0 : 60),
+                  .linearGradientBlur(60,
                     { fractionStops: [[0, 0], [0, 0.6], [1, 0.8], [1, 1]], direction: GradientDirection.Bottom })
                   .borderRadius(20)
               }
               .border({ width: 1, color: 0xCCCCCC })
               .borderRadius(20)
               .alignSelf(ItemAlign.Start)
-              .justifyContent(this.selectedShareMode === 1 && this.imageAspectRatio >= 1 ? FlexAlign.Start : FlexAlign.Center)
-              .margin({ top: this.selectedShareMode === 1 && this.imageAspectRatio >= 1 ? '15%' : 0 })
+              .justifyContent(FlexAlign.Center)
+              .margin({ top: 0 })
             } else {
               // 使用 URL 显示图片
               Column() {
                 Image(this.sharepng)
                   .width(this.imageAspectRatio < 1 ? '60%' : '80%')
-                  .height(this.imageAspectRatio < 1 ? 'auto' : (this.selectedShareMode === 1 ? 'auto' : '80%'))
+                  .height(this.imageAspectRatio < 1 ? 'auto' : (this.selectedShareMode === 1 && this.imageAspectRatio >= 1 ? '80%' : '80%'))
                   .objectFit(ImageFit.Contain)
                   .blur(0)
-                  .linearGradientBlur(this.imageAspectRatio < 1 ? 60 : (this.selectedShareMode === 1 ? 0 : 60),
+                  .linearGradientBlur(60,
                     { fractionStops: [[0, 0], [0, 0.6], [1, 0.8], [1, 1]], direction: GradientDirection.Bottom })
                   .borderRadius(20)
                   .onComplete(() => {
@@ -751,8 +811,8 @@ export struct HomePage {
               .border({ width: 1, color: 0xCCCCCC })
               .borderRadius(20)
               .alignSelf(ItemAlign.Start)
-              .justifyContent(this.selectedShareMode === 1 && this.imageAspectRatio >= 1 ? FlexAlign.Start : FlexAlign.Center)
-              .margin({ top: this.selectedShareMode === 1 && this.imageAspectRatio >= 1 ? '15%' : 0 })
+              .justifyContent(FlexAlign.Center)
+              .margin({ top: 0 })
             }
             // 文字区域
             Column() {
@@ -760,7 +820,7 @@ export struct HomePage {
                 .fontWeight(600)
                 .fontSize('20fp')
                 .fontWeight(FontWeight.Bold)
-              Text($r('app.string.pengyipeng_description'))
+              Text(this.currentDescription)
                 .fontWeight(400)
                 .fontSize('13vp')
                 .margin({ top: 5, bottom: 5 })
@@ -779,7 +839,7 @@ export struct HomePage {
           }
         }
         .width('100%')
-        .height(this.selectedShareMode === 1 ? 300 : 'auto')
+        .height('auto')
         .alignContent(Alignment.Bottom)
         .margin({ bottom: 20 })
 
@@ -787,7 +847,7 @@ export struct HomePage {
         Column() {
           // 调试数据显示区域
           Column() {
-            Text('隔空投送调试信息')
+            Text('背景图片调试信息')
               .fontSize(14)
               .fontWeight(FontWeight.Bold)
               .fontColor(0xFF0000)
@@ -1027,5 +1087,18 @@ export struct HomePage {
 
   private isNoListening() {
     return !this.whiteStatus;
+  }
+
+  // 处理胶囊按钮选择变化
+  private handleShareModeChange(index: number) {
+    this.selectedShareMode = index;
+    // 根据选中的模式更新描述
+    if (index === 1) {
+      // 隔空传送模式
+      this.currentDescription = $r('app.string.gekong_description');
+    } else {
+      // 碰一碰模式
+      this.currentDescription = $r('app.string.pengyipeng_description');
+    }
   }
 }
