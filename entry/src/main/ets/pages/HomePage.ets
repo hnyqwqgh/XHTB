@@ -743,9 +743,11 @@ export struct HomePage {
                 Image(this.localPixelMap)
                   .width(300)
                   .height(200)
-                  .margin({ bottom: 12 })
+                  .margin({ bottom: 0 })
                   .objectFit(ImageFit.Cover)
-                  .borderRadius(10)
+                  .borderRadius(20)
+                  .linearGradientBlur(60,
+                    { fractionStops: [[0, 0], [0, 0.6], [1, 0.8], [1, 1]], direction: GradientDirection.Bottom })
                   .onComplete(() => {
                     this.getImageAspectRatio();
                     this.extractMainColor(); // 获取主颜色
@@ -755,9 +757,11 @@ export struct HomePage {
                 Image(this.sharepng)
                   .width(300)
                   .height(200)
-                  .margin({ bottom: 12 })
+                  .margin({ bottom: 0 })
                   .objectFit(ImageFit.Cover)
-                  .borderRadius(10)
+                  .borderRadius(20)
+                  .linearGradientBlur(60,
+                    { fractionStops: [[0, 0], [0, 0.6], [1, 0.8], [1, 1]], direction: GradientDirection.Bottom })
                   .onComplete(() => {
                     this.getImageAspectRatio();
                     this.extractMainColor(); // 获取主颜色
@@ -803,6 +807,8 @@ export struct HomePage {
                   .margin({ bottom: 12 })
                   .objectFit(ImageFit.Cover)
                   .borderRadius(10)
+                  .linearGradientBlur(60,
+                    { fractionStops: [[0, 0], [0, 0.6], [1, 0.8], [1, 1]], direction: GradientDirection.Bottom })
               } else {
                 Image(this.sharepng)
                   .width(300)
@@ -810,6 +816,8 @@ export struct HomePage {
                   .margin({ bottom: 12 })
                   .objectFit(ImageFit.Cover)
                   .borderRadius(10)
+                  .linearGradientBlur(60,
+                    { fractionStops: [[0, 0], [0, 0.6], [1, 0.8], [1, 1]], direction: GradientDirection.Bottom })
                   .onComplete(() => {
                     this.getImageAspectRatio();
                   })
