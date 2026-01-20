@@ -731,7 +731,7 @@ export struct HomePage {
             //.type(InputType.URL)
             //.backgroundColor('#FF9CCE')
               .width('60%')
-              .margin({ right: 10 })
+              .margin({ right: 5 })
               .onChange((networkVideoSrc: string) => {
                 // 清除之前的防抖定时器
                 clearTimeout(this.urlDebounceTimer);
@@ -800,6 +800,7 @@ export struct HomePage {
               })
           }
           .width('100%')
+          .justifyContent(FlexAlign.Center)
           .margin({ top: 5, bottom: 10 })
 
           Row()
