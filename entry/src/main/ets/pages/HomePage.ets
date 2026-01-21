@@ -17,6 +17,8 @@ import request from '@ohos.request';
 import router from '@ohos.router';
 import { image } from '@kit.ImageKit';
 import { effectKit } from '@kit.ArkGraphics2D';
+import { CommonConstants } from '../constants/CommonConstants';
+import { resourceManager } from '@kit.LocalizationKit';
 
 //本地
 import { fileIo } from '@kit.CoreFileKit';
@@ -92,6 +94,10 @@ export struct HomePage {
 
   // 主颜色获取相关
   @State mainColor: string = '#F5E5D8'; // 获取的主颜色，用于文字背景，默认为#F5E5D8
+
+  // 顶部背景渐变相关
+  @State topBgColor: string = '#FFFFFF'; // 顶部背景颜色
+  @State topSafeHeight: number = 0; // 顶部安全区域高度
 
   //隔空投送
   private immersiveListening() {
@@ -475,6 +481,12 @@ export struct HomePage {
     this.immersiveListening();
     let context = getContext(this);
 
+    // 获取顶部安全区域高度
+    window.getLastWindow(this.getUIContext().getHostContext() as common.UIAbilityContext).then((windowInstance) => {
+      this.topSafeHeight = this.getUIContext().px2vp(windowInstance.getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM).topRect.height);
+      this.extractTopBgColor(); // 获取初始背景颜色
+    });
+
     //碰一碰标题
     this.pengtitle = this.context.resourceManager.getStringSync($r('app.string.pengyipeng_title').id);
 
@@ -758,6 +770,9 @@ export struct HomePage {
           const blue: string = (mainColor.blue ?? 255).toString(16).padStart(2, '0');
           this.mainColor = `#${alpha}${red}${green}${blue}`;
           console.log('获取到主颜色: ' + this.mainColor);
+
+          // 同时更新顶部背景颜色
+          this.updateTopBgColor();
         } catch (error) {
           console.error('获取主颜色失败: ' + JSON.stringify(error));
           this.mainColor = '#FFFFFF';
@@ -770,17 +785,74 @@ export struct HomePage {
     }
   }
 
+  // 获取顶部背景颜色
+  private async extractTopBgColor(): Promise<void> {
+    try {
+      let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
+      let pixelMap: PixelMap;
+
+      if (this.localPixelMap) {
+        pixelMap = this.localPixelMap;
+      } else {
+        let imagePath: string;
+        if (this.sharepng.startsWith('file://')) {
+          imagePath = this.sharepng.substring(7);
+        } else {
+          imagePath = context.filesDir + '/pengyipeng' + this.imageExtension;
+        }
+        const imageSource = image.createImageSource(imagePath);
+        pixelMap = await imageSource.createPixelMap();
+      }
+
+      effectKit.createColorPicker(pixelMap, (err: BusinessError, colorPicker: effectKit.ColorPicker) => {
+        if (err) {
+          console.error('创建 ColorPicker 失败: ' + err.message);
+          this.topBgColor = '#FFFFFF';
+          return;
+        }
+
+        try {
+          const mainColor = colorPicker.getMainColorSync();
+          const alpha: string = (mainColor.alpha ?? 255).toString(CommonConstants.HEXADECIMAL);
+          const red: string = (mainColor.red ?? 255).toString(CommonConstants.HEXADECIMAL);
+          const green: string = (mainColor.green ?? 255).toString(CommonConstants.HEXADECIMAL);
+          const blue: string = (mainColor.blue ?? 255).toString(CommonConstants.HEXADECIMAL);
+          this.topBgColor = `#${alpha}${red}${green}${blue}`;
+          console.log('获取到顶部背景颜色: ' + this.topBgColor);
+        } catch (error) {
+          console.error('获取顶部背景颜色失败: ' + JSON.stringify(error));
+          this.topBgColor = '#FFFFFF';
+        }
+      });
+    } catch (error) {
+      console.error('获取顶部背景颜色失败: ' + JSON.stringify(error));
+      this.topBgColor = '#FFFFFF';
+    }
+  }
+
+  // 更新顶部背景颜色（带动画）
+  private updateTopBgColor() {
+    this.getUIContext().animateTo({
+      duration: CommonConstants.SWIPER_DURATION1,
+      curve: Curve.Linear,
+      iterations: CommonConstants.ANIMATION_ITERATIONS
+    }, () => {
+      this.topBgColor = this.mainColor;
+    });
+  }
+
   build() {
-    Scroll()
-    {
-      Column() {
-        // 布局选择胶囊按钮
-        DeviceSegmentButton({
-          onIndexChange: (index: number) => {
-            this.handleShareModeChange(index);
-          }
-        })
-          .margin({ top: 10 + (AppStorage.get<GlobalInfoModel>('GlobalInfoModel')?.statusBarHeight ?? 0) , bottom : 5 })
+    Column() {
+      Scroll()
+      {
+        Column() {
+          // 布局选择胶囊按钮
+          DeviceSegmentButton({
+            onIndexChange: (index: number) => {
+              this.handleShareModeChange(index);
+            }
+          })
+            .margin({ top: 10, bottom: 5 })
         Stack() {
           // 横屏图片 + 碰一碰模式：使用卡片样式
           if (this.imageAspectRatio >= 1 && this.selectedShareMode === 0) {
@@ -805,7 +877,6 @@ export struct HomePage {
                 Image(this.sharepng)
                   .width(300)
                   .height(200)
-                  .margin({ bottom: 0 })
                   .objectFit(ImageFit.Cover)
                   .borderRadius(20)
                   .linearGradientBlur(60,
@@ -820,7 +891,7 @@ export struct HomePage {
               Text(this.pengtitle)
                 .fontSize(20)
                 .fontWeight(FontWeight.Bold)
-                .margin({ bottom: 8 , top: 10 })
+                .margin({ top: 12 ,bottom: 8 })
                 .blur(0) // 文字不模糊
 
               // 描述
@@ -834,12 +905,11 @@ export struct HomePage {
               Image($r('app.media.CIcon'))
                 .width(20)
                 .height(20)
-                .margin({ bottom: 15 })
+                .margin({ bottom: 12 })
                 .blur(0) // 图标不模糊
             }
             .width('auto')
             .height('auto')
-            .padding(0)
             .backgroundColor(this.mainColor) // 使用主颜色填充整个卡片
             .borderRadius(20)
             .border({ width: 2, color: 0xCCCCCC })
@@ -850,22 +920,18 @@ export struct HomePage {
               // 图片
               if (this.localPixelMap) {
                 Image(this.localPixelMap)
-                  .width(300)
+                  .width(280)
                   .height(200)
                   .margin({ bottom: 12 })
                   .objectFit(ImageFit.Cover)
                   .borderRadius(10)
-                  .linearGradientBlur(60,
-                    { fractionStops: [[0, 0], [0, 0.6], [1, 0.8], [1, 1]], direction: GradientDirection.Bottom })
               } else {
                 Image(this.sharepng)
-                  .width(300)
+                  .width(280)
                   .height(200)
                   .margin({ bottom: 12 })
                   .objectFit(ImageFit.Cover)
                   .borderRadius(10)
-                  .linearGradientBlur(60,
-                    { fractionStops: [[0, 0], [0, 0.6], [1, 0.8], [1, 1]], direction: GradientDirection.Bottom })
                   .onComplete(() => {
                     this.getImageAspectRatio();
                   })
@@ -1210,7 +1276,16 @@ export struct HomePage {
         .margin({ top: 10 })
         //.height('100%')
       }
+      .width('90%')
     }
+    .width(CommonConstants.FULL_PARENT)
+    .height(CommonConstants.FULL_PARENT)
+    .linearGradient({
+      direction: GradientDirection.Bottom,
+      colors: [[this.topBgColor, CommonConstants.START_GRADIENT_RANGE], [Color.White, CommonConstants.END_GRADIENT_RANGE]]
+    })
+    .padding({ top: this.topSafeHeight })
+  }
 
   private isNoListening() {
     return !this.whiteStatus;
