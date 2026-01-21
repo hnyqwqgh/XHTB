@@ -861,8 +861,8 @@ export struct HomePage {
               // 图片
               if (this.localPixelMap) {
                 Image(this.localPixelMap)
-                  .width(300)
-                  .height(200)
+                  .width('100%')
+                  .aspectRatio(1.5)
                   .margin({ bottom: 0 })
                   .objectFit(ImageFit.Cover)
                   .borderRadius(20)
@@ -875,8 +875,8 @@ export struct HomePage {
 
               } else {
                 Image(this.sharepng)
-                  .width(300)
-                  .height(200)
+                  .width('100%')
+                  .aspectRatio(1.5)
                   .objectFit(ImageFit.Cover)
                   .borderRadius(20)
                   .linearGradientBlur(60,
@@ -908,7 +908,8 @@ export struct HomePage {
                 .margin({ bottom: 12 })
                 .blur(0) // 图标不模糊
             }
-            .width('auto')
+            .width('100%')
+            .constraintSize({ maxWidth: 350 })
             .height('auto')
             .backgroundColor(this.mainColor) // 使用主颜色填充整个卡片
             .borderRadius(20)
@@ -920,15 +921,15 @@ export struct HomePage {
               // 图片
               if (this.localPixelMap) {
                 Image(this.localPixelMap)
-                  .width(280)
-                  .height(200)
+                  .width('100%')
+                  .aspectRatio(1.4)
                   .margin({ bottom: 12 })
                   .objectFit(ImageFit.Cover)
                   .borderRadius(10)
               } else {
                 Image(this.sharepng)
-                  .width(280)
-                  .height(200)
+                  .width('100%')
+                  .aspectRatio(1.4)
                   .margin({ bottom: 12 })
                   .objectFit(ImageFit.Cover)
                   .borderRadius(10)
@@ -958,7 +959,8 @@ export struct HomePage {
                 .margin({ bottom: 5 })
                 .blur(0) // 图标不模糊
             }
-            .width('auto')
+            .width('100%')
+            .constraintSize({ maxWidth: 350 })
             .height('auto')
             .padding(10)
             .backgroundColor(0xFFFFFF)
