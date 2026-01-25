@@ -168,6 +168,13 @@ export struct SecondPage {
   @State useSplitLayout: boolean = false;
 
   aboutToAppear() {
+    // 接续场景下不设置分栏模式,确保返回按钮显示
+    const isContinuation = AppStorage.get<boolean>('isContinuation');
+    if (isContinuation) {
+      console.info('SecondPage: 接续场景,不设置分栏模式');
+      return;
+    }
+
     // 根据屏幕宽度决定使用分栏布局还是垂直布局
     // lg及以上使用分栏布局(lg>=840vp)
     this.useSplitLayout = this.currentBreakpoint === 'lg' || this.currentBreakpoint === 'xl';

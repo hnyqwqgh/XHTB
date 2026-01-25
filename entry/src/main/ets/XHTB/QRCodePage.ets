@@ -13,6 +13,12 @@ export struct QRCodePage {
   @StorageProp('GlobalInfoModel') globalInfoModel: GlobalInfoModel = AppStorage.get('GlobalInfoModel')!;
   @State pixelMap: image.PixelMap | undefined = undefined
 
+  aboutToAppear() {
+    // 保存当前页面信息到 AppStorage,供接续功能使用
+    AppStorage.setOrCreate('currentPageUrl', 'XHTB/QRCodePage');
+    AppStorage.delete('currentRouteParams');
+  }
+
   build() {
     Column({ space: 0 }) {
       Row() {

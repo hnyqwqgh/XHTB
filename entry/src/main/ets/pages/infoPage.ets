@@ -95,6 +95,9 @@ export struct infoPage {
     this.topNavData.onBackClick = () => {
       navigationManager.pop();
     };
+    // 保存当前页面信息到 AppStorage,供接续功能使用
+    AppStorage.setOrCreate('currentPageUrl', 'pages/infoPage');
+    AppStorage.delete('currentRouteParams');
   }
 
   build() {

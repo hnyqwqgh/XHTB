@@ -17,6 +17,8 @@ interface CustomDataObject extends distributedDataObject.DataObject {
   sharepng?: string;
   pengtitle?: string;
   currentTabIndex?: number; // 当前选中的 Tab 索引
+  currentPageUrl?: string; // 当前页面 URL
+  currentRouteParams?: string; // 当前路由参数（JSON 字符串）
 }
 
 const TAG: string = 'EntryAbility';
@@ -126,12 +128,23 @@ export default class EntryAbility extends UIAbility {
     AppStorage.setOrCreate('GlobalInfoModel', globalInfoModel);
     actionWindowStageCreate(windowStage);
 
-    // 如果是接续场景,从 want 中获取初始 Tab 索引
+    // 如果是接续场景,从 want 中获取初始 Tab 索引和页面 URL
     if (this.isContinuation && this.want) {
       const restoredTabIndex = this.want.parameters?.['currentTabIndex'] as number;
+      const restoredPageUrl = this.want.parameters?.['currentPageUrl'] as string;
+      const restoredRouteParams = this.want.parameters?.['currentRouteParams'] as string;
+
       if (restoredTabIndex !== undefined && restoredTabIndex !== null) {
         AppStorage.setOrCreate('initialTabIndex', restoredTabIndex);
         hilog.info(DOMAIN_NUMBER, TAG, 'onWindowStageCreate: Set initialTabIndex = %{public}d', restoredTabIndex);
+      }
+
+      if (restoredPageUrl !== undefined && restoredPageUrl !== null) {
+        AppStorage.setOrCreate('continuationPageUrl', restoredPageUrl);
+        if (restoredRouteParams !== undefined && restoredRouteParams !== null) {
+          AppStorage.setOrCreate('continuationRouteParams', restoredRouteParams);
+        }
+        hilog.info(DOMAIN_NUMBER, TAG, 'onWindowStageCreate: Set continuationPageUrl = %{public}s', restoredPageUrl);
       }
     }
 
@@ -203,15 +216,25 @@ export default class EntryAbility extends UIAbility {
     this.currentWindowStage = windowStage;
     hilog.info(0x0000, 'testTag', 'onWindowStageRestore called - continuation mode');
 
-    // 接续场景,从 want 中获取初始 Tab 索引
+    // 接续场景,从 want 中获取初始 Tab 索引和页面 URL
     if (this.want) {
       const restoredTabIndex = this.want.parameters?.['currentTabIndex'] as number;
+      const restoredPageUrl = this.want.parameters?.['currentPageUrl'] as string;
+      const restoredRouteParams = this.want.parameters?.['currentRouteParams'] as string;
+
       if (restoredTabIndex !== undefined && restoredTabIndex !== null) {
         AppStorage.setOrCreate('initialTabIndex', restoredTabIndex);
         hilog.info(0x0000, 'testTag', 'onWindowStageRestore: Set initialTabIndex = %{public}d', restoredTabIndex);
       } else {
-        // 如果没有传递索引,默认为首页
         AppStorage.setOrCreate('initialTabIndex', 0);
+      }
+
+      if (restoredPageUrl !== undefined && restoredPageUrl !== null) {
+        AppStorage.setOrCreate('continuationPageUrl', restoredPageUrl);
+        if (restoredRouteParams !== undefined && restoredRouteParams !== null) {
+          AppStorage.setOrCreate('continuationRouteParams', restoredRouteParams);
+        }
+        hilog.info(0x0000, 'testTag', 'onWindowStageRestore: Set continuationPageUrl = %{public}s', restoredPageUrl);
       }
     } else {
       AppStorage.setOrCreate('initialTabIndex', 0);
@@ -331,6 +354,10 @@ export default class EntryAbility extends UIAbility {
     // 获取当前选中的 Tab 索引
     const currentTabIndex: number | null | undefined = AppStorage.get('currentTabIndex');
 
+    // 获取当前页面 URL 和路由参数
+    const currentPageUrl: string | null | undefined = AppStorage.get('currentPageUrl');
+    const currentRouteParams: string | null | undefined = AppStorage.get('currentRouteParams');
+
     // 将数据传递到wantParam
     if (networkVideoSrc !== null && networkVideoSrc !== undefined) {
       wantParam.networkVideoSrc = networkVideoSrc;
@@ -345,8 +372,17 @@ export default class EntryAbility extends UIAbility {
     if (currentTabIndex !== null && currentTabIndex !== undefined) {
       wantParam.currentTabIndex = currentTabIndex;
     }
+    // 传递当前页面 URL
+    if (currentPageUrl !== null && currentPageUrl !== undefined) {
+      wantParam.currentPageUrl = currentPageUrl;
+    }
+    // 传递当前路由参数
+    if (currentRouteParams !== null && currentRouteParams !== undefined) {
+      wantParam.currentRouteParams = currentRouteParams;
+    }
 
-    hilog.info(DOMAIN_NUMBER, TAG, 'onContinue: currentTabIndex = %{public}d', currentTabIndex ?? -1);
+    hilog.info(DOMAIN_NUMBER, TAG, 'onContinue: currentTabIndex = %{public}d, currentPageUrl = %{public}s',
+      currentTabIndex ?? -1, currentPageUrl ?? 'none');
 
     return AbilityConstant.OnContinueResult.AGREE;
   }

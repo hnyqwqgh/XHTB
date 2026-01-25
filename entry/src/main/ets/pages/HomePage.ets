@@ -493,6 +493,10 @@ export struct HomePage {
       AppStorage.setOrCreate('pengtitle', defaultTitle);
     }
 
+    // 保存当前页面信息到 AppStorage,供接续功能使用
+    AppStorage.setOrCreate('currentPageUrl', 'pages/HomePage');
+    AppStorage.delete('currentRouteParams');
+
     // 获取顶部安全区域高度
     window.getLastWindow(this.getUIContext().getHostContext() as common.UIAbilityContext).then((windowInstance) => {
       this.topSafeHeight = this.getUIContext().px2vp(windowInstance.getWindowAvoidArea(window.AvoidAreaType.TYPE_SYSTEM).topRect.height);

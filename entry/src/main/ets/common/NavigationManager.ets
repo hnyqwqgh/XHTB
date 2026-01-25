@@ -80,6 +80,14 @@ export class NavigationManager {
       }
     }
 
+    // 保存当前页面信息到 AppStorage,供接续功能使用
+    AppStorage.setOrCreate('currentPageUrl', normalizedPath);
+    if (params) {
+      AppStorage.setOrCreate('currentRouteParams', JSON.stringify(params));
+    } else {
+      AppStorage.delete('currentRouteParams');
+    }
+
     router.pushUrl({
       url: normalizedPath,
       params: params

@@ -21,6 +21,12 @@ export struct TextToSpeechPage {
   @State illegalText: string = '';
   @StorageLink('isPlaying') isPlaying: boolean = false;
 
+  aboutToAppear() {
+    // 保存当前页面信息到 AppStorage,供接续功能使用
+    AppStorage.setOrCreate('currentPageUrl', 'XHTB/TextToSpeechPage');
+    AppStorage.delete('currentRouteParams');
+  }
+
   aboutToDisappear() {
     try {
       const isBusy = ttsEngine?.isBusy();

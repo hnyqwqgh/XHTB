@@ -6,6 +6,8 @@ import { VideoInfoView } from './VideoInfoView';
 import { HomePage } from '../pages/HomePage';
 import { SecondPage } from '../pages/SecondPage';
 import { MinePage } from '../pages/MinePage';
+import { navigationManager } from '../common/NavigationManager';
+import { router } from '@kit.ArkUI';
 
 @Component
 export struct Home {
@@ -25,6 +27,44 @@ export struct Home {
     }
     // 保存初始的 Tab 索引到 AppStorage
     AppStorage.setOrCreate('currentTabIndex', this.firstLevelIndex);
+
+    // 检查是否有接续的页面需要跳转
+    const continuationPageUrl = AppStorage.get<string>('continuationPageUrl');
+    if (continuationPageUrl !== undefined && continuationPageUrl !== null && continuationPageUrl !== '') {
+      const continuationRouteParams = AppStorage.get<string>('continuationRouteParams');
+      let params = undefined;
+      if (continuationRouteParams) {
+        try {
+          params = JSON.parse(continuationRouteParams);
+        } catch (e) {
+          console.error('Failed to parse continuation route params:', e);
+        }
+      }
+
+      console.info('Home: 准备跳转到接续页面, url=', continuationPageUrl);
+
+      // 标记这是接续场景
+      AppStorage.setOrCreate('isContinuation', true);
+      console.info('Home: 设置 isContinuation = true');
+
+      // 接续场景下,清除分栏模式标记,确保返回按钮显示
+      AppStorage.delete('SecondPageSplitMode');
+      console.info('Home: 清除 SecondPageSplitMode');
+
+      // 延迟执行跳转,确保 Home 组件已经渲染
+      setTimeout(() => {
+        console.info('Home: 开始跳转到', continuationPageUrl);
+        router.pushUrl({
+          url: continuationPageUrl,
+          params: params
+        }).catch((err: Error) => {
+          console.error('Failed to navigate to continuation page:', err);
+        });
+        // 清除接续标记
+        AppStorage.delete('continuationPageUrl');
+        AppStorage.delete('continuationRouteParams');
+      }, 100);
+    }
   }
 
   getTabIcon(index: number, isSelected: boolean): Resource {
