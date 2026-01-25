@@ -9,7 +9,7 @@ import { deviceInfo } from '@kit.BasicServicesKit';
 import { AppUtil } from '@pura/harmony-utils';
 import { promptAction } from '@kit.ArkUI';
 import { GlobalInfoModel } from '../common/GlobalInfoModel';
-import { BackButton } from '../common/BackButton';
+import { TopNavigationView, TopNavigationData } from '../common/TopNavigationView';
 
 let bundleName = AppUtil.getBundleName();
 let versionCode = AppUtil.getVersionCode();
@@ -87,26 +87,25 @@ export struct infoPage {
     new FirstMenu('six',$r('app.string.info5') ,versionSegsr, $r('app.string.void'))
   ];
 
+  private topNavData: TopNavigationData = new TopNavigationData();
+
+  aboutToAppear(): void {
+    this.topNavData.title = $r('app.string.infopagetitle');
+    this.topNavData.titleColor = $r('app.color.font_color_info');
+    this.topNavData.onBackClick = () => {
+      navigationManager.pop();
+    };
+  }
+
   build() {
-    Scroll() {
-      Column() {
+    Column() {
+      TopNavigationView({
+        topNavigationData: this.topNavData
+      })
+      .padding({ top: this.topRectHeight })
+
+      Scroll() {
         Column() {
-          Row()
-          {
-            BackButton()
-            Text($r('app.string.infopagetitle'))
-              .fontSize(20)
-              .fontColor($r('app.color.font_color_info'))
-              .fontWeight(FontWeight.Bold)
-              //.layoutWeight(1)  // 占据剩余空间
-              .position({ x: '50%', y: '2.5%' }) // 基于组件自身宽高定位
-              .translate({ x: '-50%', y: '-50%' }) // 偏移补偿
-          }
-          .width('100%')          // 占满父容器宽度
-          .justifyContent(FlexAlign.Start) // 主轴线左对齐
-          .padding({ top: (this.globalInfoModel?.statusBarHeight ?? 0) })
-        }
-        .padding({ bottom: 20 })
           Stack() {
             Row() {
               Image($r('app.media.harmonyos'))
@@ -233,19 +232,18 @@ export struct infoPage {
               .fontSize(12);
             Text(baoming)
               .fontSize(12);
-            /*Text($r('app.string.copyright'))
-              .fontSize(12);*/
           }
           .width('100%')
           .height(60)
           .alignItems(HorizontalAlign.Center)
+        }
+        .padding({ top: 20, bottom: 20 })
       }
       .width('100%')
       .height('100%')
-      //.backgroundColor($r('app.color.start_window_background'))
-      .padding({ top: 10 + (AppStorage.get<GlobalInfoModel>('GlobalInfoModel')?.statusBarHeight ?? 0) }) // 为标题栏留出空间并添加安全区
+      .layoutWeight(1)
     }
-    .scrollable(ScrollDirection.Vertical)
+    .width('100%')
     .height('100%')
   }
 }
