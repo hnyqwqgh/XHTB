@@ -15,6 +15,16 @@ export struct Home {
   @State tabViewModel: TabViewModel = new TabViewModel();
   @State tabData: TabDataModel = this.tabViewModel.getTabMap();
 
+  aboutToAppear(): void {
+    // 如果设置了初始 Tab 索引,则使用该索引
+    const initialTabIndex = AppStorage.get<number>('initialTabIndex');
+    if (initialTabIndex !== undefined && initialTabIndex !== null) {
+      this.firstLevelIndex = initialTabIndex;
+      // 清除标记,避免影响后续导航
+      AppStorage.delete('initialTabIndex');
+    }
+  }
+
   getTabIcon(index: number, isSelected: boolean): Resource {
     switch (index) {
       case 0:
