@@ -102,7 +102,6 @@ export struct infoPage {
       TopNavigationView({
         topNavigationData: this.topNavData
       })
-      .padding({ top: this.topRectHeight })
 
       Scroll() {
         Column() {
@@ -237,7 +236,7 @@ export struct infoPage {
           .height(60)
           .alignItems(HorizontalAlign.Center)
         }
-        .padding({ top: 20, bottom: 20 })
+        .padding({ bottom: 20 })
       }
       .width('100%')
       .height('100%')
