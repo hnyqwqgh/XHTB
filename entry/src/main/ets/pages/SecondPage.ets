@@ -26,12 +26,13 @@ struct SecondPageContent {
         Text($r('app.string.page_title'))
           .fontSize($r('app.float.page_title_font_size'))
           .fontWeight(FontWeight.Bold)
+          .fontColor($r('app.color.font_color_182431'))
       }
       .margin({ top: 10, bottom: 10 })
       .justifyContent(FlexAlign.Center)
       .width(CommonConstants.FULL_PERCENT)
       .height($r('app.float.page_title_height'))
-      .padding({ top: (AppStorage.get<GlobalInfoModel>('GlobalInfoModel')?.statusBarHeight ?? 0) })
+      .padding({ top: (AppStorage.get<GlobalInfoModel>('GlobalInfoModel')?.statusBarHeight ?? 24) + 8 })
 
       Stack({ alignContent: Alignment.Top }) {
         Scroll(this.scrollerForScroll) {
