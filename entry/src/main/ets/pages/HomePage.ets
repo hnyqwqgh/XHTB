@@ -1251,16 +1251,37 @@ export struct HomePage {
                   }
                   .width('100%')
 
-                  TextArea({ placeholder: $r('app.string.sharepng'), text: this.sharepng })
-                    .width('100%')
-                    .margin({ top: 10, bottom: 10 })
-                    .onChange((sharepng: string) => {
-                      this.sharepng = sharepng;
-                      // @StorageLink 会自动同步到 AppStorage,无需手动保存
-                      if (this.isValidUrl(sharepng)) {
-                        this.handleImageUpdate(); // 触发图片更新逻辑
-                      }
-                    })
+                  Row() {
+                    TextArea({ placeholder: $r('app.string.sharepng'), text: this.sharepng })
+                      .layoutWeight(1)
+                      .onChange((sharepng: string) => {
+                        this.sharepng = sharepng;
+                        // @StorageLink 会自动同步到 AppStorage,无需手动保存
+                        if (this.isValidUrl(sharepng)) {
+                          this.handleImageUpdate(); // 触发图片更新逻辑
+                        }
+                      })
+                    Row() {
+                      PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
+                        .backgroundColor(0xb87cff)
+                        .height(40)
+                        .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
+                          if (PasteButtonOnClickResult.SUCCESS === result) {
+                            pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
+                              if (err) {
+                                console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
+                                return;
+                              }
+                              this.sharepng = pasteData.getPrimaryText();
+                            });
+                          }
+                        })
+                    }
+                    .margin({ left: 10 })
+                  }
+                  .width('100%')
+                  .height(40)
+                  .margin({ top: 10, bottom: 10 })
                 }
                 .width('100%')
                 .backgroundColor('#FFFFFF')
@@ -1310,26 +1331,47 @@ export struct HomePage {
                   }
                   .width('100%')
 
-                  TextArea({ placeholder: $r('app.string.testinput') , text: this.networkVideoSrc })
-                    .width('100%')
-                    .margin({ top: 5, bottom: 10 })
-                    .onChange((networkVideoSrc: string) => {
-                      // 清除之前的防抖定时器
-                      clearTimeout(this.urlDebounceTimer);
+                  Row() {
+                    TextArea({ placeholder: $r('app.string.testinput') , text: this.networkVideoSrc })
+                      .layoutWeight(1)
+                      .onChange((networkVideoSrc: string) => {
+                        // 清除之前的防抖定时器
+                        clearTimeout(this.urlDebounceTimer);
 
-                      // 设置新的防抖定时器，300ms后执行
-                      this.urlDebounceTimer = setTimeout(() => {
-                        // 尝试从输入文本中提取链接
-                        const extractedUrl = this.extractUrlFromText(networkVideoSrc);
-                        if (extractedUrl) {
-                          this.networkVideoSrc = extractedUrl;
-                          AppStorage.set('networkVideoSrc', extractedUrl);
-                        } else {
-                          this.networkVideoSrc = networkVideoSrc;
-                          AppStorage.set('networkVideoSrc', networkVideoSrc);
-                        }
-                      }, 300);
-                    })
+                        // 设置新的防抖定时器，300ms后执行
+                        this.urlDebounceTimer = setTimeout(() => {
+                          // 尝试从输入文本中提取链接
+                          const extractedUrl = this.extractUrlFromText(networkVideoSrc);
+                          if (extractedUrl) {
+                            this.networkVideoSrc = extractedUrl;
+                            AppStorage.set('networkVideoSrc', extractedUrl);
+                          } else {
+                            this.networkVideoSrc = networkVideoSrc;
+                            AppStorage.set('networkVideoSrc', networkVideoSrc);
+                          }
+                        }, 300);
+                      })
+                    Row() {
+                      PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
+                        .backgroundColor(0xFF66CC)
+                        .height(40)
+                        .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
+                          if (PasteButtonOnClickResult.SUCCESS === result) {
+                            pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
+                              if (err) {
+                                console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
+                                return;
+                              }
+                              this.networkVideoSrc = pasteData.getPrimaryText();
+                            });
+                          }
+                        })
+                    }
+                    .margin({ left: 10 })
+                  }
+                  .width('100%')
+                  .height(40)
+                  .margin({ top: 5, bottom: 10 })
                 }
                 .width('100%')
                 .backgroundColor('#FFFFFF')
@@ -1348,13 +1390,34 @@ export struct HomePage {
                   .width('100%')
                   .height(50)
 
-                  TextArea({ placeholder: $r('app.string.pengyipeng_title'), text: this.pengtitle })
-                    .width('100%')
-                    .margin({ top: 5, bottom: 10 })
-                    .onChange((pengtitle: string) => {
-                      this.pengtitle = pengtitle;
-                      // @StorageLink 会自动同步到 AppStorage,无需手动保存
-                    })
+                  Row() {
+                    TextArea({ placeholder: $r('app.string.pengyipeng_title'), text: this.pengtitle })
+                      .layoutWeight(1)
+                      .onChange((pengtitle: string) => {
+                        this.pengtitle = pengtitle;
+                        // @StorageLink 会自动同步到 AppStorage,无需手动保存
+                      })
+                    Row() {
+                      PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
+                        .backgroundColor(0x66CCFF)
+                        .height(40)
+                        .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
+                          if (PasteButtonOnClickResult.SUCCESS === result) {
+                            pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
+                              if (err) {
+                                console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
+                                return;
+                              }
+                              this.pengtitle = pasteData.getPrimaryText();
+                            });
+                          }
+                        })
+                    }
+                    .margin({ left: 10 })
+                  }
+                  .width('100%')
+                  .height(40)
+                  .margin({ top: 5, bottom: 10 })
                 }
                 .width('100%')
                 .backgroundColor('#FFFFFF')
@@ -1703,18 +1766,38 @@ export struct HomePage {
             }
             .width('100%')
 
-            TextArea({ placeholder: $r('app.string.sharepng'), text: this.sharepng })
-            //.type(InputType.URL)
-            //.backgroundColor('#FF9CCE')
-              .width('100%')
-              //.height(50)
-              .margin({ top: 10, bottom: 10 })
-              .onChange((sharepng: string) => {
-                this.sharepng = sharepng;
-                if (this.isValidUrl(sharepng)) {
-                  this.handleImageUpdate(); // 触发图片更新逻辑
-                }
-              })
+            Row() {
+              TextArea({ placeholder: $r('app.string.sharepng'), text: this.sharepng })
+              //.type(InputType.URL)
+              //.backgroundColor('#FF9CCE')
+                .layoutWeight(1)
+                .onChange((sharepng: string) => {
+                  this.sharepng = sharepng;
+                  if (this.isValidUrl(sharepng)) {
+                    this.handleImageUpdate(); // 触发图片更新逻辑
+                  }
+                })
+              Row() {
+                PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
+                  .backgroundColor(0xb87cff)
+                  .height(40)
+                  .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
+                    if (PasteButtonOnClickResult.SUCCESS === result) {
+                      pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
+                        if (err) {
+                          console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
+                          return;
+                        }
+                        this.sharepng = pasteData.getPrimaryText();
+                      });
+                    }
+                  })
+              }
+              .margin({ left: 10 })
+            }
+            .width('100%')
+            .height(40)
+            .margin({ top: 10, bottom: 10 })
 
             Text($r('app.string.texton'))
               .textAlign(TextAlign.Center)
@@ -1723,8 +1806,7 @@ export struct HomePage {
               TextArea({ placeholder: $r('app.string.testinput') , text: this.networkVideoSrc })
               //.type(InputType.URL)
               //.backgroundColor('#FF9CCE')
-                .width('60%')
-                .margin({ right: 5 })
+                .layoutWeight(1)
                 .onChange((networkVideoSrc: string) => {
                   // 清除之前的防抖定时器
                   clearTimeout(this.urlDebounceTimer);
@@ -1748,9 +1830,8 @@ export struct HomePage {
               //.type(ButtonType.Capsule)
               //.backgroundColor(0x66CCFF)//蓝色
               //.backgroundColor('#0044fc')
-                .height(50)
-                .width('40%')
-                .margin({ right: 2 })
+                .height(40)
+                .margin({ right: 5 })
                 .backgroundColor(0xFF66CC)
                 .onClick(async () => {
                   try {
@@ -1780,7 +1861,7 @@ export struct HomePage {
                 })
               PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
                 .backgroundColor(0xFF66CC)
-                .height(35)
+                .height(40)
                 .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
                   if (PasteButtonOnClickResult.SUCCESS === result) {
                     pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
@@ -1794,7 +1875,7 @@ export struct HomePage {
                 })
             }
             .width('100%')
-            .justifyContent(FlexAlign.Center)
+            .height(40)
             .margin({ top: 5, bottom: 10 })
 
             Row()
@@ -1805,15 +1886,32 @@ export struct HomePage {
                 .margin({ right: 10 })
               TextArea({ placeholder: $r('app.string.pengyipeng_title'), text: this.pengtitle })
               //.backgroundColor('#FF9CCE')
-                .width('55%')
+                .layoutWeight(1)
                 .onChange((pengtitle: string) => {
                   this.pengtitle = pengtitle;
                   AppStorage.set('pengtitle', pengtitle);
                 })
+              Row() {
+                PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
+                  .backgroundColor(0x66CCFF)
+                  .height(40)
+                  .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
+                    if (PasteButtonOnClickResult.SUCCESS === result) {
+                      pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
+                        if (err) {
+                          console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
+                          return;
+                        }
+                        this.pengtitle = pasteData.getPrimaryText();
+                      });
+                    }
+                  })
+              }
+              .margin({ left: 10 })
             }
             .margin({ top: 10 })
             .width('100%')  // 控制内容区域宽度
-            .height(50)
+            .height(40)
             Column() {
               Row()
               {
