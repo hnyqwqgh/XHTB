@@ -479,6 +479,10 @@
 		{
 			"name": "Internetselfsuccess",
 			"value": "自动播放intro视频 即表示已连接到互联网，否则会无法播放"
+		},
+		{
+			"name": "large_device_hint",
+			"value": "平板和PC/2in1设备不支持碰一碰传送，\\n已为您自动选择隔空传送预览。"
 		}
 	]
 }
