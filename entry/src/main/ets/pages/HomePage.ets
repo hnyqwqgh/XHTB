@@ -1271,8 +1271,7 @@ export struct HomePage {
                   TextArea({ placeholder: $r('app.string.testinput') , text: this.networkVideoSrc })
                   //.type(InputType.URL)
                   //.backgroundColor('#FF9CCE')
-                    .width('60%')
-                    .margin({ right: 5 })
+                    .width('100%')
                     .onChange((networkVideoSrc: string) => {
                       // 清除之前的防抖定时器
                       clearTimeout(this.urlDebounceTimer);
@@ -1296,8 +1295,8 @@ export struct HomePage {
                   //.type(ButtonType.Capsule)
                   //.backgroundColor(0x66CCFF)//蓝色
                   //.backgroundColor('#0044fc')
-                    .height(35)
-                    .margin({ right: 2 })
+                    .height(40)
+                    .margin({ left: 5 , right: 5 })
                     .backgroundColor(0xFF66CC)
                     .onClick(async () => {
                       try {
@@ -1327,7 +1326,7 @@ export struct HomePage {
                     })
                   PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
                     .backgroundColor(0xFF66CC)
-                    .height(35)
+                    .height(40)
                     .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
                       if (PasteButtonOnClickResult.SUCCESS === result) {
                         pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
@@ -1341,58 +1340,43 @@ export struct HomePage {
                     })
                 }
                 .width('100%')
-                .justifyContent(FlexAlign.Center)
+                .justifyContent(FlexAlign.Start)
                 .margin({ top: 5, bottom: 10 })
 
-                Text($r('app.string.pengtitleset'))
-                  .textAlign(TextAlign.Center)
-                  .margin({ top: 5, bottom: 10 })
-                TextArea({ placeholder: $r('app.string.pengyipeng_title'), text: this.pengtitle })
-                //.backgroundColor('#FF9CCE')
-                  .width('55%')
-                  .onChange((pengtitle: string) => {
-                    this.pengtitle = pengtitle;
-                   // @StorageLink 会自动同步到 AppStorage,无需手动保存
-                  })
-                  .margin({ top: 5, bottom: 10 })
+                Row() {
+                  Text($r('app.string.pengtitleset'))
+                    .fontSize(14)
+                    .textAlign(TextAlign.Start)
+                    .margin({ top: 5, bottom: 10, right: 10 })
 
-                Column() {
-                  Row()
-                  {
-                    /*Text($r('app.string.nowplaying'))
-                      .width('55%')
-                      .textAlign(TextAlign.Center)
-                      .margin({ right: 10 })*/
-                    Button($r('app.string.share'))
-                    //.type(ButtonType.Capsule)
-                      .width('40%')
-                      .height(50)
-                      .backgroundColor(0x66CCFF)//蓝色
-                      .onClick(() => {
-                        logger.info('分享按钮被点击');
-                        try {
-                          this.share();
-                        } catch (error) {
-                          logger.error(`分享按钮点击异常: ${error.message}`);
-                          promptAction.showToast({ message: '分享功能异常: ' + error.message });
-                        }
-                      })
-                  }
-                  .width('100%')
-                  .justifyContent(FlexAlign.Center)
-                  .padding({ bottom: 10 })
+                  TextArea({ placeholder: $r('app.string.pengyipeng_title'), text: this.pengtitle })
+                  //.backgroundColor('#FF9CCE')
+                    .layoutWeight(1)
+                    .onChange((pengtitle: string) => {
+                      this.pengtitle = pengtitle;
+                     // @StorageLink 会自动同步到 AppStorage,无需手动保存
+                    })
+                    .margin({ top: 5, bottom: 10 })
 
-
-
-                  Text(this.networkVideoSrc)
-                    .padding({ top: 10 , bottom : 10 , left : 10 , right : 10 })
-                    .copyOption(CopyOptions.LocalDevice)
-                    .textAlign(TextAlign.Center)//.margin({ right: 10 })
-                    .width('100%')
+                  Button($r('app.string.share'))
+                  //.type(ButtonType.Capsule)
+                    .height(40)
+                    .width(80)
+                    .margin({ left: 10 })
+                    .backgroundColor(0x66CCFF)//蓝色
+                    .onClick(() => {
+                      logger.info('分享按钮被点击');
+                      try {
+                        this.share();
+                      } catch (error) {
+                        logger.error(`分享按钮点击异常: ${error.message}`);
+                        promptAction.showToast({ message: '分享功能异常: ' + error.message });
+                      }
+                    })
                 }
-                .width('100%')  // 控制内容区域宽度
-                .alignItems(HorizontalAlign.Center) // 内容水平居中
-                .margin({ top: 10 })
+                .width('100%')
+                .justifyContent(FlexAlign.Start)
+                .margin({ top: 5, bottom: 10 })
                 //.height('100%')
               }
               .width('100%')
