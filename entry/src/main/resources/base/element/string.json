@@ -122,7 +122,7 @@
 		},
 		{
 			"name":"scancodelink",
-			"value": "\\uDB80\\uDC28\\uDB80\\uDD28 从二维码提取链接"
+			"value": "\uDB80\uDC28\uDB80\uDD28 从二维码提取链接"
 		},
 		{
 			"name":"downloaded",
@@ -486,7 +486,7 @@
 		},
 		{
 			"name": "large_device_hint",
-			"value": "平板和PC/2in1设备不支持碰一碰传送，\\n已为您自动选择隔空传送预览。"
+			"value": "平板和PC/2in1设备不支持碰一碰传送，\n已为您自动选择隔空传送预览。"
 		}
 	]
 }
