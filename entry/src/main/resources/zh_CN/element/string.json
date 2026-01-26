@@ -117,8 +117,12 @@
       "value": "\uDB81\uDC94 输入链接"
     },
     {
-      "name":"scancodelink",
+      "name":"scancodelinkpad",
       "value": "\uDB80\uDC28\uDB80\uDD28 从二维码提取链接"
+    },
+    {
+      "name":"scancodelink",
+      "value": "\uDB80\uDC28 扫码提取链接"
     },
     {
       "name":"downloaded",

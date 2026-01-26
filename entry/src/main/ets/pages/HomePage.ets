@@ -1298,7 +1298,7 @@ export struct HomePage {
                       .width('55%')
                       .margin({ right: 10 })
 
-                    Button($r('app.string.scancodelink'))
+                    Button($r('app.string.scancodelinkpad'))
                       .height(50)
                       .width('40%')
                       .backgroundColor(0xFF66CC)

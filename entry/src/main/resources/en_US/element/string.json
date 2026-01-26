@@ -117,8 +117,12 @@
       "value": "\uDB81\uDC94 Enter link to share"
     },
     {
-      "name":"scancodelink",
+      "name":"scancodelinkpad",
       "value": "\uDB80\uDC28\uDB80\uDD28 Extract QR code link"
+    },
+    {
+      "name":"scancodelink",
+      "value": "\uDB80\uDC28 Extract QR code"
     },
     {
       "name":"downloaded",
