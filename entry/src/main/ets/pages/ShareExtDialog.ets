@@ -27,10 +27,6 @@ struct ShareExtDialog {
     this.localStorage?.get<UIExtensionContentSession>('ShareExtAbilitySession');
   @StorageLink('networkVideoSrc') networkVideoSrc: string = '';
 
-  //点光源效果
-  @State controller: hdsEffect.ShaderEffectController = new hdsEffect.ShaderEffectController();
-  @State lightSourceType: hdsEffect.PointLightSourceType = hdsEffect.PointLightSourceType.NONE;
-
   aboutToAppear(): void {
     systemShare.getSharedData(this.want).then((data: systemShare.SharedData) => {
       let records: systemShare.SharedRecord[] = data.getRecords();
@@ -105,32 +101,6 @@ struct ShareExtDialog {
             logger.error(`open link failed. Code is ${err.code}, message is ${err.message}`);
           })
         })
-        .visualEffect(new hdsEffect.HdsEffectBuilder()
-          .shaderEffect({
-            effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
-            animation: {
-              duration: 4000,
-              iterations: -1,
-              autoPlay: true,
-              onFinish: () => {
-                console.info('Succeeded in finishing');
-              }
-            },
-            controller: this.controller,
-            params: {
-              firstEdgeFlowLight: {
-                startPos: 0,
-                endPos: 1.0,
-                color: '#ff8a00',
-              },
-              secondEdgeFlowLight: {
-                startPos: 0.5,
-                endPos: 1.5,
-                color: '#f3c52a',
-              }
-            }
-          })
-          .buildEffect())
     }
 
     if (this.imageUri) {
@@ -198,32 +168,6 @@ struct ShareExtDialog {
               context.startAbility(want)
               console.info(`MenuItem1 ability succeed`)*/
             })
-            .visualEffect(new hdsEffect.HdsEffectBuilder()
-              .shaderEffect({
-                effectType: hdsEffect.EffectType.DUAL_EDGE_FLOW_LIGHT,
-                animation: {
-                  duration: 4000,
-                  iterations: -1,
-                  autoPlay: true,
-                  onFinish: () => {
-                    console.info('Succeeded in finishing');
-                  }
-                },
-                controller: this.controller,
-                params: {
-                  firstEdgeFlowLight: {
-                    startPos: 0,
-                    endPos: 1.0,
-                    color: '#FF66CC',
-                  },
-                  secondEdgeFlowLight: {
-                    startPos: 0.5,
-                    endPos: 1.5,
-                    color: '#b87cff',
-                  }
-                }
-              })
-              .buildEffect())
         }
         .margin({ top: 8 })
     }
