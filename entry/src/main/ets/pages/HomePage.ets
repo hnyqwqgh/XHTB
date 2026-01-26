@@ -28,6 +28,13 @@ import KnockShareGuideCard, { CardRes } from '../model/KnockShareGuideCard';
 import { GlobalInfoModel, BreakpointTypeEnum } from '../common/GlobalInfoModel';
 import { DeviceSegmentButton } from '../components/DeviceSegmentButton';
 
+// 跨设备协作相关
+import {
+  createCollaborationServiceMenuItems,
+  CollaborationServiceStateDialog,
+  CollaborationServiceFilter
+} from '@kit.ServiceCollaborationKit';
+
 //点光源效果
 /*import { hdsEffect } from '@kit.UIDesignKit';*/
 
@@ -239,6 +246,49 @@ export struct HomePage {
       })
     })
   }
+
+  // 处理跨设备协作传来的图片
+  doInsertPicture(stateCode: number, bufferType: string, buffer: ArrayBuffer): void {
+    if (stateCode != 0) {
+      return;
+    }
+    if (bufferType == "general.image") {
+      let imageSource = image.createImageSource(buffer);
+      imageSource.createPixelMap().then((pixelMap) => {
+        this.localPixelMap = pixelMap;
+
+        // 获取扩展名
+        this.imageExtension = '.png'; // 跨设备传输默认使用 png
+        let targetPath = context.filesDir + '/pengyipeng' + this.imageExtension;
+
+        // 保存图片到本地
+        let packer = image.createImagePacker();
+        packer.packing(pixelMap, { format: 'image/png', quality: 100 }).then((data) => {
+          let file = fileIo.openSync(targetPath, fileIo.OpenMode.CREATE | fileIo.OpenMode.WRITE_ONLY | fileIo.OpenMode.TRUNC);
+          fileIo.writeSync(file.fd, data);
+          fileIo.closeSync(file);
+
+          // 更新 sharepng
+          this.sharepng = 'file://' + targetPath;
+
+          // 刷新图片
+          this.imageKey = Date.now().toString();
+
+          // 重新获取图片宽高比
+          this.getImageAspectRatio().then(() => {
+            // 如果是横屏+隔空模式，获取主颜色
+            if (this.imageAspectRatio >= 1 && this.selectedShareMode === 1) {
+              this.extractMainColor();
+            }
+          });
+        });
+      }).catch((error: BusinessError) => {
+        hilog.error(0x0000, 'HomePage', `Failed to process image from other device: ${JSON.stringify(error)}`);
+      });
+    }
+  }
+
+
 
 
   //华为系统分享
@@ -1175,13 +1225,28 @@ export struct HomePage {
                     .textAlign(TextAlign.Center)
                     .width('55%')
                     .margin({ right: 10 })
-                  Button($r('app.string.choose'))
-                    .height(50)
-                    .width('40%')
-                    .backgroundColor(0xb87cff)//紫色
-                    .onClick(() => {
-                      this.selectImage();
-                    })
+                  // 跨设备协作状态对话框（用于接收其他设备的图片）
+                  CollaborationServiceStateDialog({
+                    onState: (stateCode: number, bufferType: string, buffer: ArrayBuffer): void => this.doInsertPicture(stateCode,
+                      bufferType, buffer)
+                  })
+                  if (this.currentBreakpoint === 'lg' || this.currentBreakpoint === 'xl') {
+                    // 平板/PC设备：使用跨设备协作按钮
+                    Button($r('app.string.choose'))
+                      .height(50)
+                      .width('40%')
+                      .backgroundColor(0xb87cff)//紫色
+                      .bindMenu(this.CrossDeviceMenu)
+                  } else {
+                    // 手机设备：使用普通按钮
+                    Button($r('app.string.choose'))
+                      .height(50)
+                      .width('40%')
+                      .backgroundColor(0xb87cff)//紫色
+                      .onClick(() => {
+                        this.selectImage();
+                      })
+                  }
                 }
                 .width('100%')
 
@@ -1630,13 +1695,28 @@ export struct HomePage {
                 .textAlign(TextAlign.Center)
                 .width('55%')
                 .margin({ right: 10 })
-              Button($r('app.string.choose'))
-                .height(50)
-                .width('40%')
-                .backgroundColor(0xb87cff)//紫色
-                .onClick(() => {
-                  this.selectImage();
-                })
+              // 跨设备协作状态对话框（用于接收其他设备的图片）
+              CollaborationServiceStateDialog({
+                onState: (stateCode: number, bufferType: string, buffer: ArrayBuffer): void => this.doInsertPicture(stateCode,
+                  bufferType, buffer)
+              })
+              if (this.currentBreakpoint === 'lg' || this.currentBreakpoint === 'xl') {
+                // 平板/PC设备：使用跨设备协作按钮
+                Button($r('app.string.choose'))
+                  .height(50)
+                  .width('40%')
+                  .backgroundColor(0xb87cff)//紫色
+                  .bindMenu(this.CrossDeviceMenu)
+              } else {
+                // 手机设备：使用普通按钮
+                Button($r('app.string.choose'))
+                  .height(50)
+                  .width('40%')
+                  .backgroundColor(0xb87cff)//紫色
+                  .onClick(() => {
+                    this.selectImage();
+                  })
+              }
             }
             .width('100%')
 
@@ -1850,6 +1930,21 @@ export struct HomePage {
     } else {
       // 碰一碰模式
       this.currentDescription = $r('app.string.pengyipeng_description');
+    }
+  }
+
+  // 跨设备协作菜单 Builder
+  @Builder
+  CrossDeviceMenu() {
+    Menu() {
+      MenuItem({
+        startIcon: $r("app.media.CIcon"),
+        content: $r('app.string.pickphotos'),
+        builder: (): void => {
+          this.selectImage();
+        }
+      })
+      createCollaborationServiceMenuItems([CollaborationServiceFilter.ALL], 1)
     }
   }
 }
