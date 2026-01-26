@@ -11,17 +11,18 @@ import { fileIo } from '@kit.CoreFileKit';
 
 import { DocScanPage } from '../DocScan/DocScanPage';
 
+import { cameraPicker as picker } from '@kit.CameraKit';
+import { camera } from '@kit.CameraKit';
+import { navigationManager } from '../../common/NavigationManager';
+import { BackButton } from '../../common/BackButton';
+import { GlobalInfoModel, BreakpointTypeEnum } from '../../common/GlobalInfoModel';
+
+// 跨设备协作相关
 import {
   createCollaborationServiceMenuItems,
   CollaborationServiceStateDialog,
   CollaborationServiceFilter
 } from '@kit.ServiceCollaborationKit';
-
-import { cameraPicker as picker } from '@kit.CameraKit';
-import { camera } from '@kit.CameraKit';
-import { navigationManager } from '../../common/NavigationManager';
-import { BackButton } from '../../common/BackButton';
-import { GlobalInfoModel } from '../../common/GlobalInfoModel';
 
 @Entry
 @Component
@@ -33,6 +34,9 @@ export struct OCR {
   @State curRate: PlaybackSpeed = PlaybackSpeed.Speed_Forward_1_00_X
   @State isShortcutKeyEnabled: boolean = false
   @State networkVideoSrc: string = '';
+
+  // 断点相关
+  @StorageProp('currentWidthBreakpoint') currentBreakpoint: string = 'md';
   private imageSource: image.ImageSource | undefined = undefined;
   @State chooseImage: PixelMap | undefined = undefined;
   @State dataValues: string = '';
@@ -195,30 +199,34 @@ export struct OCR {
       .padding({ top: (this.globalInfoModel?.statusBarHeight ?? 0) })
 
       Row() {
+        // 跨设备协作状态对话框（用于接收其他设备的图片）
         CollaborationServiceStateDialog({
           onState: (stateCode: number, bufferType: string, buffer: ArrayBuffer): void => this.doInsertPicture(stateCode,
             bufferType, buffer)
         })
-        Button($r('app.string.pick'))
-          .type(ButtonType.Capsule)
-          .fontColor(Color.White)
-          .width('20%')
-          .margin({ right: 10 })
-          .height(50)
-          .backgroundColor(0xffd143)
-          .bindMenu(this.MyTestMenu)
-        /*if (this.picture) {
-          Image(this.picture)
-            .borderStyle(BorderStyle.Dotted)
-            .borderWidth(1)
-            .objectFit(ImageFit.Contain)
-            .height('80%')
-            .onComplete((event) => {
-              if (event != undefined) {
-                hilog.info(0x0000, 'testTag', 'onComplete %{public}s', event.loadingStatus);
-              }
+        if (this.currentBreakpoint === 'lg' || this.currentBreakpoint === 'xl') {
+          // 平板/PC设备：使用跨设备协作按钮
+          Button($r('app.string.pick'))
+            .type(ButtonType.Capsule)
+            .fontColor(Color.White)
+            .width('20%')
+            .margin({ right: 10 })
+            .height(50)
+            .backgroundColor(0xffd143)
+            .bindMenu(this.MyTestMenu)
+        } else {
+          // 手机设备：使用普通按钮
+          Button($r('app.string.pick'))
+            .type(ButtonType.Capsule)
+            .fontColor(Color.White)
+            .width('20%')
+            .margin({ right: 10 })
+            .height(50)
+            .backgroundColor(0xffd143)
+            .onClick(() => {
+              this.selectImage();
             })
-        }*/
+        }
         Button('󰇘 OCR')
           .type(ButtonType.Capsule)
           .fontColor(Color.White)
@@ -267,15 +275,26 @@ export struct OCR {
     }
   }
 
+  // 处理跨设备协作传来的图片
   doInsertPicture(stateCode: number, bufferType: string, buffer: ArrayBuffer): void {
     if (stateCode != 0) {
       return;
     }
     if (bufferType == "general.image") {
-      let imageSource = image.createImageSource(buffer);
-      imageSource.createPixelMap().then((pixelMap) => {
+      let imgSource = image.createImageSource(buffer);
+      imgSource.createPixelMap().then((pixelMap: image.PixelMap) => {
         this.chooseImage = pixelMap; // 直接赋值给目标变量
-      })
+
+        // 触发UI更新
+        this.dataValues = ''; // 清空OCR识别结果
+
+        if (this.imageSource) {
+          this.imageSource.release();
+        }
+        this.imageSource = imgSource;
+      }).catch((error: BusinessError) => {
+        hilog.error(0x0000, 'OCR', `Failed to process image from other device: ${JSON.stringify(error)}`);
+      });
     }
   }
 }
