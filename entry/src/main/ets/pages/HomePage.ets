@@ -251,6 +251,79 @@ export struct HomePage {
     console.log('=== selectImage 结束 ===');
   }
 
+  // 将指定图片设置为背景图片
+  private async setImageAsBackground(imagePath: string): Promise<void> {
+    console.log('=== setImageAsBackground 开始 ===');
+    console.log('要设置为背景的图片 URI: ' + imagePath);
+
+    try {
+      // 根据图片URI获取扩展名
+      let extension = '.png';
+      if (imagePath.endsWith('.png')) {
+        extension = '.png';
+      } else if (imagePath.endsWith('.jpg') || imagePath.endsWith('.jpeg')) {
+        extension = '.jpg';
+      } else if (imagePath.endsWith('.webp')) {
+        extension = '.webp';
+      }
+
+      this.imageExtension = extension;
+
+      let context = this.getUIContext().getHostContext() as common.UIAbilityContext;
+      let targetPath = context.filesDir + '/pengyipeng' + this.imageExtension;
+
+      // 复制文件到应用目录
+      let sourceFile = fileIo.openSync(imagePath, fileIo.OpenMode.READ_ONLY);
+      let targetFile = fileIo.openSync(targetPath, fileIo.OpenMode.CREATE | fileIo.OpenMode.WRITE_ONLY | fileIo.OpenMode.TRUNC);
+
+      let bufferSize = 1024 * 1024;
+      let buffer = new ArrayBuffer(bufferSize);
+      let readLen: number = 0;
+
+      while ((readLen = fileIo.readSync(sourceFile.fd, buffer)) > 0) {
+        fileIo.writeSync(targetFile.fd, buffer, { length: readLen });
+      }
+
+      fileIo.closeSync(sourceFile);
+      fileIo.closeSync(targetFile);
+
+      hilog.info(0x0000, 'HomePage', 'Copy completed: ' + targetPath);
+
+      // 等待文件系统同步
+      await new Promise<void>((resolve) => {
+        setTimeout(() => {
+          resolve();
+        }, 100);
+      });
+
+      // 加载为PixelMap
+      const imageSource = image.createImageSource(targetPath);
+      this.localPixelMap = await imageSource.createPixelMap();
+
+      // 更新背景图片
+      this.sharepng = 'file://' + targetPath;
+      hilog.info(0x0000, 'HomePage', 'Background image updated to: ' + this.sharepng);
+
+      // 强制刷新图片显示
+      this.imageKey = Date.now().toString();
+
+      // 重新获取图片宽高比
+      await this.getImageAspectRatio();
+
+      // 如果是横屏+隔空模式，获取主颜色
+      if (this.imageAspectRatio >= 1 && this.selectedShareMode === 1) {
+        await this.extractMainColor();
+      }
+
+      promptAction.showToast({ message: '已设置为背景图片' });
+
+      console.log('=== setImageAsBackground 结束 ===');
+    } catch (error) {
+      hilog.error(0x0000, 'HomePage', 'setImageAsBackground failed: ' + JSON.stringify(error));
+      promptAction.showToast({ message: '设置背景图片失败' });
+    }
+  }
+
   private openPhoto(): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       let photoPicker: photoAccessHelper.PhotoViewPicker = new photoAccessHelper.PhotoViewPicker();
@@ -1780,9 +1853,20 @@ export struct HomePage {
                       .width('100%')
                       // 显示选中的所有图片路径
                       ForEach(this.shareImagePaths, (item: string, index: number) => {
-                        TextArea({ placeholder: `图片路径${index + 1}`, text: item })
-                          .enabled(false)
-                          .margin({ top: 5 })
+                        Row() {
+                          TextArea({ placeholder: `图片路径${index + 1}`, text: item })
+                            .enabled(false)
+                            .layoutWeight(1)
+                          Button('同时作为背景图片')
+                            .height(50)
+                            .backgroundColor(0xFF66CC)
+                            .fontSize(12)
+                            .onClick(() => {
+                              this.setImageAsBackground(item);
+                            })
+                        }
+                        .width('100%')
+                        .margin({ top: 5 })
                       })
                       if (this.shareImagePaths.length > 1) {
                         Text(`已选择${this.shareImagePaths.length}张图片`)
@@ -2511,9 +2595,20 @@ export struct HomePage {
                   .width('100%')
                   // 显示选中的所有图片路径
                   ForEach(this.shareImagePaths, (item: string, index: number) => {
-                    TextArea({ placeholder: `图片路径${index + 1}`, text: item })
-                      .enabled(false)
-                      .margin({ top: 5 })
+                    Row() {
+                      TextArea({ placeholder: `图片路径${index + 1}`, text: item })
+                        .enabled(false)
+                        .layoutWeight(1)
+                      Button('同时作为背景图片')
+                        .height(50)
+                        .backgroundColor(0xFF66CC)
+                        .fontSize(12)
+                        .onClick(() => {
+                          this.setImageAsBackground(item);
+                        })
+                    }
+                    .width('100%')
+                    .margin({ top: 5 })
                   })
                   if (this.shareImagePaths.length > 1) {
                     Text(`已选择${this.shareImagePaths.length}张图片`)
