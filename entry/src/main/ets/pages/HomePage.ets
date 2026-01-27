@@ -1778,8 +1778,12 @@ export struct HomePage {
                           })
                       }
                       .width('100%')
-                      TextArea({ placeholder: '图片路径', text: this.shareImagePath })
-                        .enabled(false)
+                      // 显示选中的所有图片路径
+                      ForEach(this.shareImagePaths, (item: string, index: number) => {
+                        TextArea({ placeholder: `图片路径${index + 1}`, text: item })
+                          .enabled(false)
+                          .margin({ top: 5 })
+                      })
                       if (this.shareImagePaths.length > 1) {
                         Text(`已选择${this.shareImagePaths.length}张图片`)
                           .fontSize(12)
@@ -1814,8 +1818,12 @@ export struct HomePage {
                           })
                       }
                       .width('100%')
-                      TextArea({ placeholder: '视频路径', text: this.shareVideoPath })
-                        .enabled(false)
+                      // 显示选中的所有视频路径
+                      ForEach(this.shareVideoPaths, (item: string, index: number) => {
+                        TextArea({ placeholder: `视频路径${index + 1}`, text: item })
+                          .enabled(false)
+                          .margin({ top: 5 })
+                      })
                       if (this.shareVideoPaths.length > 1) {
                         Text(`已选择${this.shareVideoPaths.length}个视频`)
                           .fontSize(12)
@@ -1839,8 +1847,12 @@ export struct HomePage {
                           })
                       }
                       .width('100%')
-                      TextArea({ placeholder: '文件路径', text: this.shareFilePath })
-                        .enabled(false)
+                      // 显示选中的所有文件路径
+                      ForEach(this.shareFilePaths, (item: string, index: number) => {
+                        TextArea({ placeholder: `文件路径${index + 1}`, text: item })
+                          .enabled(false)
+                          .margin({ top: 5 })
+                      })
                       if (this.shareFilePaths.length > 1) {
                         Text(`已选择${this.shareFilePaths.length}个文件`)
                           .fontSize(12)
@@ -2497,8 +2509,12 @@ export struct HomePage {
                       })
                   }
                   .width('100%')
-                  TextArea({ placeholder: '图片路径', text: this.shareImagePath })
-                    .enabled(false)
+                  // 显示选中的所有图片路径
+                  ForEach(this.shareImagePaths, (item: string, index: number) => {
+                    TextArea({ placeholder: `图片路径${index + 1}`, text: item })
+                      .enabled(false)
+                      .margin({ top: 5 })
+                  })
                   if (this.shareImagePaths.length > 1) {
                     Text(`已选择${this.shareImagePaths.length}张图片`)
                       .fontSize(12)
@@ -2533,8 +2549,12 @@ export struct HomePage {
                       })
                   }
                   .width('100%')
-                  TextArea({ placeholder: '视频路径', text: this.shareVideoPath })
-                    .enabled(false)
+                  // 显示选中的所有视频路径
+                  ForEach(this.shareVideoPaths, (item: string, index: number) => {
+                    TextArea({ placeholder: `视频路径${index + 1}`, text: item })
+                      .enabled(false)
+                      .margin({ top: 5 })
+                  })
                   if (this.shareVideoPaths.length > 1) {
                     Text(`已选择${this.shareVideoPaths.length}个视频`)
                       .fontSize(12)
@@ -2558,8 +2578,12 @@ export struct HomePage {
                       })
                   }
                   .width('100%')
-                  TextArea({ placeholder: '文件路径', text: this.shareFilePath })
-                    .enabled(false)
+                  // 显示选中的所有文件路径
+                  ForEach(this.shareFilePaths, (item: string, index: number) => {
+                    TextArea({ placeholder: `文件路径${index + 1}`, text: item })
+                      .enabled(false)
+                      .margin({ top: 5 })
+                  })
                   if (this.shareFilePaths.length > 1) {
                     Text(`已选择${this.shareFilePaths.length}个文件`)
                       .fontSize(12)
