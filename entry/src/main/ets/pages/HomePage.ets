@@ -2043,6 +2043,7 @@ export struct HomePage {
                         Text('下载文件')
                           .width('55%')
                           .margin({ right: 10 })
+                          .textAlign(TextAlign.Center)
                         Button('下载并分享')
                           .height(50)
                           .width('40%')
@@ -2052,7 +2053,7 @@ export struct HomePage {
                           })
                       }
                       .width('100%')
-                      .margin({ top: 10 })
+                      .margin({ top: 10, bottom: 10 })
                       TextArea({ placeholder: '输入下载链接', text: this.downloadUrl })
                         .onChange((value: string) => {
                           this.downloadUrl = value;
@@ -2064,6 +2065,7 @@ export struct HomePage {
                           .margin({ top: 5 })
                       }
                     }
+                    .margin({ bottom: 15 })
                   }
                 }
                 .width('100%')
@@ -2791,6 +2793,7 @@ export struct HomePage {
                     Text('下载文件')
                       .width('55%')
                       .margin({ right: 10 })
+                      .textAlign(TextAlign.Center)
                     Button('下载并分享')
                       .height(50)
                       .width('40%')
@@ -2800,7 +2803,7 @@ export struct HomePage {
                       })
                   }
                   .width('100%')
-                  .margin({ top: 10 })
+                  .margin({ top: 10, bottom: 10 })
                   TextArea({ placeholder: '输入下载链接', text: this.downloadUrl })
                     .onChange((value: string) => {
                       this.downloadUrl = value;
@@ -2812,6 +2815,7 @@ export struct HomePage {
                       .margin({ top: 5 })
                   }
                 }
+                .margin({ bottom: 15 })
               }
             }
             .width('100%')
