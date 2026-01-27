@@ -1771,6 +1771,8 @@ export struct HomePage {
                           })
                       }
                       .width('100%')
+                      .height(50)
+                      .margin({ bottom: 10 })
 
                       Row() {
                         TextArea({ placeholder: $r('app.string.testinput'), text: this.shareLinkContent })
@@ -1816,29 +1818,32 @@ export struct HomePage {
                   } else if (this.shareTypeIndex === 1) {
                     // 文本分享
                     Column() {
-                      TextArea({ placeholder: '请输入要分享的文本', text: this.shareTextContent })
-                        .onChange((value: string) => {
-                          this.shareTextContent = value;
-                        })
                       Row() {
-                        PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
-                          .backgroundColor(0xFF66CC)
-                          .height(40)
-                          .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
-                            if (PasteButtonOnClickResult.SUCCESS === result) {
-                              pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
-                                if (err) {
-                                  console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
-                                  return;
-                                }
-                                this.shareTextContent = pasteData.getPrimaryText();
-                              });
-                            }
+                        TextArea({ placeholder: '请输入要分享的文本', text: this.shareTextContent })
+                          .layoutWeight(1)
+                          .onChange((value: string) => {
+                            this.shareTextContent = value;
                           })
+                        Row() {
+                          PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
+                            .backgroundColor(0xFF66CC)
+                            .height(40)
+                            .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
+                              if (PasteButtonOnClickResult.SUCCESS === result) {
+                                pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
+                                  if (err) {
+                                    console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
+                                    return;
+                                  }
+                                  this.shareTextContent = pasteData.getPrimaryText();
+                                });
+                              }
+                            })
+                        }
+                        .margin({ left: 10 })
                       }
                       .width('100%')
-                      .justifyContent(FlexAlign.End)
-                      .margin({ top: 10 })
+                      .alignItems(VerticalAlign.Center)
                     }
                   } else if (this.shareTypeIndex === 2) {
                     // 图片分享
@@ -2510,6 +2515,7 @@ export struct HomePage {
                   }
                   .width('100%')
                   .height(50)
+                  .margin({ bottom: 10 })
 
                   Row() {
                     TextArea({ placeholder: $r('app.string.testinput'), text: this.shareLinkContent })
