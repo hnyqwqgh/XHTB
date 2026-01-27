@@ -23,6 +23,7 @@ import { resourceManager } from '@kit.LocalizationKit';
 //本地
 import { fileIo } from '@kit.CoreFileKit';
 import { photoAccessHelper } from '@kit.MediaLibraryKit';
+import { picker } from '@kit.CoreFileKit';
 import MediaFileUri from '../media/MediaFileUri';
 import KnockShareGuideCard, { CardRes } from '../model/KnockShareGuideCard';
 import { GlobalInfoModel, BreakpointTypeEnum } from '../common/GlobalInfoModel';
@@ -98,6 +99,18 @@ export struct HomePage {
   // 顶部胶囊按钮
   @State selectedShareMode: number = 0; // 0: 碰一碰, 1: 隔空传输
   @State currentDescription: Resource = $r('app.string.pengyipeng_description'); // 当前显示的描述
+
+  // 分享类型选择
+  @State shareTypeIndex: number = 0; // 0: 链接, 1: 文本, 2: 图片, 3: 视频, 4: 文件
+
+  // 各类型分享内容
+  @State shareLinkContent: string = ''; // 链接内容
+  @State shareTextContent: string = ''; // 文本内容
+  @State shareImagePath: string = ''; // 图片路径
+  @State shareVideoPath: string = ''; // 视频路径
+  @State shareFilePath: string = ''; // 文件路径
+  @State downloadUrl: string = ''; // 下载链接
+  @State downloadProgress: string = '0'; // 下载进度
 
   // 主颜色获取相关
   @State mainColor: string = '#F5E5D8'; // 获取的主颜色，用于文字背景，默认为#F5E5D8
@@ -214,6 +227,9 @@ export struct HomePage {
       this.sharepng = 'file://' + targetPath;
       hilog.info(0x0000, 'localsharepng' , 'sharepng updated to: ' + this.sharepng);
       hilog.info(0x0000, 'localsharepng' , '当前 imageExtension: ' + this.imageExtension);
+
+      // 更新分享图片路径
+      this.shareImagePath = targetPath;
     } catch (error) {
       hilog.error(0x0000, 'localsharepng' , 'Copy failed: ' + JSON.stringify(error));
       return;
@@ -294,38 +310,171 @@ export struct HomePage {
   //华为系统分享
   private async share() {
     let uiContext: UIContext = this.getUIContext();
-    if (!this.networkVideoSrc) {
-      promptAction.showToast({ message: this.context.resourceManager.getStringSync($r('app.string.nopeng').id) });
-      return;
-    }
     let contextFaker: Context = uiContext.getHostContext() as Context;
-    // 根据当前图片扩展名设置缩略图路径
+
+    // 根据分享类型执行不同的分享逻辑
+    switch (this.shareTypeIndex) {
+      case 0: // 链接分享
+        if (!this.shareLinkContent) {
+          promptAction.showToast({ message: '请输入要分享的链接' });
+          return;
+        }
+        await this.shareLink(contextFaker);
+        break;
+      case 1: // 文本分享
+        if (!this.shareTextContent) {
+          promptAction.showToast({ message: '请输入要分享的文本' });
+          return;
+        }
+        await this.shareText(contextFaker);
+        break;
+      case 2: // 图片分享
+        if (!this.shareImagePath && !this.sharepng) {
+          promptAction.showToast({ message: '请选择要分享的图片' });
+          return;
+        }
+        await this.shareImage(contextFaker);
+        break;
+      case 3: // 视频分享
+        if (!this.shareVideoPath) {
+          promptAction.showToast({ message: '请选择要分享的视频' });
+          return;
+        }
+        await this.shareVideo(contextFaker);
+        break;
+      case 4: // 文件分享
+        if (!this.shareFilePath) {
+          promptAction.showToast({ message: '请选择要分享的文件' });
+          return;
+        }
+        await this.shareFile(contextFaker);
+        break;
+    }
+  }
+
+  // 分享链接
+  private async shareLink(contextFaker: Context) {
     let thumbnailPath = contextFaker.filesDir + '/pengyipeng' + this.imageExtension;
     let imageSource: image.ImageSource = image.createImageSource(thumbnailPath);
     let imagePacker: image.ImagePacker = image.createImagePacker();
     let buffer: ArrayBuffer = await imagePacker.packToData(imageSource, {
-      // 当前只支持'image/jpeg','image/webp'和'image/png'类型图片.
       format: 'image/jpeg',
-      // JPEG编码中设定输出图片质量的参数,取值范围为0-100.
-      // 建议适当压缩,图片过大无法拉起分享.
       quality: 30
     });
 
-    //let context: common.UIAbilityContext = uiContext.getHostContext() as common.UIAbilityContext;
-    //let shareTitle = context.resourceManager.getStringSync($r('app.string.shareinfo').id);
-
-    console.log('Creating share data');
     let shareData: systemShare.SharedData = new systemShare.SharedData({
       utd: utd.UniformDataType.HYPERLINK,
-      content: this.networkVideoSrc, // 使用输入框中的视频链接
-      //title: shareTitle,
+      content: this.shareLinkContent,
       title: this.pengtitle,
-      description: this.networkVideoSrc,
+      description: this.shareLinkContent,
       thumbnail: new Uint8Array(buffer),
     });
     let controller: systemShare.ShareController = new systemShare.ShareController(shareData);
     controller.show(context, {
       previewMode: systemShare.SharePreviewMode.DEFAULT,
+      selectionMode: systemShare.SelectionMode.SINGLE
+    }).then(() => {
+      console.info('ShareController show success.');
+    }).catch((error: BusinessError) => {
+      console.error(`ShareController show error. code: ${error.code}, message: ${error.message}`);
+    });
+  }
+
+  // 分享文本
+  private async shareText(contextFaker: Context) {
+    let shareData: systemShare.SharedData = new systemShare.SharedData({
+      utd: utd.UniformDataType.TEXT,
+      content: this.shareTextContent,
+      title: '分享文本',
+      description: this.shareTextContent,
+      thumbnail: new Uint8Array()
+    });
+    let controller: systemShare.ShareController = new systemShare.ShareController(shareData);
+    controller.show(context, {
+      previewMode: systemShare.SharePreviewMode.DEFAULT,
+      selectionMode: systemShare.SelectionMode.SINGLE
+    }).then(() => {
+      console.info('ShareController show success.');
+    }).catch((error: BusinessError) => {
+      console.error(`ShareController show error. code: ${error.code}, message: ${error.message}`);
+    });
+  }
+
+  // 分享图片
+  private async shareImage(contextFaker: Context) {
+    let imagePath = this.shareImagePath || this.sharepng;
+
+    // 根据文件扩展名获取UTD类型
+    let extension = imagePath.substring(imagePath.lastIndexOf('.'));
+    let utdTypeId = utd.getUniformDataTypeByFilenameExtension(extension, utd.UniformDataType.IMAGE);
+
+    let shareData: systemShare.SharedData = new systemShare.SharedData({
+      utd: utdTypeId,
+      uri: fileUri.getUriFromPath(imagePath),
+      title: '分享图片',
+      description: '分享图片',
+    });
+    let controller: systemShare.ShareController = new systemShare.ShareController(shareData);
+    controller.show(context, {
+      previewMode: systemShare.SharePreviewMode.DETAIL,
+      selectionMode: systemShare.SelectionMode.SINGLE
+    }).then(() => {
+      console.info('ShareController show success.');
+    }).catch((error: BusinessError) => {
+      console.error(`ShareController show error. code: ${error.code}, message: ${error.message}`);
+    });
+  }
+
+  // 分享视频
+  private async shareVideo(contextFaker: Context) {
+    let thumbnailPath = contextFaker.filesDir + '/pengyipeng' + this.imageExtension;
+    let imageSource: image.ImageSource = image.createImageSource(thumbnailPath);
+    let imagePacker: image.ImagePacker = image.createImagePacker();
+    let buffer: ArrayBuffer | undefined = undefined;
+
+    try {
+      buffer = await imagePacker.packToData(imageSource, {
+        format: 'image/jpeg',
+        quality: 30,
+      });
+    } catch (error) {
+      console.error(`packToData error. Code: ${error?.code}, message: ${error?.message}`);
+    }
+
+    let shareData: systemShare.SharedData = new systemShare.SharedData({
+      utd: utd.UniformDataType.VIDEO,
+      uri: fileUri.getUriFromPath(this.shareVideoPath),
+      title: '分享视频',
+      description: '分享视频',
+      thumbnail: buffer ? new Uint8Array(buffer) : undefined,
+    });
+    let controller: systemShare.ShareController = new systemShare.ShareController(shareData);
+    controller.show(context, {
+      previewMode: systemShare.SharePreviewMode.DETAIL,
+      selectionMode: systemShare.SelectionMode.SINGLE
+    }).then(() => {
+      console.info('ShareController show success.');
+    }).catch((error: BusinessError) => {
+      console.error(`ShareController show error. code: ${error.code}, message: ${error.message}`);
+    });
+  }
+
+  // 分享文件
+  private async shareFile(contextFaker: Context) {
+    // 根据文件扩展名获取UTD类型
+    let extension = this.shareFilePath.substring(this.shareFilePath.lastIndexOf('.'));
+    let utdTypeId = utd.getUniformDataTypeByFilenameExtension(extension, utd.UniformDataType.FILE);
+
+    let shareData: systemShare.SharedData = new systemShare.SharedData({
+      utd: utdTypeId,
+      uri: fileUri.getUriFromPath(this.shareFilePath),
+      content: this.shareFilePath,
+      title: '分享文件',
+      description: '分享文件',
+    });
+    let controller: systemShare.ShareController = new systemShare.ShareController(shareData);
+    controller.show(context, {
+      previewMode: systemShare.SharePreviewMode.DETAIL,
       selectionMode: systemShare.SelectionMode.SINGLE
     }).then(() => {
       console.info('ShareController show success.');
@@ -548,6 +697,9 @@ export struct HomePage {
     this.whiteListening()
     this.immersiveListening();
     let context = getContext(this);
+
+    // 同步 networkVideoSrc 到 shareLinkContent
+    this.shareLinkContent = this.networkVideoSrc;
 
     // 初始化 AppStorage 中的默认值（如果不存在）
     if (!AppStorage.get('sharepng')) {
@@ -1290,88 +1442,269 @@ export struct HomePage {
                 .margin({ bottom: 10 })
                 .border({ width: 1, color: 0xE0E0E0 })
 
-                // 区域2：分享链接
+                // 区域2：分享内容
                 Column() {
+                  // 分享类型选择胶囊按钮
                   Row() {
-                    Text($r('app.string.texton'))
-                      .textAlign(TextAlign.Center)
-                      .width('55%')
-                      .margin({ right: 10 })
-
-                    Button($r('app.string.scancodelinkpad'))
-                      .height(50)
-                      .width('40%')
-                      .backgroundColor(0xFF66CC)
-                      .onClick(async () => {
-                        try {
-                          // 定义扫码参数options
-                          let options: scanBarcode.ScanOptions = {
-                            scanTypes: [scanCore.ScanType.ALL],
-                            enableMultiMode: true,
-                            enableAlbum: true
-                          };
-                          // 调用扫码功能
-                          scanBarcode.startScanForResult(getContext(this), options).then((result: scanBarcode.ScanResult) => {
-                            // 正确获取扫描结果的字符串值
-                            const originalValue: string = result.originalValue; // 假设ScanResult有originalValue属性
-                            this.networkVideoSrc = originalValue;
-                            promptAction.showToast({ duration: 10000, message: '扫码成功: ' + originalValue });
-                          }).catch((error: BusinessError) => {
-                            hilog.error(0x0001, '[Scan]',
-                              `Failed to get ScanResult by promise with options. Code: ${error.code}, message: ${error.message}`);
-                            promptAction.showToast({ message: '手动取消或扫码失败（PC/2in1设备暂不支持扫描二维码，请使用其它类型的设备）' });
-                          });
-                        } catch (error) {
-                          //promptAction.showToast({ message: '扫码失败: 读取二维码信息错误； ' + error.message });
-                          promptAction.showToast({ message: '扫码失败: 启动扫码服务失败' });
-                          hilog.error(0x0001, '[Scan]',
-                            `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
-                        }
+                    Button('链接')
+                      .fontSize(14)
+                      .height(36)
+                      .backgroundColor(this.shareTypeIndex === 0 ? 0x66CCFF : 0xE0E0E0)
+                      .fontColor(this.shareTypeIndex === 0 ? 0xFFFFFF : 0x000000)
+                      .borderRadius(8)
+                      .margin({ right: 5 })
+                      .onClick(() => {
+                        this.shareTypeIndex = 0;
+                      })
+                    Button('文本')
+                      .fontSize(14)
+                      .height(36)
+                      .backgroundColor(this.shareTypeIndex === 1 ? 0x66CCFF : 0xE0E0E0)
+                      .fontColor(this.shareTypeIndex === 1 ? 0xFFFFFF : 0x000000)
+                      .borderRadius(8)
+                      .margin({ right: 5 })
+                      .onClick(() => {
+                        this.shareTypeIndex = 1;
+                      })
+                    Button('图片')
+                      .fontSize(14)
+                      .height(36)
+                      .backgroundColor(this.shareTypeIndex === 2 ? 0x66CCFF : 0xE0E0E0)
+                      .fontColor(this.shareTypeIndex === 2 ? 0xFFFFFF : 0x000000)
+                      .borderRadius(8)
+                      .margin({ right: 5 })
+                      .onClick(() => {
+                        this.shareTypeIndex = 2;
+                      })
+                    Button('视频')
+                      .fontSize(14)
+                      .height(36)
+                      .backgroundColor(this.shareTypeIndex === 3 ? 0x66CCFF : 0xE0E0E0)
+                      .fontColor(this.shareTypeIndex === 3 ? 0xFFFFFF : 0x000000)
+                      .borderRadius(8)
+                      .margin({ right: 5 })
+                      .onClick(() => {
+                        this.shareTypeIndex = 3;
+                      })
+                    Button('文件')
+                      .fontSize(14)
+                      .height(36)
+                      .backgroundColor(this.shareTypeIndex === 4 ? 0x66CCFF : 0xE0E0E0)
+                      .fontColor(this.shareTypeIndex === 4 ? 0xFFFFFF : 0x000000)
+                      .borderRadius(8)
+                      .onClick(() => {
+                        this.shareTypeIndex = 4;
                       })
                   }
                   .width('100%')
+                  .justifyContent(FlexAlign.SpaceEvenly)
+                  .margin({ bottom: 10 })
 
-                  Row() {
-                    TextArea({ placeholder: $r('app.string.testinput') , text: this.networkVideoSrc })
-                      .layoutWeight(1)
-                      .onChange((networkVideoSrc: string) => {
-                        // 清除之前的防抖定时器
-                        clearTimeout(this.urlDebounceTimer);
+                  // 根据选择的类型显示不同的内容
+                  if (this.shareTypeIndex === 0) {
+                    // 链接分享
+                    Column() {
+                      Row() {
+                        Text($r('app.string.texton'))
+                          .textAlign(TextAlign.Center)
+                          .width('55%')
+                          .margin({ right: 10 })
 
-                        // 设置新的防抖定时器，300ms后执行
-                        this.urlDebounceTimer = setTimeout(() => {
-                          // 尝试从输入文本中提取链接
-                          const extractedUrl = this.extractUrlFromText(networkVideoSrc);
-                          if (extractedUrl) {
-                            this.networkVideoSrc = extractedUrl;
-                            AppStorage.set('networkVideoSrc', extractedUrl);
-                          } else {
-                            this.networkVideoSrc = networkVideoSrc;
-                            AppStorage.set('networkVideoSrc', networkVideoSrc);
-                          }
-                        }, 300);
-                      })
-                    Row() {
-                      PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
-                        .backgroundColor(0xFF66CC)
-                        .height(40)
-                        .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
-                          if (PasteButtonOnClickResult.SUCCESS === result) {
-                            pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
-                              if (err) {
-                                console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
-                                return;
+                        Button($r('app.string.scancodelinkpad'))
+                          .height(50)
+                          .width('40%')
+                          .backgroundColor(0xFF66CC)
+                          .onClick(async () => {
+                            try {
+                              // 定义扫码参数options
+                              let options: scanBarcode.ScanOptions = {
+                                scanTypes: [scanCore.ScanType.ALL],
+                                enableMultiMode: true,
+                                enableAlbum: true
+                              };
+                              // 调用扫码功能
+                              scanBarcode.startScanForResult(getContext(this), options).then((result: scanBarcode.ScanResult) => {
+                                // 正确获取扫描结果的字符串值
+                                const originalValue: string = result.originalValue; // 假设ScanResult有originalValue属性
+                                this.shareLinkContent = originalValue;
+                                this.networkVideoSrc = originalValue;
+                                promptAction.showToast({ duration: 10000, message: '扫码成功: ' + originalValue });
+                              }).catch((error: BusinessError) => {
+                                hilog.error(0x0001, '[Scan]',
+                                  `Failed to get ScanResult by promise with options. Code: ${error.code}, message: ${error.message}`);
+                                promptAction.showToast({ message: '手动取消或扫码失败（PC/2in1设备暂不支持扫描二维码，请使用其它类型的设备）' });
+                              });
+                            } catch (error) {
+                              //promptAction.showToast({ message: '扫码失败: 读取二维码信息错误； ' + error.message });
+                              promptAction.showToast({ message: '扫码失败: 启动扫码服务失败' });
+                              hilog.error(0x0001, '[Scan]',
+                                `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
+                            }
+                          })
+                      }
+                      .width('100%')
+
+                      Row() {
+                        TextArea({ placeholder: $r('app.string.testinput'), text: this.shareLinkContent })
+                          .layoutWeight(1)
+                          .onChange((value: string) => {
+                            this.shareLinkContent = value;
+                            // 清除之前的防抖定时器
+                            clearTimeout(this.urlDebounceTimer);
+                            // 设置新的防抖定时器，300ms后执行
+                            this.urlDebounceTimer = setTimeout(() => {
+                              const extractedUrl = this.extractUrlFromText(value);
+                              if (extractedUrl) {
+                                this.shareLinkContent = extractedUrl;
+                                this.networkVideoSrc = extractedUrl;
+                              } else {
+                                this.shareLinkContent = value;
+                                this.networkVideoSrc = value;
                               }
-                              this.networkVideoSrc = pasteData.getPrimaryText();
-                            });
-                          }
-                        })
+                            }, 300);
+                          })
+                        Row() {
+                          PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
+                            .backgroundColor(0xFF66CC)
+                            .height(40)
+                            .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
+                              if (PasteButtonOnClickResult.SUCCESS === result) {
+                                pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
+                                  if (err) {
+                                    console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
+                                    return;
+                                  }
+                                  this.shareLinkContent = pasteData.getPrimaryText();
+                                  this.networkVideoSrc = this.shareLinkContent;
+                                });
+                              }
+                            })
+                        }
+                        .margin({ left: 10 })
+                      }
+                      .width('100%')
+                      .alignItems(VerticalAlign.Center)
                     }
-                    .margin({ left: 10 })
+                  } else if (this.shareTypeIndex === 1) {
+                    // 文本分享
+                    Column() {
+                      TextArea({ placeholder: '请输入要分享的文本', text: this.shareTextContent })
+                        .onChange((value: string) => {
+                          this.shareTextContent = value;
+                        })
+                      Row() {
+                        PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
+                          .backgroundColor(0xFF66CC)
+                          .height(40)
+                          .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
+                            if (PasteButtonOnClickResult.SUCCESS === result) {
+                              pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
+                                if (err) {
+                                  console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
+                                  return;
+                                }
+                                this.shareTextContent = pasteData.getPrimaryText();
+                              });
+                            }
+                          })
+                      }
+                      .width('100%')
+                      .justifyContent(FlexAlign.End)
+                      .margin({ top: 10 })
+                    }
+                  } else if (this.shareTypeIndex === 2) {
+                    // 图片分享
+                    Column() {
+                      Row() {
+                        Text('选择图片')
+                          .width('55%')
+                          .margin({ right: 10 })
+                        Button($r('app.string.choose'))
+                          .height(50)
+                          .width('40%')
+                          .backgroundColor(0xb87cff)
+                          .onClick(() => {
+                            this.selectImage();
+                          })
+                      }
+                      .width('100%')
+                      TextArea({ placeholder: '图片路径', text: this.shareImagePath })
+                        .enabled(false)
+                    }
+                  } else if (this.shareTypeIndex === 3) {
+                    // 视频分享
+                    Column() {
+                      Row() {
+                        Text('选择视频')
+                          .width('40%')
+                          .margin({ right: 10 })
+                        Button('选择视频')
+                          .height(50)
+                          .width('25%')
+                          .backgroundColor(0xb87cff)
+                          .onClick(async () => {
+                            await this.selectVideo();
+                          })
+                        Button('剪辑视频')
+                          .height(50)
+                          .width('25%')
+                          .backgroundColor(0xFF66CC)
+                          .onClick(() => {
+                            if (this.shareVideoPath) {
+                              this.openVideoTrimmer();
+                            } else {
+                              promptAction.showToast({ message: '请先选择视频' });
+                            }
+                          })
+                      }
+                      .width('100%')
+                      TextArea({ placeholder: '视频路径', text: this.shareVideoPath })
+                        .enabled(false)
+                    }
+                  } else if (this.shareTypeIndex === 4) {
+                    // 文件分享
+                    Column() {
+                      Row() {
+                        Text('选择文件')
+                          .width('55%')
+                          .margin({ right: 10 })
+                        Button('选择文件')
+                          .height(50)
+                          .width('40%')
+                          .backgroundColor(0xb87cff)
+                          .onClick(async () => {
+                            await this.selectFile();
+                          })
+                      }
+                      .width('100%')
+                      TextArea({ placeholder: '文件路径', text: this.shareFilePath })
+                        .enabled(false)
+                      Row() {
+                        Text('下载文件')
+                          .width('55%')
+                          .margin({ right: 10 })
+                        Button('下载并分享')
+                          .height(50)
+                          .width('40%')
+                          .backgroundColor(0xFF66CC)
+                          .onClick(() => {
+                            this.downloadAndShare();
+                          })
+                      }
+                      .width('100%')
+                      .margin({ top: 10 })
+                      TextArea({ placeholder: '输入下载链接', text: this.downloadUrl })
+                        .onChange((value: string) => {
+                          this.downloadUrl = value;
+                        })
+                      if (this.downloadProgress !== '0' && this.downloadProgress !== '100') {
+                        Text(`下载进度: ${this.downloadProgress}%`)
+                          .fontSize(14)
+                          .fontColor(0x66CCFF)
+                          .margin({ top: 5 })
+                      }
+                    }
                   }
-                  .width('100%')
-                  .alignItems(VerticalAlign.Center)
-                  .margin({ top: 5, bottom: 10 })
                 }
                 .width('100%')
                 .backgroundColor('#FFFFFF')
@@ -1806,89 +2139,273 @@ export struct HomePage {
             .margin({ bottom: 10 })
             .border({ width: 1, color: 0xE0E0E0 })
 
-            // 区域2：分享链接
+            // 区域2：分享内容
             Column() {
+              // 分享类型选择胶囊按钮
               Row() {
-                Text($r('app.string.texton'))
-                  .textAlign(TextAlign.Center)
-                  .width('55%')
-                  .margin({ right: 10 })
+                Button('链接')
+                  .fontSize(14)
+                  .height(36)
+                  .backgroundColor(this.shareTypeIndex === 0 ? 0x66CCFF : 0xE0E0E0)
+                  .fontColor(this.shareTypeIndex === 0 ? 0xFFFFFF : 0x000000)
+                  .borderRadius(8)
+                  .margin({ right: 5 })
+                  .onClick(() => {
+                    this.shareTypeIndex = 0;
+                  })
+                Button('文本')
+                  .fontSize(14)
+                  .height(36)
+                  .backgroundColor(this.shareTypeIndex === 1 ? 0x66CCFF : 0xE0E0E0)
+                  .fontColor(this.shareTypeIndex === 1 ? 0xFFFFFF : 0x000000)
+                  .borderRadius(8)
+                  .margin({ right: 5 })
+                  .onClick(() => {
+                    this.shareTypeIndex = 1;
+                  })
+                Button('图片')
+                  .fontSize(14)
+                  .height(36)
+                  .backgroundColor(this.shareTypeIndex === 2 ? 0x66CCFF : 0xE0E0E0)
+                  .fontColor(this.shareTypeIndex === 2 ? 0xFFFFFF : 0x000000)
+                  .borderRadius(8)
+                  .margin({ right: 5 })
+                  .onClick(() => {
+                    this.shareTypeIndex = 2;
+                  })
+                Button('视频')
+                  .fontSize(14)
+                  .height(36)
+                  .backgroundColor(this.shareTypeIndex === 3 ? 0x66CCFF : 0xE0E0E0)
+                  .fontColor(this.shareTypeIndex === 3 ? 0xFFFFFF : 0x000000)
+                  .borderRadius(8)
+                  .margin({ right: 5 })
+                  .onClick(() => {
+                    this.shareTypeIndex = 3;
+                  })
+                Button('文件')
+                  .fontSize(14)
+                  .height(36)
+                  .backgroundColor(this.shareTypeIndex === 4 ? 0x66CCFF : 0xE0E0E0)
+                  .fontColor(this.shareTypeIndex === 4 ? 0xFFFFFF : 0x000000)
+                  .borderRadius(8)
+                  .onClick(() => {
+                    this.shareTypeIndex = 4;
+                  })
+              }
+              .width('100%')
+              .justifyContent(FlexAlign.SpaceEvenly)
+              .margin({ bottom: 10 })
 
-                Button($r('app.string.scancodelink'))
+              // 根据选择的类型显示不同的内容
+              if (this.shareTypeIndex === 0) {
+                // 链接分享
+                Column() {
+                  Row() {
+                    Text($r('app.string.texton'))
+                      .textAlign(TextAlign.Center)
+                      .width('55%')
+                      .margin({ right: 10 })
+
+                    Button($r('app.string.scancodelink'))
+                      .height(50)
+                      .width('40%')
+                      .backgroundColor(0xFF66CC)
+                      .onClick(async () => {
+                        try {
+                          // 定义扫码参数options
+                          let options: scanBarcode.ScanOptions = {
+                            scanTypes: [scanCore.ScanType.ALL],
+                            enableMultiMode: true,
+                            enableAlbum: true
+                          };
+                          // 调用扫码功能
+                          scanBarcode.startScanForResult(getContext(this), options).then((result: scanBarcode.ScanResult) => {
+                            // 正确获取扫描结果的字符串值
+                            const originalValue: string = result.originalValue; // 假设ScanResult有originalValue属性
+                            this.shareLinkContent = originalValue;
+                            this.networkVideoSrc = originalValue;
+                            promptAction.showToast({ duration: 10000, message: '扫码成功: ' + originalValue });
+                          }).catch((error: BusinessError) => {
+                            hilog.error(0x0001, '[Scan]',
+                              `Failed to get ScanResult by promise with options. Code: ${error.code}, message: ${error.message}`);
+                            promptAction.showToast({ message: '手动取消或扫码失败（PC/2in1设备暂不支持扫描二维码，请使用其它类型的设备）' });
+                          });
+                        } catch (error) {
+                          //promptAction.showToast({ message: '扫码失败: 读取二维码信息错误； ' + error.message });
+                          promptAction.showToast({ message: '扫码失败: 启动扫码服务失败' });
+                          hilog.error(0x0001, '[Scan]',
+                            `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
+                        }
+                      })
+                  }
+                  .width('100%')
                   .height(50)
-                  .width('40%')
-                  .backgroundColor(0xFF66CC)
-                  .onClick(async () => {
-                    try {
-                      // 定义扫码参数options
-                      let options: scanBarcode.ScanOptions = {
-                        scanTypes: [scanCore.ScanType.ALL],
-                        enableMultiMode: true,
-                        enableAlbum: true
-                      };
-                      // 调用扫码功能
-                      scanBarcode.startScanForResult(getContext(this), options).then((result: scanBarcode.ScanResult) => {
-                        // 正确获取扫描结果的字符串值
-                        const originalValue: string = result.originalValue; // 假设ScanResult有originalValue属性
-                        this.networkVideoSrc = originalValue;
-                        promptAction.showToast({ duration: 10000, message: '扫码成功: ' + originalValue });
-                      }).catch((error: BusinessError) => {
-                        hilog.error(0x0001, '[Scan]',
-                          `Failed to get ScanResult by promise with options. Code: ${error.code}, message: ${error.message}`);
-                        promptAction.showToast({ message: '手动取消或扫码失败（PC/2in1设备暂不支持扫描二维码，请使用其它类型的设备）' });
-                      });
-                    } catch (error) {
-                      //promptAction.showToast({ message: '扫码失败: 读取二维码信息错误； ' + error.message });
-                      promptAction.showToast({ message: '扫码失败: 启动扫码服务失败' });
-                      hilog.error(0x0001, '[Scan]',
-                        `Failed to start the scanning service. Code:${error.code}, message: ${error.message}`);
-                    }
-                  })
-              }
-              .width('100%')
-              .height(50)
 
-              Row() {
-                TextArea({ placeholder: $r('app.string.testinput') , text: this.networkVideoSrc })
-                  .layoutWeight(1)
-                  .onChange((networkVideoSrc: string) => {
-                    // 清除之前的防抖定时器
-                    clearTimeout(this.urlDebounceTimer);
-
-                    // 设置新的防抖定时器，300ms后执行
-                    this.urlDebounceTimer = setTimeout(() => {
-                      // 尝试从输入文本中提取链接
-                      const extractedUrl = this.extractUrlFromText(networkVideoSrc);
-                      if (extractedUrl) {
-                        this.networkVideoSrc = extractedUrl;
-                        AppStorage.set('networkVideoSrc', extractedUrl);
-                      } else {
-                        this.networkVideoSrc = networkVideoSrc;
-                        AppStorage.set('networkVideoSrc', networkVideoSrc);
-                      }
-                    }, 300);
-                  })
-                Row() {
-                  PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
-                    .backgroundColor(0xFF66CC)
-                    .height(40)
-                    .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
-                      if (PasteButtonOnClickResult.SUCCESS === result) {
-                        pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
-                          if (err) {
-                            console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
-                            return;
+                  Row() {
+                    TextArea({ placeholder: $r('app.string.testinput'), text: this.shareLinkContent })
+                      .layoutWeight(1)
+                      .onChange((value: string) => {
+                        this.shareLinkContent = value;
+                        // 清除之前的防抖定时器
+                        clearTimeout(this.urlDebounceTimer);
+                        // 设置新的防抖定时器，300ms后执行
+                        this.urlDebounceTimer = setTimeout(() => {
+                          const extractedUrl = this.extractUrlFromText(value);
+                          if (extractedUrl) {
+                            this.shareLinkContent = extractedUrl;
+                            this.networkVideoSrc = extractedUrl;
+                            AppStorage.set('networkVideoSrc', extractedUrl);
+                          } else {
+                            this.shareLinkContent = value;
+                            this.networkVideoSrc = value;
+                            AppStorage.set('networkVideoSrc', value);
                           }
-                          this.networkVideoSrc = pasteData.getPrimaryText();
-                        });
-                      }
-                    })
+                        }, 300);
+                      })
+                    Row() {
+                      PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
+                        .backgroundColor(0xFF66CC)
+                        .height(40)
+                        .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
+                          if (PasteButtonOnClickResult.SUCCESS === result) {
+                            pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
+                              if (err) {
+                                console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
+                                return;
+                              }
+                              this.shareLinkContent = pasteData.getPrimaryText();
+                              this.networkVideoSrc = this.shareLinkContent;
+                            });
+                          }
+                        })
+                    }
+                    .margin({ left: 10 })
+                  }
+                  .width('100%')
+                  .alignItems(VerticalAlign.Center)
+                  .margin({ top: 10, bottom: 10 })
                 }
-                .margin({ left: 10 })
+              } else if (this.shareTypeIndex === 1) {
+                // 文本分享
+                Column() {
+                  TextArea({ placeholder: '请输入要分享的文本', text: this.shareTextContent })
+                    .onChange((value: string) => {
+                      this.shareTextContent = value;
+                    })
+                  Row() {
+                    PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
+                      .backgroundColor(0xFF66CC)
+                      .height(40)
+                      .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
+                        if (PasteButtonOnClickResult.SUCCESS === result) {
+                          pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
+                            if (err) {
+                              console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
+                              return;
+                            }
+                            this.shareTextContent = pasteData.getPrimaryText();
+                          });
+                        }
+                      })
+                  }
+                  .width('100%')
+                  .justifyContent(FlexAlign.End)
+                  .margin({ top: 10 })
+                }
+              } else if (this.shareTypeIndex === 2) {
+                // 图片分享
+                Column() {
+                  Row() {
+                    Text('选择图片')
+                      .width('55%')
+                      .margin({ right: 10 })
+                    Button($r('app.string.choose'))
+                      .height(50)
+                      .width('40%')
+                      .backgroundColor(0xb87cff)
+                      .onClick(() => {
+                        this.selectImage();
+                      })
+                  }
+                  .width('100%')
+                  TextArea({ placeholder: '图片路径', text: this.shareImagePath })
+                    .enabled(false)
+                }
+              } else if (this.shareTypeIndex === 3) {
+                // 视频分享
+                Column() {
+                  Row() {
+                    Text('选择视频')
+                      .width('40%')
+                      .margin({ right: 10 })
+                    Button('选择视频')
+                      .height(50)
+                      .width('25%')
+                      .backgroundColor(0xb87cff)
+                      .onClick(async () => {
+                        await this.selectVideo();
+                      })
+                    Button('剪辑视频')
+                      .height(50)
+                      .width('25%')
+                      .backgroundColor(0xFF66CC)
+                      .onClick(() => {
+                        if (this.shareVideoPath) {
+                          this.openVideoTrimmer();
+                        } else {
+                          promptAction.showToast({ message: '请先选择视频' });
+                        }
+                      })
+                  }
+                  .width('100%')
+                  TextArea({ placeholder: '视频路径', text: this.shareVideoPath })
+                    .enabled(false)
+                }
+              } else if (this.shareTypeIndex === 4) {
+                // 文件分享
+                Column() {
+                  Row() {
+                    Text('选择文件')
+                      .width('55%')
+                      .margin({ right: 10 })
+                    Button('选择文件')
+                      .height(50)
+                      .width('40%')
+                      .backgroundColor(0xb87cff)
+                      .onClick(async () => {
+                        await this.selectFile();
+                      })
+                  }
+                  .width('100%')
+                  TextArea({ placeholder: '文件路径', text: this.shareFilePath })
+                    .enabled(false)
+                  Row() {
+                    Text('下载文件')
+                      .width('55%')
+                      .margin({ right: 10 })
+                    Button('下载并分享')
+                      .height(50)
+                      .width('40%')
+                      .backgroundColor(0xFF66CC)
+                      .onClick(() => {
+                        this.downloadAndShare();
+                      })
+                  }
+                  .width('100%')
+                  .margin({ top: 10 })
+                  TextArea({ placeholder: '输入下载链接', text: this.downloadUrl })
+                    .onChange((value: string) => {
+                      this.downloadUrl = value;
+                    })
+                  if (this.downloadProgress !== '0' && this.downloadProgress !== '100') {
+                    Text(`下载进度: ${this.downloadProgress}%`)
+                      .fontSize(14)
+                      .fontColor(0x66CCFF)
+                      .margin({ top: 5 })
+                  }
+                }
               }
-              .width('100%')
-              .alignItems(VerticalAlign.Center)
-              .margin({ top: 10, bottom: 10 })
             }
             .width('100%')
             .backgroundColor('#FFFFFF')
@@ -2038,5 +2555,174 @@ export struct HomePage {
       })
       createCollaborationServiceMenuItems([CollaborationServiceFilter.ALL], 1)
     }
+  }
+
+  // 选择视频
+  private async selectVideo(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      let photoPicker: photoAccessHelper.PhotoViewPicker = new photoAccessHelper.PhotoViewPicker();
+      photoPicker.select({
+        MIMEType: photoAccessHelper.PhotoViewMIMETypes.VIDEO_TYPE,
+        maxSelectNumber: 1
+      }).then((res: photoAccessHelper.PhotoSelectResult) => {
+        this.shareVideoPath = res.photoUris[0];
+        promptAction.showToast({ message: '视频选择成功' });
+        resolve();
+      }).catch((err: BusinessError) => {
+        hilog.error(0x0000, 'HomePage', `Failed to select video. code：${err.code}，message：${err.message}`);
+        promptAction.showToast({ message: '选择视频失败' });
+        reject(err);
+      });
+    });
+  }
+
+  // 选择文件（使用文件分享API）
+  private async selectFile(): Promise<void> {
+    try {
+      // 使用文件系统API选择文件
+      const documentPicker = new picker.DocumentViewPicker();
+      const options: picker.DocumentSelectOptions = {
+        maxSelectNumber: 1,
+        fileSuffixFilters: ['.*']
+      };
+      const result = await documentPicker.select(options);
+      if (result && result.length > 0) {
+        this.shareFilePath = result[0];
+        promptAction.showToast({ message: '文件选择成功' });
+      }
+    } catch (err) {
+      hilog.error(0x0000, 'HomePage', `Failed to select file. code：${err.code}，message：${err.message}`);
+      promptAction.showToast({ message: '选择文件失败' });
+    }
+  }
+
+  // 获取文件名
+  private getFileName(url: string): string {
+    let date = new Date();
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDate();
+    let hour = date.getHours();
+    let minute = date.getMinutes();
+    let seconds = date.getSeconds();
+
+    // 从URL中提取扩展名
+    let extension = '';
+    let lastSlashIndex = url.lastIndexOf('/');
+    let lastDotIndex = url.lastIndexOf('.');
+    if (lastDotIndex > lastSlashIndex) {
+      extension = url.substring(lastDotIndex);
+    }
+
+    return `${year}${month}${day}${hour}${minute}${seconds}${extension}`;
+  }
+
+  // 分享下载的文件
+  private shareDownloadedFile(contextFaker: Context, uri: string) {
+    // 根据文件扩展名获取UTD类型
+    let extension = this.shareFilePath.substring(this.shareFilePath.lastIndexOf('.'));
+    let utdTypeId = utd.getUniformDataTypeByFilenameExtension(extension, utd.UniformDataType.FILE);
+
+    let shareData: systemShare.SharedData = new systemShare.SharedData({
+      utd: utdTypeId,
+      uri: uri,
+      content: this.shareFilePath,
+      title: '分享文件',
+      description: '分享文件',
+    });
+    let controller: systemShare.ShareController = new systemShare.ShareController(shareData);
+    controller.on('dismiss', () => {
+      console.log('Download share panel closed');
+    });
+    controller.show(context, {
+      previewMode: systemShare.SharePreviewMode.DETAIL,
+      selectionMode: systemShare.SelectionMode.SINGLE
+    }).then(() => {
+      console.info('ShareController show success.');
+    }).catch((err: BusinessError) => {
+      console.error(`ShareController show error. code: ${err.code}, message: ${err.message}`);
+    });
+  }
+
+  // 下载文件
+  private async downloadAndShare() {
+    if (!this.downloadUrl) {
+      promptAction.showToast({ message: '请输入下载链接' });
+      return;
+    }
+
+    const uiContext = this.getUIContext();
+    let contextFaker: Context = uiContext.getHostContext() as Context;
+
+    // 创建下载目录
+    let cacheDir = contextFaker.cacheDir;
+    let dirPath = cacheDir + '/down_export';
+    let fileName = this.getFileName(this.downloadUrl);
+    let filePath = dirPath + '/' + fileName;
+
+    // 创建目录
+    fs.mkdir(dirPath).then(() => {
+      console.info("mkdir succeed");
+    }).catch((err: BusinessError) => {
+      if (err.code !== 13900015) {
+        console.error("mkdir failed with error message: " + err.message + ", error code: " + err.code);
+      }
+    });
+
+    try {
+      // 判断文件是否已存在
+      let res = fs.accessSync(filePath);
+      if (res) {
+        promptAction.showToast({ message: '文件已存在' });
+        console.info('file exists');
+        this.shareFilePath = filePath;
+        let uri = fileUri.getUriFromPath(filePath);
+        this.shareDownloadedFile(contextFaker, uri);
+      } else {
+        // 下载文件
+        request.downloadFile(contextFaker, {
+          url: this.downloadUrl,
+          filePath: filePath
+        }).then((downloadTask: request.DownloadTask) => {
+          let progressCallback = (receivedSize: number, totalSize: number) => {
+            this.downloadProgress = ((receivedSize / totalSize) * 100).toFixed(2);
+            promptAction.showToast({
+              message: `下载进度: ${this.downloadProgress}%`,
+            });
+          };
+          downloadTask.on('progress', progressCallback);
+
+          downloadTask.on('complete', () => {
+            promptAction.showToast({ message: `下载完成，存储目录：${filePath}` });
+            this.shareFilePath = filePath;
+            let uri = fileUri.getUriFromPath(filePath);
+            this.shareDownloadedFile(contextFaker, uri);
+          });
+
+          downloadTask.on('fail', (err: number) => {
+            if (err == 13900015) {
+              console.info('目录已存在');
+            } else {
+              console.error('Download failed with error code: ' + err);
+            }
+          });
+        }).catch((err: BusinessError) => {
+          if (err.code == 13900015) {
+            console.info('目录已存在');
+          } else {
+            console.error('downloadFile failed: ' + JSON.stringify(err));
+          }
+        });
+      }
+    } catch (error) {
+      let err: BusinessError = error as BusinessError;
+      console.error(`Invoke downloadTask downloadFile failed, code is ${err.code}, message is ${err.message}`);
+    }
+  }
+
+  // 视频剪辑相关方法（占位实现）
+  private openVideoTrimmer() {
+    // TODO: 实现视频剪辑功能，参考 https://gitee.com/harmonyos-cases/cases/tree/master/CommonAppDevelopment/feature/videotrimmer
+    promptAction.showToast({ message: '视频剪辑功能开发中' });
   }
 }
