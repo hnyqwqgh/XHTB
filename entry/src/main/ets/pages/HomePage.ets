@@ -2579,19 +2579,26 @@ export struct HomePage {
   // 选择文件（使用文件分享API）
   private async selectFile(): Promise<void> {
     try {
+      hilog.info(0x0000, 'HomePage', 'Start selecting file');
       // 使用文件系统API选择文件
       const documentPicker = new picker.DocumentViewPicker();
       const options: picker.DocumentSelectOptions = {
         maxSelectNumber: 1,
         fileSuffixFilters: ['.*']
       };
+      hilog.info(0x0000, 'HomePage', 'Calling documentPicker.select');
       const result = await documentPicker.select(options);
+      hilog.info(0x0000, 'HomePage', `Document picker returned ${result.length} results`);
       if (result && result.length > 0) {
         this.shareFilePath = result[0];
+        hilog.info(0x0000, 'HomePage', `File selected: ${this.shareFilePath}`);
         promptAction.showToast({ message: '文件选择成功' });
+      } else {
+        hilog.info(0x0000, 'HomePage', 'No file selected or user cancelled');
       }
     } catch (err) {
-      hilog.error(0x0000, 'HomePage', `Failed to select file. code：${err.code}，message：${err.message}`);
+      let error = err as BusinessError;
+      hilog.error(0x0000, 'HomePage', `Failed to select file. code：${error.code}，message：${error.message}`);
       promptAction.showToast({ message: '选择文件失败' });
     }
   }
