@@ -1797,7 +1797,7 @@ export struct HomePage {
                       .onClick(() => {
                         this.shareTypeIndex = 3;
                       })
-                    Button('文件')
+                    Button('选择本地文件')
                       .fontSize(14)
                       .height(36)
                       .backgroundColor(this.shareTypeIndex === 4 ? 0x66CCFF : 0xE0E0E0)
@@ -2040,7 +2040,7 @@ export struct HomePage {
                           .margin({ top: 5 })
                       }
                       Row() {
-                        Text('下载文件')
+                        Text('下载网络文件')
                           .width('55%')
                           .margin({ right: 10 })
                           .textAlign(TextAlign.Center)
@@ -2547,7 +2547,7 @@ export struct HomePage {
                   .onClick(() => {
                     this.shareTypeIndex = 3;
                   })
-                Button('文件')
+                Button('选择本地文件')
                   .fontSize(14)
                   .height(36)
                   .backgroundColor(this.shareTypeIndex === 4 ? 0x66CCFF : 0xE0E0E0)
@@ -2790,7 +2790,7 @@ export struct HomePage {
                       .margin({ top: 5 })
                   }
                   Row() {
-                    Text('下载文件')
+                    Text('下载网络文件')
                       .width('55%')
                       .margin({ right: 10 })
                       .textAlign(TextAlign.Center)
