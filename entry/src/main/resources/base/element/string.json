@@ -338,15 +338,15 @@
 		},
 		{
 			"name":"sharepngon",
-			"value":"①碰一碰背景图片"
+			"value": "设置分享的背景图片"
 		},
 		{
 			"name":"sharepng",
-			"value":"\uDB81\uDC94 输入分享的背景图片直链"
+			"value": "\uDB81\uDC94 输入网络图片链接"
 		},
 		{
 			"name":"texton",
-			"value": "②设置需要分享的链接"
+			"value": "填写需要分享的链接"
 		},
 		{
 			"name": "local_image_selected",

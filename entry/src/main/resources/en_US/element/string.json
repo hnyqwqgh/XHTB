@@ -326,15 +326,15 @@
     },
     {
       "name":"sharepngon",
-      "value": "①Background image"
+      "value": "Set the background image"
     },
     {
       "name":"sharepng",
-      "value":"\uDB81\uDC94 Enter direct link to background image for sharing"
+      "value": "\uDB81\uDC94 Enter a web image link"
     },
     {
       "name":"texton",
-      "value": "②Set the link to be shared"
+      "value": "Set the link to be shared"
     },
     {
       "name": "local_image_selected",

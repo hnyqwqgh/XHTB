@@ -326,15 +326,15 @@
     },
     {
       "name":"sharepngon",
-      "value": "①设置碰一碰/隔空传送的背景图片"
+      "value": "设置分享的背景图片"
     },
     {
       "name":"sharepng",
-      "value":"\uDB81\uDC94 输入分享的背景图片直链"
+      "value": "\uDB81\uDC94 输入网络图片链接"
     },
     {
       "name":"texton",
-      "value": "②设置需要分享的链接"
+      "value": "填写需要分享的链接"
     },{
       "name": "local_image_selected",
       "value": "已选择本地图片"

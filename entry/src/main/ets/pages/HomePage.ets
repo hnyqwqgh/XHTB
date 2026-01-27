@@ -1797,7 +1797,7 @@ export struct HomePage {
                       .onClick(() => {
                         this.shareTypeIndex = 3;
                       })
-                    Button('选择本地文件')
+                    Button('文件')
                       .fontSize(14)
                       .height(36)
                       .backgroundColor(this.shareTypeIndex === 4 ? 0x66CCFF : 0xE0E0E0)
@@ -2014,7 +2014,7 @@ export struct HomePage {
                     // 文件分享
                     Column() {
                       Row() {
-                        Text('选择文件')
+                        Text('选择本地文件')
                           .textAlign(TextAlign.Center)
                           .width('55%')
                           .margin({ right: 10 })
@@ -2054,7 +2054,7 @@ export struct HomePage {
                       }
                       .width('100%')
                       .margin({ top: 10, bottom: 10 })
-                      TextArea({ placeholder: '输入下载链接', text: this.downloadUrl })
+                      TextArea({ placeholder: '输入网络文件下载链接', text: this.downloadUrl })
                         .onChange((value: string) => {
                           this.downloadUrl = value;
                         })
@@ -2547,7 +2547,7 @@ export struct HomePage {
                   .onClick(() => {
                     this.shareTypeIndex = 3;
                   })
-                Button('选择本地文件')
+                Button('文件')
                   .fontSize(14)
                   .height(36)
                   .backgroundColor(this.shareTypeIndex === 4 ? 0x66CCFF : 0xE0E0E0)
@@ -2764,7 +2764,7 @@ export struct HomePage {
                 // 文件分享
                 Column() {
                   Row() {
-                    Text('选择文件')
+                    Text('选择本地文件')
                       .textAlign(TextAlign.Center)
                       .width('55%')
                       .margin({ right: 10 })
@@ -2804,7 +2804,7 @@ export struct HomePage {
                   }
                   .width('100%')
                   .margin({ top: 10, bottom: 10 })
-                  TextArea({ placeholder: '输入下载链接', text: this.downloadUrl })
+                  TextArea({ placeholder: '输入网络文件下载链接', text: this.downloadUrl })
                     .onChange((value: string) => {
                       this.downloadUrl = value;
                     })
