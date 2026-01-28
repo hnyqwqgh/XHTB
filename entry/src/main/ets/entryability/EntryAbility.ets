@@ -8,7 +8,7 @@ import { AppUtil } from '@pura/harmony-utils';
 //接续
 import { ContentInfo } from '../model/ContentInfo';
 import { distributedDataObject } from '@kit.ArkData';
-import Logger from '../utils/Loggerr';
+import Logger from '../utils/EntryAbillityLogger';
 import { GlobalInfoModel } from '../common/GlobalInfoModel';
 import { BreakpointSystem } from '../common/utils/BreakpointType';
 import { WindowUtil } from '../common/utils/WindowUtils';
