@@ -1984,7 +1984,7 @@ export struct HomePage {
                     // 视频分享
                     Column() {
                       Row() {
-                        Text('选择视频')
+                        Text('分享视频')
                           .textAlign(TextAlign.Center)
                           .width('40%')
                           .margin({ right: 10 })
@@ -2025,7 +2025,7 @@ export struct HomePage {
                     // 文件分享
                     Column() {
                       Row() {
-                        Text('选择本地文件')
+                        Text('分享文件')
                           .textAlign(TextAlign.Center)
                           .width('55%')
                           .margin({ right: 10 })
@@ -2765,7 +2765,7 @@ export struct HomePage {
                 // 视频分享
                 Column() {
                   Row() {
-                    Text('选择视频')
+                    Text('分享视频')
                       .textAlign(TextAlign.Center)
                       .width('40%')
                       .margin({ right: 10 })
@@ -2806,7 +2806,7 @@ export struct HomePage {
                 // 文件分享
                 Column() {
                   Row() {
-                    Text('选择本地文件')
+                    Text('分享文件')
                       .textAlign(TextAlign.Center)
                       .width('55%')
                       .margin({ right: 10 })
