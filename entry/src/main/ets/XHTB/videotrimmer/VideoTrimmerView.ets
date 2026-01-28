@@ -941,8 +941,11 @@ export struct VideoTrimmerView {
       videoThumbs.push(temp);
     }
 
-    let firstLoadMax = this.max_count_range;
-    if (this.mDuration / CommonConstants.MS_ONE_SECOND < this.max_count_range) {
+    // 限制一次加载的帧数，避免内存溢出
+    // 最多加载一屏幕能显示的帧数（约等于屏幕宽度对应的秒数）
+    let maxFramesToLoad: number = Math.min(this.max_count_range, 120); // 最多加载120帧
+    let firstLoadMax = maxFramesToLoad;
+    if (this.mDuration / CommonConstants.MS_ONE_SECOND < maxFramesToLoad) {
       firstLoadMax = Math.ceil(this.mDuration / CommonConstants.MS_ONE_SECOND);
     }
 
