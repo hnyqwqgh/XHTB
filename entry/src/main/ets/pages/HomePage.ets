@@ -112,7 +112,7 @@ export struct HomePage {
   @State shareTextContent: string = ''; // 文本内容
   @State shareImagePath: string = ''; // 图片路径（单个）
   @State shareImagePaths: string[] = []; // 图片路径数组（多个）
-  @State shareVideoPath: string = ''; // 视频路径（单个）
+  @StorageLink('shareVideoPath') shareVideoPath: string = ''; // 视频路径（单个）- 使用StorageLink以响应AppStorage更新
   @State shareVideoPaths: string[] = []; // 视频路径数组（多个）
   @State shareFilePath: string = ''; // 文件路径（单个）
   @State shareFilePaths: string[] = []; // 文件路径数组（多个）

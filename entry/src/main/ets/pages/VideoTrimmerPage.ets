@@ -95,12 +95,12 @@ struct VideoTrimmerPage {
             .fontColor('#999999')
             .margin({ bottom: 32 })
 
-          Button('完成')
+          Button('确定')
             .width(120)
             .height(40)
             .backgroundColor('#007DFF')
             .onClick(() => {
-              AppStorage.setOrCreate('shareVideoPath', this.downloadUrl);
+              this.showDownloadDialog = false;
               router.back();
             })
         } else {
@@ -192,6 +192,11 @@ struct VideoTrimmerPage {
       this.downloadUrl = desFileUris[0];
 
       logger.info(TAG, '保存完成，URL: ' + this.downloadUrl);
+
+      // 自动更新分享链接为剪辑后的视频
+      AppStorage.setOrCreate('shareVideoPath', this.downloadUrl);
+      logger.info(TAG, '已更新分享视频路径: ' + this.downloadUrl);
+
       promptAction.showToast({ message: '视频保存成功！' });
     } catch (error) {
       logger.error(TAG, '保存失败: ' + JSON.stringify(error));
