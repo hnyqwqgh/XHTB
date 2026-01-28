@@ -3,6 +3,7 @@ import common from '@ohos.app.ability.common';
 import fs from '@ohos.file.fs';
 import image from '@ohos.multimedia.image';
 import media from '@ohos.multimedia.media';
+import { photoAccessHelper } from '@kit.MediaLibraryKit';
 import { BusinessError } from '@ohos.base';
 import { CommonConstants } from '../../constants/CommonConstants';
 import { logger } from '../../utils/VideoLogger';
@@ -160,7 +161,16 @@ export struct VideoTrimmerView {
               // 请求新的帧数据
               let frameCallBack: IFrameCallBack = {
                 callBackResult: async (data: ArrayBuffer, timeUs: number) => {
-                  const imageSource: image.ImageSource = image.createImageSource(data);
+                  try {
+                    // 检查数据有效性
+                    if (!data || data.byteLength === 0) {
+                      logger.error(TAG, 'Invalid ArrayBuffer: data is null or empty, timeUs=' + timeUs);
+                      this.videoTrimmerOption.loadFrameListener.onFinishLoad();
+                      this.isLoadFrame = false;
+                      return;
+                    }
+                    logger.info(TAG, 'Creating ImageSource, data.byteLength=' + data.byteLength + ', timeUs=' + timeUs);
+                    const imageSource: image.ImageSource = image.createImageSource(data);
 
                   let videoThumbWidth = vp2px((this.mSeekBarWidth - 2 * this.thumb_width) / this.max_count_range);
                   let videoThumbHeight = vp2px(this.mSeekBarHeight);
@@ -197,9 +207,19 @@ export struct VideoTrimmerView {
                   }).catch((err: Error) => {
                     // 部分视频创建图片异常，直接返回
                     logger.error(TAG, 'createPixelMap Failed, err = ' + err.name + ', message = ' + err.message);
+                    try {
+                      imageSource.release();
+                    } catch (e) {
+                      // ignore release error
+                    }
                     this.videoTrimmerOption.loadFrameListener.onFinishLoad();
                     this.isLoadFrame = false;
                   })
+                } catch (error) {
+                  logger.error(TAG, 'createImageSource Failed, err = ' + JSON.stringify(error) + ', timeUs=' + timeUs);
+                  this.videoTrimmerOption.loadFrameListener.onFinishLoad();
+                  this.isLoadFrame = false;
+                }
                 }
               }
               let startTime = reqStartPos * CommonConstants.US_ONE_SECOND + '';
@@ -215,7 +235,9 @@ export struct VideoTrimmerView {
           }
         }
         // TODO: 知识点: 设置视频源及回调
-        MP4Parser.setDataSource(this.videoTrimmerOption.srcFilePath, callBack);
+        let videoPath = this.localFilePath && this.localFilePath.length > 0 ? this.localFilePath : this.videoTrimmerOption.srcFilePath;
+        logger.info(TAG, 'MP4Parser.setDataSource: videoPath=' + videoPath + ', localFilePath=' + this.localFilePath);
+        MP4Parser.setDataSource(videoPath, callBack);
       }
     }
   }
@@ -592,15 +614,55 @@ export struct VideoTrimmerView {
   private fdHead: string = 'fd://';
   private fdPath: string = '';
   private fd: number = -1;
+  private localFilePath: string = ''; // 本地文件路径
   // 初始化函数
   initAVPlayer: () => Promise<void> = async () => {
-    logger.info(TAG, 'initAVPlayer success');
+    logger.info(TAG, 'initAVPlayer start');
     let filePath = '';
     if (this.videoTrimmerOption) {
       filePath = this.videoTrimmerOption.srcFilePath;
     }
+    logger.info(TAG, 'Original filePath: ' + filePath);
     if (filePath.length <= 0) {
       return;
+    }
+
+    // 检查是否是云存储路径，如果是则复制到本地
+    logger.info(TAG, 'Checking if cloud video: filePath=' + filePath);
+    // 判断条件：以file://开头的URI路径通常都是媒体库/云存储
+    let isCloudVideo = filePath.startsWith('file://') || filePath.includes('media') || filePath.includes('Media') ||
+      filePath.includes('Photo/') || filePath.includes('/Photo');
+    logger.info(TAG, 'isCloudVideo=' + isCloudVideo);
+
+    if (isCloudVideo) {
+      try {
+        this.localFilePath = getContext(this).cacheDir + '/temp_video_' + Date.now() + '.mp4';
+        logger.info(TAG, 'Copying cloud video to local: from=' + filePath + ' to=' + this.localFilePath);
+
+        // 直接打开URI文件和目标文件
+        let srcFile = fs.openSync(filePath, fs.OpenMode.READ_ONLY);
+        let destFile = fs.openSync(this.localFilePath, fs.OpenMode.CREATE | fs.OpenMode.TRUNC | fs.OpenMode.WRITE_ONLY);
+
+        // 复制文件内容
+        let bufferSize = 4096;
+        let buffer = new ArrayBuffer(bufferSize);
+        let readSize = 0;
+        while ((readSize = fs.readSync(srcFile.fd, buffer)) > 0) {
+          fs.writeSync(destFile.fd, buffer, { length: readSize });
+        }
+
+        // 关闭文件
+        fs.closeSync(srcFile);
+        fs.closeSync(destFile);
+
+        // 验证文件是否存在
+        let stat = fs.statSync(this.localFilePath);
+        logger.info(TAG, 'Copy completed, using local file: ' + this.localFilePath + ', size=' + stat.size);
+        filePath = this.localFilePath;
+      } catch (error) {
+        logger.error(TAG, 'Copy file failed: ' + JSON.stringify(error));
+        // 如果复制失败，继续使用原路径
+      }
     }
 
     this.fd = fs.openSync(filePath, fs.OpenMode.READ_ONLY).fd;
@@ -781,7 +843,8 @@ export struct VideoTrimmerView {
             }
           }
           // TODO: // 知识点： 根据开始、结束时间，视频源以及目标文件地址对视频进行剪辑
-          this.videoClip(sTime, eTime, srcFilePath, outFilePath, this.scaleCmd, callback);
+          let clipSourcePath = this.localFilePath && this.localFilePath.length > 0 ? this.localFilePath : srcFilePath;
+          this.videoClip(sTime, eTime, clipSourcePath, outFilePath, this.scaleCmd, callback);
         })
     }
     .width('100%')
@@ -888,7 +951,16 @@ export struct VideoTrimmerView {
 
           let frameCallBack: IFrameCallBack = {
             callBackResult: async (data: ArrayBuffer, timeUs: number) => {
-              const imageSource: image.ImageSource = image.createImageSource(data);
+              try {
+                // 检查数据有效性
+                if (!data || data.byteLength === 0) {
+                  logger.error(TAG, 'Invalid ArrayBuffer: data is null or empty, timeUs=' + timeUs);
+                  this.videoTrimmerOption.loadFrameListener.onFinishLoad();
+                  this.isLoadFrame = false;
+                  return;
+                }
+                logger.info(TAG, 'Creating ImageSource, data.byteLength=' + data.byteLength + ', timeUs=' + timeUs);
+                const imageSource: image.ImageSource = image.createImageSource(data);
               // TODO: 知识点: 如果要压缩分辨率，则加载第一张图时（根据this.imageWidth === 0做判断），获取视频的压缩分辨率相关参数信息，生成视频压缩命令
               if (this.videoTrimmerOption!.scaleNum! > 0 &&
                 this.videoTrimmerOption!.scaleNum !== CommonConstants.SCALE_NUM &&
@@ -942,9 +1014,19 @@ export struct VideoTrimmerView {
               }).catch((err: Error) => {
                 // 部分视频创建图片异常，直接返回
                 logger.error(TAG, 'createPixelMap Failed, err = ' + err.name + ', message = ' + err.message);
+                try {
+                  imageSource.release();
+                } catch (e) {
+                  // ignore release error
+                }
                 this.videoTrimmerOption.loadFrameListener.onFinishLoad();
                 this.isLoadFrame = false;
               })
+            } catch (error) {
+              logger.error(TAG, 'createImageSource Failed, err = ' + JSON.stringify(error) + ', timeUs=' + timeUs);
+              this.videoTrimmerOption.loadFrameListener.onFinishLoad();
+              this.isLoadFrame = false;
+            }
             }
           }
           // TODO: 知识点: 根据开始、结束时间，通过MP4Parser.getFrameAtTimeRang命令循环生成小图
@@ -959,7 +1041,9 @@ export struct VideoTrimmerView {
     }
     this.videoTrimmerOption.loadFrameListener.onStartLoad();
     // 设置视频源和回调函数
-    MP4Parser.setDataSource(this.videoTrimmerOption.srcFilePath, callBack);
+    let videoPath = this.localFilePath && this.localFilePath.length > 0 ? this.localFilePath : this.videoTrimmerOption.srcFilePath;
+    logger.info(TAG, 'initImageList MP4Parser.setDataSource: videoPath=' + videoPath + ', localFilePath=' + this.localFilePath);
+    MP4Parser.setDataSource(videoPath, callBack);
     logger.info(TAG, "initList list size=" + videoThumbs.length);
     this.updateList(videoThumbs);
   }

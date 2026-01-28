@@ -1,6 +1,7 @@
 import { promptAction } from '@kit.ArkUI';
 import window from '@ohos.window';
 import { common } from '@kit.AbilityKit';
+import router from '@ohos.router';
 import { scanCore, scanBarcode } from '@kit.ScanKit';
 // 导入日志模块和错误码模块
 import { hilog } from '@kit.PerformanceAnalysisKit';
@@ -1984,7 +1985,7 @@ export struct HomePage {
                           .onClick(async () => {
                             await this.selectVideo();
                           })
-                        Button('剪辑视频')
+                        Button('裁剪视频')
                           .height(50)
                           .width('30%')
                           .backgroundColor(0xFF66CC)
@@ -2734,7 +2735,7 @@ export struct HomePage {
                       .onClick(async () => {
                         await this.selectVideo();
                       })
-                    Button('剪辑视频')
+                    Button('裁剪视频')
                       .height(50)
                       .width('30%')
                       .backgroundColor(0xFF66CC)
@@ -3148,9 +3149,20 @@ export struct HomePage {
     }
   }
 
-  // 视频剪辑相关方法（占位实现）
+  // 视频剪辑相关方法
   private openVideoTrimmer() {
-    // TODO: 实现视频剪辑功能，参考 https://gitee.com/harmonyos-cases/cases/tree/master/CommonAppDevelopment/feature/videotrimmer
-    promptAction.showToast({ message: '视频剪辑功能开发中' });
+    if (this.shareVideoPath) {
+      // 将视频路径保存到AppStorage
+      AppStorage.setOrCreate('videoPath', this.shareVideoPath);
+      // 跳转到视频剪辑页面
+      router.pushUrl({
+        url: 'pages/VideoTrimmerPage'
+      }).then(() => {
+        logger.info('跳转到视频剪辑页面成功');
+      }).catch((err: Error) => {
+        logger.error('跳转到视频剪辑页面失败: ' + err.message);
+        promptAction.showToast({ message: '跳转失败' });
+      });
+    }
   }
 }
