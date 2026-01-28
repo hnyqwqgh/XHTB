@@ -2065,10 +2065,32 @@ export struct HomePage {
                       }
                       .width('100%')
                       .margin({ top: 10, bottom: 10 })
-                      TextArea({ placeholder: '输入网络文件下载链接', text: this.downloadUrl })
-                        .onChange((value: string) => {
-                          this.downloadUrl = value;
-                        })
+                      Row() {
+                        TextArea({ placeholder: '输入网络文件下载链接', text: this.downloadUrl })
+                          .layoutWeight(1)
+                          .onChange((value: string) => {
+                            this.downloadUrl = value;
+                          })
+                        Row() {
+                          PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
+                            .backgroundColor(0xFF66CC)
+                            .height(40)
+                            .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
+                              if (PasteButtonOnClickResult.SUCCESS === result) {
+                                pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
+                                  if (err) {
+                                    console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
+                                    return;
+                                  }
+                                  this.downloadUrl = pasteData.getPrimaryText();
+                                });
+                              }
+                            })
+                        }
+                        .margin({ left: 10 })
+                      }
+                      .width('100%')
+                      .alignItems(VerticalAlign.Center)
                       if (this.downloadProgress !== '0' && this.downloadProgress !== '100') {
                         Text(`下载进度: ${this.downloadProgress}%`)
                           .fontSize(14)
@@ -2824,10 +2846,32 @@ export struct HomePage {
                   }
                   .width('100%')
                   .margin({ top: 10, bottom: 10 })
-                  TextArea({ placeholder: '输入网络文件下载链接', text: this.downloadUrl })
-                    .onChange((value: string) => {
-                      this.downloadUrl = value;
-                    })
+                  Row() {
+                    TextArea({ placeholder: '输入网络文件下载链接', text: this.downloadUrl })
+                      .layoutWeight(1)
+                      .onChange((value: string) => {
+                        this.downloadUrl = value;
+                      })
+                    Row() {
+                      PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
+                        .backgroundColor(0xFF66CC)
+                        .height(40)
+                        .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
+                          if (PasteButtonOnClickResult.SUCCESS === result) {
+                            pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
+                              if (err) {
+                                console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
+                                return;
+                              }
+                              this.downloadUrl = pasteData.getPrimaryText();
+                            });
+                          }
+                        })
+                    }
+                    .margin({ left: 10 })
+                  }
+                  .width('100%')
+                  .alignItems(VerticalAlign.Center)
                   if (this.downloadProgress !== '0' && this.downloadProgress !== '100') {
                     Text(`下载进度: ${this.downloadProgress}%`)
                       .fontSize(14)
