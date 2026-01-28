@@ -1995,17 +1995,16 @@ export struct HomePage {
                           .onClick(async () => {
                             await this.selectVideo();
                           })
-                        Button('裁剪视频')
-                          .height(50)
-                          .width('30%')
-                          .backgroundColor(0xFF66CC)
-                          .onClick(() => {
-                            if (this.shareVideoPath) {
+                        if (this.shareVideoPath) {
+                          Button('裁剪视频')
+                            .height(50)
+                            .width('25%')
+                            .backgroundColor(0xFF66CC)
+                            .margin({ left: 5 })
+                            .onClick(() => {
                               this.openVideoTrimmer();
-                            } else {
-                              promptAction.showToast({ message: '请先选择视频' });
-                            }
-                          })
+                            })
+                        }
                       }
                       .width('100%')
                       // 显示选中的所有视频路径
@@ -2776,17 +2775,16 @@ export struct HomePage {
                       .onClick(async () => {
                         await this.selectVideo();
                       })
-                    Button('裁剪视频')
-                      .height(50)
-                      .width('30%')
-                      .backgroundColor(0xFF66CC)
-                      .onClick(() => {
-                        if (this.shareVideoPath) {
+                    if (this.shareVideoPath) {
+                      Button('裁剪视频')
+                        .height(50)
+                        .width('25%')
+                        .backgroundColor(0xFF66CC)
+                        .margin({ left: 5 })
+                        .onClick(() => {
                           this.openVideoTrimmer();
-                        } else {
-                          promptAction.showToast({ message: '请先选择视频' });
-                        }
-                      })
+                        })
+                    }
                   }
                   .width('100%')
                   // 显示选中的所有视频路径
