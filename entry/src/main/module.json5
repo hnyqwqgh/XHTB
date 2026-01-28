@@ -9,7 +9,7 @@
 				"exported":true,
 				"startWindowIcon":"$media:app_icon",
 				"startWindowBackground":"$color:start_window_background",
-				"orientation":"auto_rotation",
+				"orientation":"auto_rotation_restricted",
 				"skills":[
 					{
 						"entities":[
