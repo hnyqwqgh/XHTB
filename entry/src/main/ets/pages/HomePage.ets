@@ -1933,17 +1933,27 @@ export struct HomePage {
                     // 图片分享
                     Column() {
                       Row() {
-                        Text('选择图片')
+                        Text('分享图片')
                           .textAlign(TextAlign.Center)
                           .width('55%')
                           .margin({ right: 10 })
-                        Button($r('app.string.choose'))
-                          .height(50)
-                          .width('40%')
-                          .backgroundColor(0xb87cff)
-                          .onClick(() => {
-                            this.selectShareImage();
-                          })
+                        if (this.currentBreakpoint === 'lg' || this.currentBreakpoint === 'xl') {
+                          // 平板设备：使用跨设备菜单
+                          Button($r('app.string.choosepad'))
+                            .height(50)
+                            .width('40%')
+                            .backgroundColor(0xb87cff)
+                            .bindMenu(this.CrossDeviceShareImageMenu)
+                        } else {
+                          // 手机设备：使用普通按钮
+                          Button($r('app.string.choose'))
+                            .height(50)
+                            .width('40%')
+                            .backgroundColor(0xb87cff)
+                            .onClick(() => {
+                              this.selectShareImage();
+                            })
+                        }
                       }
                       .width('100%')
                       // 显示选中的所有图片路径
@@ -2683,17 +2693,27 @@ export struct HomePage {
                 // 图片分享
                 Column() {
                   Row() {
-                    Text('选择图片')
+                    Text('分享图片')
                       .textAlign(TextAlign.Center)
                       .width('55%')
                       .margin({ right: 10 })
-                    Button($r('app.string.choose'))
-                      .height(50)
-                      .width('40%')
-                      .backgroundColor(0xb87cff)
-                      .onClick(() => {
-                        this.selectShareImage();
-                      })
+                    if (this.currentBreakpoint === 'lg' || this.currentBreakpoint === 'xl') {
+                      // 平板设备：使用跨设备菜单
+                      Button($r('app.string.choosepad'))
+                        .height(50)
+                        .width('40%')
+                        .backgroundColor(0xb87cff)
+                        .bindMenu(this.CrossDeviceShareImageMenu)
+                    } else {
+                      // 手机设备：使用普通按钮
+                      Button($r('app.string.choose'))
+                        .height(50)
+                        .width('40%')
+                        .backgroundColor(0xb87cff)
+                        .onClick(() => {
+                          this.selectShareImage();
+                        })
+                    }
                   }
                   .width('100%')
                   // 显示选中的所有图片路径
@@ -2963,6 +2983,21 @@ export struct HomePage {
         content: $r('app.string.pickphotos'),
         builder: (): void => {
           this.selectImage();
+        }
+      })
+      createCollaborationServiceMenuItems([CollaborationServiceFilter.ALL], 1)
+    }
+  }
+
+  // 跨设备协作菜单 Builder - 分享图片专用
+  @Builder
+  CrossDeviceShareImageMenu() {
+    Menu() {
+      MenuItem({
+        startIcon: $r("app.media.CIcon"),
+        content: $r('app.string.pickphotos'),
+        builder: (): void => {
+          this.selectShareImage();
         }
       })
       createCollaborationServiceMenuItems([CollaborationServiceFilter.ALL], 1)
