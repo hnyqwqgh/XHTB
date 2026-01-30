@@ -316,10 +316,10 @@ export struct HomePage {
       const stat = fileIo.statSync(targetPath);
       hilog.info(0x0000, 'localsharepng', 'File verified, size: ' + stat.size);
 
-      // 只更新分享图片路径,不影响背景图片
+      // 只更新单张分享图片路径,不影响多图数组(shareImagePaths已在openPhoto中设置)
       this.shareImagePath = targetPath;
-      this.shareImagePaths = [uri]; // 更新分享图片路径数组
       hilog.info(0x0000, 'localsharepng', 'Share image path updated');
+      hilog.info(0x0000, 'localsharepng', 'Total images: ' + this.shareImagePaths.length);
     } catch (error) {
       hilog.error(0x0000, 'localsharepng', 'Copy failed: ' + JSON.stringify(error));
       return;
