@@ -1091,23 +1091,76 @@ export struct HomePage {
   }
   // 在类成员变量区域定义箭头函数绑定回调
   private whiteCallback = async (sharableTarget: harmonyShare.SharableTarget): Promise<void> => {
-    // 处理分享数据
-    const sharedUrl = AppStorage.get<string>('sharedVideoUrl');
-    if (sharedUrl && this.isValidUrl(sharedUrl)) {
-      this.networkVideoSrc = sharedUrl;
-      //this.controller.start();
-      AppStorage.delete('sharedVideoUrl');
-    }
     const context = this.getUIContext().getHostContext() as common.UIAbilityContext;
-    // 根据当前图片扩展名设置文件路径（使用当前 context 的 filesDir）
     let filePath = context.filesDir + "/pengyipeng" + this.imageExtension;
-    let shareData: systemShare.SharedData = new systemShare.SharedData({
-      utd: utd.UniformDataType.HYPERLINK,
-      content: this.networkVideoSrc,
-      thumbnailUri: fileUri.getUriFromPath(filePath),
-      title: this.pengtitle,
-      description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
-    });
+    let shareData: systemShare.SharedData;
+
+    // 根据分享类型索引构建不同的分享数据
+    switch (this.shareTypeIndex) {
+      case 0: // 链接分享
+        shareData = new systemShare.SharedData({
+          utd: utd.UniformDataType.HYPERLINK,
+          content: this.shareLinkContent || this.networkVideoSrc,
+          thumbnailUri: fileUri.getUriFromPath(filePath),
+          title: this.pengtitle,
+          description: context.resourceManager.getStringSync($r('app.string.pengyipeng_description').id)
+        });
+        break;
+      case 1: // 文本分享
+        shareData = new systemShare.SharedData({
+          utd: utd.UniformDataType.TEXT,
+          content: this.shareTextContent,
+          thumbnailUri: fileUri.getUriFromPath(filePath),
+          title: this.pengtitle,
+          description: '分享文本'
+        });
+        break;
+      case 2: // 图片分享
+        if (this.shareImagePaths.length > 0) {
+          shareData = new systemShare.SharedData({
+            utd: utd.UniformDataType.IMAGE,
+            uri: this.shareImagePaths[0],
+            title: '分享图片',
+            description: this.shareImagePaths.length > 1 ? `分享${this.shareImagePaths.length}张图片` : '分享图片'
+          });
+        } else {
+          sharableTarget.clarifyNonShare({ message: '请先选择要分享的图片' });
+          return;
+        }
+        break;
+      case 3: // 视频分享
+        if (this.shareVideoPaths.length > 0) {
+          shareData = new systemShare.SharedData({
+            utd: utd.UniformDataType.VIDEO,
+            uri: fileUri.getUriFromPath(this.shareVideoPaths[0]),
+            thumbnailUri: fileUri.getUriFromPath(filePath),
+            title: '分享视频',
+            description: this.shareVideoPaths.length > 1 ? `分享${this.shareVideoPaths.length}个视频` : '分享视频'
+          });
+        } else {
+          sharableTarget.clarifyNonShare({ message: '请先选择要分享的视频' });
+          return;
+        }
+        break;
+      case 4: // 文件分享
+        if (this.shareFilePaths.length > 0) {
+          let extension = this.shareFilePaths[0].substring(this.shareFilePaths[0].lastIndexOf('.'));
+          let utdTypeId = utd.getUniformDataTypeByFilenameExtension(extension, utd.UniformDataType.FILE);
+          shareData = new systemShare.SharedData({
+            utd: utdTypeId,
+            uri: fileUri.getUriFromPath(this.shareFilePaths[0]),
+            title: '分享文件',
+            description: this.shareFilePaths.length > 1 ? `分享${this.shareFilePaths.length}个文件` : '分享文件'
+          });
+        } else {
+          sharableTarget.clarifyNonShare({ message: '请先选择要分享的文件' });
+          return;
+        }
+        break;
+      default:
+        sharableTarget.clarifyNonShare({ message: '不支持的分享类型' });
+        return;
+    }
     sharableTarget.share(shareData);
 /*
     try {
@@ -1150,12 +1203,40 @@ export struct HomePage {
   private whiteListening() {
     if (this.isNoListening()) {
       harmonyShare.on('knockShare', (sharableTarget: harmonyShare.SharableTarget) => {
-        // 在回调中检查 networkVideoSrc 是否为有效链接
-        if (!this.isValidUrl(this.networkVideoSrc)) {
-          sharableTarget.clarifyNonShare({ message: this.context.resourceManager.getStringSync($r('app.string.nopengsystem').id) });
-        } else {
-          this.whiteCallback(sharableTarget);
+        // 根据分享类型验证是否可分享
+        switch (this.shareTypeIndex) {
+          case 0: // 链接分享
+            if (!this.shareLinkContent && !this.networkVideoSrc) {
+              sharableTarget.clarifyNonShare({ message: '请输入要分享的链接' });
+              return;
+            }
+            break;
+          case 1: // 文本分享
+            if (!this.shareTextContent) {
+              sharableTarget.clarifyNonShare({ message: '请输入要分享的文本' });
+              return;
+            }
+            break;
+          case 2: // 图片分享
+            if (this.shareImagePaths.length === 0) {
+              sharableTarget.clarifyNonShare({ message: '请先选择要分享的图片' });
+              return;
+            }
+            break;
+          case 3: // 视频分享
+            if (this.shareVideoPaths.length === 0) {
+              sharableTarget.clarifyNonShare({ message: '请先选择要分享的视频' });
+              return;
+            }
+            break;
+          case 4: // 文件分享
+            if (this.shareFilePaths.length === 0) {
+              sharableTarget.clarifyNonShare({ message: '请先选择要分享的文件' });
+              return;
+            }
+            break;
         }
+        this.whiteCallback(sharableTarget);
       });
       this.whiteStatus = true;
     } else {
@@ -1169,13 +1250,6 @@ export struct HomePage {
   }
 
   private immersiveCallback = (sharableTarget: harmonyShare.SharableTarget): void => {
-    // 直接处理分享数据（假设数据已通过其他方式传递）
-    const sharedUrl = AppStorage.get<string>('sharedVideoUrl');
-    if (sharedUrl && this.isValidUrl(sharedUrl)) {
-      this.networkVideoSrc = sharedUrl;
-      //this.controller.start();
-      AppStorage.delete('sharedVideoUrl');
-    }
     // 更新显示的图片为当前缓存的图片
     // 直接获取最新的 context，而不是使用全局变量
     const currentContext = this.getUIContext().getHostContext() as common.UIAbilityContext;
@@ -1229,17 +1303,125 @@ export struct HomePage {
       console.log('错误信息: ' + JSON.stringify(error));
       console.log('==================');
     }
+
     // 根据当前图片扩展名设置文件路径（使用相同的 currentContext）
     let filePath = currentContext.filesDir + "/pengyipeng" + this.imageExtension;
-    let shareData: systemShare.SharedData = new systemShare.SharedData({
-      utd: utd.UniformDataType.HYPERLINK,
-      content: this.networkVideoSrc,
-      thumbnailUri: fileUri.getUriFromPath(filePath),
-      title: this.pengtitle,
-      description: context.resourceManager.getStringSync($r('app.string.gekong_description').id)
-    });
+    let shareData: systemShare.SharedData;
+
+    // 根据分享类型索引构建不同的分享数据
+    switch (this.shareTypeIndex) {
+      case 0: // 链接分享
+        shareData = new systemShare.SharedData({
+          utd: utd.UniformDataType.HYPERLINK,
+          content: this.shareLinkContent || this.networkVideoSrc,
+          thumbnailUri: fileUri.getUriFromPath(filePath),
+          title: this.pengtitle,
+          description: currentContext.resourceManager.getStringSync($r('app.string.gekong_description').id)
+        });
+        break;
+      case 1: // 文本分享
+        shareData = new systemShare.SharedData({
+          utd: utd.UniformDataType.TEXT,
+          content: this.shareTextContent,
+          thumbnailUri: fileUri.getUriFromPath(filePath),
+          title: this.pengtitle,
+          description: '分享文本'
+        });
+        break;
+      case 2: // 图片分享
+        if (this.shareImagePaths.length > 0) {
+          shareData = new systemShare.SharedData({
+            utd: utd.UniformDataType.IMAGE,
+            uri: this.shareImagePaths[0],
+            title: '分享图片',
+            description: this.shareImagePaths.length > 1 ? `分享${this.shareImagePaths.length}张图片` : '分享图片'
+          });
+        } else {
+          sharableTarget.clarifyNonShare({ message: '请先选择要分享的图片' });
+          return;
+        }
+        break;
+      case 3: // 视频分享
+        if (this.shareVideoPaths.length > 0) {
+          shareData = new systemShare.SharedData({
+            utd: utd.UniformDataType.VIDEO,
+            uri: fileUri.getUriFromPath(this.shareVideoPaths[0]),
+            thumbnailUri: fileUri.getUriFromPath(filePath),
+            title: '分享视频',
+            description: this.shareVideoPaths.length > 1 ? `分享${this.shareVideoPaths.length}个视频` : '分享视频'
+          });
+        } else {
+          sharableTarget.clarifyNonShare({ message: '请先选择要分享的视频' });
+          return;
+        }
+        break;
+      case 4: // 文件分享
+        if (this.shareFilePaths.length > 0) {
+          let extension = this.shareFilePaths[0].substring(this.shareFilePaths[0].lastIndexOf('.'));
+          let utdTypeId = utd.getUniformDataTypeByFilenameExtension(extension, utd.UniformDataType.FILE);
+          shareData = new systemShare.SharedData({
+            utd: utdTypeId,
+            uri: fileUri.getUriFromPath(this.shareFilePaths[0]),
+            title: '分享文件',
+            description: this.shareFilePaths.length > 1 ? `分享${this.shareFilePaths.length}个文件` : '分享文件'
+          });
+        } else {
+          sharableTarget.clarifyNonShare({ message: '请先选择要分享的文件' });
+          return;
+        }
+        break;
+      default:
+        sharableTarget.clarifyNonShare({ message: '不支持的分享类型' });
+        return;
+    }
     sharableTarget.share(shareData);
   }
+
+  // 根据分享类型获取标题输入框的提示文字
+  private getTitlePlaceholder(): string {
+    switch (this.shareTypeIndex) {
+      case 0:
+        return '请输入链接分享的标题';
+      case 1:
+        return '请输入文本分享的标题';
+      case 2:
+        return '请输入图片分享的标题';
+      case 3:
+        return '请输入视频分享的标题';
+      case 4:
+        return '请输入文件分享的标题';
+      default:
+        return '请输入分享标题';
+    }
+  }
+
+  // 根据分享类型获取对应的标题字符串
+  private getShareTypeTitle(typeIndex: number): string {
+    switch (typeIndex) {
+      case 0:
+        return '分享当前的链接';
+      case 1:
+        return '分享当前的文本';
+      case 2:
+        return '分享当前的图片';
+      case 3:
+        return '分享当前的视频';
+      case 4:
+        return '分享当前的文件';
+      default:
+        return '分享当前的链接';
+    }
+  }
+
+  // 根据分享类型更新标题
+  private updateTitleForShareType(typeIndex: number): void {
+    this.pengtitle = this.getShareTypeTitle(typeIndex);
+    // 同步到 AppStorage
+    AppStorage.set('pengtitle', this.pengtitle);
+  }
+
+
+
 
   // 添加一个方法来获取图片的宽高比
   private async getImageAspectRatio(): Promise<void> {
@@ -2547,6 +2729,7 @@ export struct HomePage {
                   .margin({ right: 5 })
                   .onClick(() => {
                     this.shareTypeIndex = 0;
+                    this.updateTitleForShareType(0);
                   })
                 Button('文本')
                   .fontSize(14)
@@ -2557,6 +2740,7 @@ export struct HomePage {
                   .margin({ right: 5 })
                   .onClick(() => {
                     this.shareTypeIndex = 1;
+                    this.updateTitleForShareType(1);
                   })
                 Button('图片')
                   .fontSize(14)
@@ -2567,6 +2751,7 @@ export struct HomePage {
                   .margin({ right: 5 })
                   .onClick(() => {
                     this.shareTypeIndex = 2;
+                    this.updateTitleForShareType(2);
                   })
                 Button('视频')
                   .fontSize(14)
@@ -2577,6 +2762,7 @@ export struct HomePage {
                   .margin({ right: 5 })
                   .onClick(() => {
                     this.shareTypeIndex = 3;
+                    this.updateTitleForShareType(3);
                   })
                 Button('文件')
                   .fontSize(14)
@@ -2586,6 +2772,7 @@ export struct HomePage {
                   .borderRadius(8)
                   .onClick(() => {
                     this.shareTypeIndex = 4;
+                    this.updateTitleForShareType(4);
                   })
               }
               .width('100%')
@@ -2897,7 +3084,7 @@ export struct HomePage {
               .height(50)
 
               Row() {
-                TextArea({ placeholder: $r('app.string.pengyipeng_title'), text: this.pengtitle })
+                TextArea({ placeholder: this.getTitlePlaceholder(), text: this.pengtitle })
                   .layoutWeight(1)
                   .onChange((pengtitle: string) => {
                     this.pengtitle = pengtitle;
