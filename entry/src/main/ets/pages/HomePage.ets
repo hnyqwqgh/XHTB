@@ -2358,7 +2358,7 @@ export struct HomePage {
               //碰一碰提示
               if (this.currentBreakpoint !== 'lg' && this.currentBreakpoint !== 'xl') {
                 Text($r('app.string.nowplayingon'))
-                  .padding({ top: 20 , left: 24, right: 24 })
+                  .padding({ top: 10 , left: 24, right: 24 })
                   .maxLines(2)
                   .fontSize(11)
                   .maxFontScale(1.75)
@@ -2721,62 +2721,72 @@ export struct HomePage {
               // 分享类型选择胶囊按钮
               Row() {
                 Button('链接')
-                  .fontSize(14)
-                  .height(36)
+                  .fontSize(13)
+                  .height(32)
+                  .layoutWeight(1)
                   .backgroundColor(this.shareTypeIndex === 0 ? 0x66CCFF : 0xE0E0E0)
                   .fontColor(this.shareTypeIndex === 0 ? 0xFFFFFF : 0x000000)
-                  .borderRadius(8)
-                  .margin({ right: 5 })
+                  .borderRadius(6)
+                  .margin({ right: 4 })
+                  .padding({ left: 4, right: 4 })
                   .onClick(() => {
                     this.shareTypeIndex = 0;
                     this.updateTitleForShareType(0);
                   })
                 Button('文本')
-                  .fontSize(14)
-                  .height(36)
+                  .fontSize(13)
+                  .height(32)
+                  .layoutWeight(1)
                   .backgroundColor(this.shareTypeIndex === 1 ? 0x66CCFF : 0xE0E0E0)
                   .fontColor(this.shareTypeIndex === 1 ? 0xFFFFFF : 0x000000)
-                  .borderRadius(8)
-                  .margin({ right: 5 })
+                  .borderRadius(6)
+                  .margin({ right: 4 })
+                  .padding({ left: 4, right: 4 })
                   .onClick(() => {
                     this.shareTypeIndex = 1;
                     this.updateTitleForShareType(1);
                   })
                 Button('图片')
-                  .fontSize(14)
-                  .height(36)
+                  .fontSize(13)
+                  .height(32)
+                  .layoutWeight(1)
                   .backgroundColor(this.shareTypeIndex === 2 ? 0x66CCFF : 0xE0E0E0)
                   .fontColor(this.shareTypeIndex === 2 ? 0xFFFFFF : 0x000000)
-                  .borderRadius(8)
-                  .margin({ right: 5 })
+                  .borderRadius(6)
+                  .margin({ right: 4 })
+                  .padding({ left: 4, right: 4 })
                   .onClick(() => {
                     this.shareTypeIndex = 2;
                     this.updateTitleForShareType(2);
                   })
                 Button('视频')
-                  .fontSize(14)
-                  .height(36)
+                  .fontSize(13)
+                  .height(32)
+                  .layoutWeight(1)
                   .backgroundColor(this.shareTypeIndex === 3 ? 0x66CCFF : 0xE0E0E0)
                   .fontColor(this.shareTypeIndex === 3 ? 0xFFFFFF : 0x000000)
-                  .borderRadius(8)
-                  .margin({ right: 5 })
+                  .borderRadius(6)
+                  .margin({ right: 4 })
+                  .padding({ left: 4, right: 4 })
                   .onClick(() => {
                     this.shareTypeIndex = 3;
                     this.updateTitleForShareType(3);
                   })
                 Button('文件')
-                  .fontSize(14)
-                  .height(36)
+                  .fontSize(13)
+                  .height(32)
+                  .layoutWeight(1)
                   .backgroundColor(this.shareTypeIndex === 4 ? 0x66CCFF : 0xE0E0E0)
                   .fontColor(this.shareTypeIndex === 4 ? 0xFFFFFF : 0x000000)
-                  .borderRadius(8)
+                  .borderRadius(6)
+                  .padding({ left: 4, right: 4 })
                   .onClick(() => {
                     this.shareTypeIndex = 4;
                     this.updateTitleForShareType(4);
                   })
               }
               .width('100%')
-              .justifyContent(FlexAlign.SpaceEvenly)
+              .justifyContent(FlexAlign.SpaceBetween)
               .margin({ bottom: 10 })
 
               // 根据选择的类型显示不同的内容
@@ -2872,29 +2882,33 @@ export struct HomePage {
               } else if (this.shareTypeIndex === 1) {
                 // 文本分享
                 Column() {
-                  TextArea({ placeholder: '请输入要分享的文本', text: this.shareTextContent })
-                    .onChange((value: string) => {
-                      this.shareTextContent = value;
-                    })
                   Row() {
-                    PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
-                      .backgroundColor(0xFF66CC)
-                      .height(40)
-                      .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
-                        if (PasteButtonOnClickResult.SUCCESS === result) {
-                          pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
-                            if (err) {
-                              console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
-                              return;
-                            }
-                            this.shareTextContent = pasteData.getPrimaryText();
-                          });
-                        }
+                    TextArea({ placeholder: '请输入要分享的文本', text: this.shareTextContent })
+                      .layoutWeight(1)
+                      .onChange((value: string) => {
+                        this.shareTextContent = value;
                       })
+                    Row() {
+                      PasteButton({ icon: PasteIconStyle.LINES, buttonType: ButtonType.ROUNDED_RECTANGLE })
+                        .backgroundColor(0xFF66CC)
+                        .height(40)
+                        .onClick((_event: ClickEvent, result: PasteButtonOnClickResult) => {
+                          if (PasteButtonOnClickResult.SUCCESS === result) {
+                            pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {
+                              if (err) {
+                                console.error(`Failed to get paste data. Code is ${err.code}, message is ${err.message}`);
+                                return;
+                              }
+                              this.shareTextContent = pasteData.getPrimaryText();
+                            });
+                          }
+                        })
+                    }
+                    .margin({ left: 10 })
                   }
                   .width('100%')
-                  .justifyContent(FlexAlign.End)
-                  .margin({ top: 10 })
+                  .alignItems(VerticalAlign.Center)
+                  .margin({ top: 10, bottom: 10 })
                 }
               } else if (this.shareTypeIndex === 2) {
                 // 图片分享
@@ -3140,7 +3154,7 @@ export struct HomePage {
           if (this.currentBreakpoint !== 'lg' && this.currentBreakpoint !== 'xl') {
             Column() {
               Text($r('app.string.nowplayingon'))
-                .padding({ top: 20 , left: 24, right: 24 })
+                .padding({ top: 10 , left: 24, right: 24 })
                 .maxLines(2)
                 .fontSize(11)
                 .maxFontScale(1.75)
