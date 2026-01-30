@@ -2967,32 +2967,35 @@ export struct HomePage {
                   Row() {
                     Text('分享视频')
                       .textAlign(TextAlign.Center)
-                      .width('40%')
+                      .width('55%')
                       .margin({ right: 10 })
                     Button('选择视频')
                       .height(50)
-                      .width('25%')
+                      .width('40%')
                       .backgroundColor(0xFF66CC)
                       .onClick(async () => {
                         await this.selectVideo();
                       })
-                    if (this.shareVideoPath) {
-                      Button('裁剪视频')
-                        .height(50)
-                        .width('25%')
-                        .backgroundColor(0xFF66CC)
-                        .margin({ left: 5 })
-                        .onClick(() => {
-                          this.openVideoTrimmer();
-                        })
-                    }
                   }
                   .width('100%')
                   // 显示选中的所有视频路径
                   ForEach(this.shareVideoPaths, (item: string, index: number) => {
-                    TextArea({ placeholder: `视频路径${index + 1}`, text: item })
-                      .enabled(false)
-                      .margin({ top: 5 })
+                    Row() {
+                      TextArea({ placeholder: `视频路径${index + 1}`, text: item })
+                        .enabled(false)
+                        .layoutWeight(1)
+                      if (this.shareVideoPath) {
+                        Button('裁剪视频')
+                          .height(50)
+                          .backgroundColor(0xFF66CC)
+                          .fontSize(12)
+                          .onClick(() => {
+                            this.openVideoTrimmer();
+                          })
+                      }
+                    }
+                    .width('100%')
+                    .margin({ top: 5 })
                   })
                   if (this.shareVideoPaths.length > 1) {
                     Text(`已选择${this.shareVideoPaths.length}个视频`)
