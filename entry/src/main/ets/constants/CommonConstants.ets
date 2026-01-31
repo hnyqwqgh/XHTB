@@ -82,44 +82,6 @@ export class CommonConstants {
   static readonly ANIMATION_ITERATIONS: number = 1;
   static readonly START_GRADIENT_RANGE: number = 0.0;
   static readonly END_GRADIENT_RANGE: number = 0.5;
-
-
-  /**
-   * 首页图片宽度
-   */
-  static readonly firstImageWidth = 762;
-  /**
-   * 首页图片高度
-   */
-  static readonly firstImageHeight = 431;
-  /**
-   * 首页图片从视频中截取的开始时间
-   */
-  static readonly FIRST_IMAGE_START_TIME = 1000;
-  /**
-   * 首页图片从视频中截取的结束时间
-   */
-  static readonly FIRST_IMAGE_END_TIME = 12000;
-  /**
-   *  进度最大值
-   */
-  static readonly PROGRESS_MAX = 100;
-  /**
-   *  重试间隔
-   */
-  static readonly UPLOAD_INTERVAL_TIME = 1000;
-  /**
-   * 一秒钟毫秒数
-   */
-  static readonly MS_ONE_SECOND = 1000;
-  /**
-   * 一秒钟微秒数
-   */
-  static readonly US_ONE_SECOND = 1000000;
-  /**
-   * 压缩分辨率
-   */
-  static readonly SCALE_NUM = 100;
 }
 
 /**
