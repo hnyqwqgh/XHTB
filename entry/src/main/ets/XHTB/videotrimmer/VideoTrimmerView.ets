@@ -54,6 +54,10 @@ export struct VideoTrimmerView {
   private mDuration: number = 0;
   // 是否是restore
   private isFromRestore: boolean = false;
+  // 组件销毁状态标志
+  private isDestroying: boolean = false;
+  // 回调注册状态标志
+  private isCallbacksRegistered: boolean = false;
   private scroller: Scroller = new Scroller();
   @State ratio: number = 1.0;
   @State currentTime: string = '0';
@@ -153,6 +157,11 @@ export struct VideoTrimmerView {
       }
 
       if (reqStartPos > 0) {
+        // 检查是否正在销毁
+        if (this.isDestroying) {
+          logger.info(TAG, 'loadImageList: component is destroying, skip');
+          return;
+        }
         this.videoTrimmerOption.loadFrameListener.onStartLoad()
         let reqCount = endPos - reqStartPos + 1;
         let count = 0;
@@ -163,6 +172,11 @@ export struct VideoTrimmerView {
               let frameCallBack: IFrameCallBack = {
                 callBackResult: async (data: ArrayBuffer, timeUs: number) => {
                   try {
+                    // 检查是否正在销毁
+                    if (this.isDestroying) {
+                      logger.info(TAG, 'frameCallBack: component is destroying, skip');
+                      return;
+                    }
                     // 检查数据有效性
                     if (!data || data.byteLength === 0) {
                       logger.error(TAG, 'Invalid ArrayBuffer: data is null or empty, timeUs=' + timeUs);
@@ -324,15 +338,51 @@ export struct VideoTrimmerView {
   async aboutToDisappear(): Promise<void> {
     // 保证页面销毁 如果还有取帧行为应该及时停止该子线程操作
     MP4Parser.stopGetFrame();
-    logger.info(TAG, 'aboutToDisappear success');
+    logger.info(TAG, 'aboutToDisappear start');
+
+    // 防止重复销毁
+    if (this.isDestroying) {
+      logger.info(TAG, 'aboutToDisappear already destroying, skip');
+      return;
+    }
+
+    // 先设置销毁标志,阻止后续回调执行
+    this.isDestroying = true;
+
+    try {
+      // 检查播放器是否存在且状态不是 idle 或 released
+      if (this.avPlayer && this.avPlayer.state !== 'idle' && this.avPlayer.state !== 'released') {
+        logger.info(TAG, 'aboutToDisappear stopping player, state: ' + this.avPlayer.state);
+        await this.avPlayer?.stop();
+      }
+    } catch (e) {
+      logger.error(TAG, 'aboutToDisappear stop error: ' + JSON.stringify(e));
+    }
+
+    // 清理回调
     this.setOffCallback();
-    await this.avPlayer?.stop();
-    await this.avPlayer?.release();
+
+    // 释放播放器
+    try {
+      if (this.avPlayer) {
+        await this.avPlayer?.release();
+        this.avPlayer = undefined;
+      }
+    } catch (e) {
+      logger.error(TAG, 'aboutToDisappear release error: ' + JSON.stringify(e));
+      this.avPlayer = undefined;
+    }
+
+    logger.info(TAG, 'aboutToDisappear success');
   }
 
   // 设置播放时间上报监听
   timeUpdate(): void {
     this.avPlayer?.on('timeUpdate', (time: number) => {
+      // 检查是否正在销毁,避免访问已释放的对象
+      if (this.isDestroying) {
+        return;
+      }
       if (!this.isPausePreview) {
         // 播放占比情况
         if (this.avPlayer != undefined) {
@@ -366,6 +416,10 @@ export struct VideoTrimmerView {
   // 设置错误监听
   setErrorCallback(): void {
     this.avPlayer?.on('error', (error) => {
+      // 检查是否正在销毁
+      if (this.isDestroying) {
+        return;
+      }
       // 输出错误日志
       logger.info(TAG, 'error happened,message is :' + error.message);
     })
@@ -373,6 +427,9 @@ export struct VideoTrimmerView {
 
   // 注销回调函数接口
   setOffCallback(): void {
+    if (!this.isCallbacksRegistered || this.isDestroying && !this.avPlayer) {
+      return;
+    }
     if (this && this.avPlayer) {
       this.avPlayer?.off('volumeChange');
       this.avPlayer?.off('endOfStream');
@@ -387,6 +444,8 @@ export struct VideoTrimmerView {
       this.avPlayer?.off('availableBitrates');
       this.avPlayer?.off('error');
       this.avPlayer?.off('stateChange');
+      this.avPlayer?.off('timeUpdate');
+      this.isCallbacksRegistered = false;
     }
   }
 
@@ -438,6 +497,10 @@ export struct VideoTrimmerView {
       });
       // 焦点上报回调函数
       this.avPlayer?.on('audioInterrupt', (info: audio.InterruptEvent) => {
+        // 检查是否正在销毁
+        if (this.isDestroying) {
+          return;
+        }
         // 触发焦点上报后调用暂停接口暂停播放
         this.pause();
         logger.info(TAG, 'audioInterrupt success,and InterruptEvent info is:' + JSON.stringify(info));
@@ -455,6 +518,10 @@ export struct VideoTrimmerView {
   async setStateChangeCallback(): Promise<void> {
     if (this && this.avPlayer) {
       this.avPlayer?.on('stateChange', async (state, reason) => {
+        // 检查是否正在销毁,避免访问已释放的对象
+        if (this.isDestroying) {
+          return;
+        }
 
         logger.info(TAG, 'stateChange callback function is triggered,state is:' + state + ',reason is :' + reason);
         switch (state) {
@@ -534,6 +601,11 @@ export struct VideoTrimmerView {
   // 调用播放接口
   async play(): Promise<void> {
     logger.info(TAG, 'start to play');
+    // 检查是否正在销毁
+    if (this.isDestroying) {
+      logger.warn(TAG, 'play: player is destroying, skip');
+      return;
+    }
     if (this.avPlayer) {
       logger.info(TAG, 'start to play1');
       this.avPlayer?.play();
@@ -546,6 +618,11 @@ export struct VideoTrimmerView {
   // 暂停接口
   pause(): void {
     logger.info(TAG, 'start to pause');
+    // 检查是否正在销毁
+    if (this.isDestroying) {
+      logger.warn(TAG, 'pause: player is destroying, skip');
+      return;
+    }
     if (this.avPlayer) {
       this.avPlayer?.pause();
     } else {
@@ -1057,6 +1134,11 @@ export struct VideoTrimmerView {
 
   // 更新小图列表
   updateList(videoThumbs: ThumbContent[]) {
+    // 检查是否正在销毁,避免更新UI
+    if (this.isDestroying) {
+      logger.info(TAG, 'updateList: component is destroying, skip');
+      return;
+    }
     // 使用实际加载的图片数量来计算宽度，而不是 max_count_range
     let actualCount = videoThumbs.length > 0 ? videoThumbs.length : this.max_count_range;
     this.mVideoThumbOption = {
