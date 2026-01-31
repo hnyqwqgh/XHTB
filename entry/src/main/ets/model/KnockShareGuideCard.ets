@@ -1,24 +1,24 @@
 import { image } from '@kit.ImageKit';
+import { http } from '@kit.NetworkKit';
 import { LengthMetrics } from '@kit.ArkUI';
 import { resourceManager } from '@kit.LocalizationKit';
 import Logger from '../utils/Logger';
 
 const GUIDE_CARD_MULTIPLE_MIN_HEIGHT = 90;
 const GUIDE_CARD_SINGLE_MIN_HEIGHT = 80;
-const RAWFILE_SRC_PREFIX = 'resources/rawfile/';
 
 const logger = Logger.getLogger('[KnockShareGuideCard]');
 
 export interface CardRes {
   text: ResourceStr;
-  rawfilePrefix: string;
+  urlPrefix: string;
   framesCount: number;
   fps?: number; // default 30
   startDelay?: number; // default 0
   stopDelay?: number; // default 0
 }
 
-@Reusable
+  @Reusable
 @Component
 export struct KnockShareSingleGuideCard {
   @Prop running: boolean = false;
@@ -30,7 +30,6 @@ export struct KnockShareSingleGuideCard {
   private staticFrame: ImageFrameInfo[] = [];
 
   aboutToAppear(): void {
-    this.staticFrame.push({ src: RAWFILE_SRC_PREFIX + this.getPath(1) });
     this.loadPixels().then(() => {
       this.animReady = true;
     });
@@ -135,31 +134,35 @@ export struct KnockShareSingleGuideCard {
   private async loadPixels(): Promise<void> {
     const tasks: Promise<ImageFrameInfo>[] = [];
     for (let i = 1; i <= this.res.framesCount; i++) {
-      tasks.push(this.loadByRawfile(i));
+      tasks.push(this.loadByNetwork(i));
     }
     this.animFrames = await Promise.all(tasks);
   }
 
-  private async loadByRawfile(index: number): Promise<ImageFrameInfo> {
-    const path = this.getPath(index);
-    let src: string | PixelMap = RAWFILE_SRC_PREFIX + path;
+  private async loadByNetwork(index: number): Promise<ImageFrameInfo> {
+    const url = this.getUrl(index);
+    let src: string | PixelMap = url;
     let imageSource: image.ImageSource | undefined = undefined;
-    const uiContext: UIContext = this.getUIContext();
-    const contextFaker: Context = uiContext.getHostContext() as Context;
+
     try {
-      const fd = await contextFaker.resourceManager.getRawFd(path);
-      imageSource = image.createImageSource(fd);
-      src = await imageSource.createPixelMapUsingAllocator({}, image.AllocatorType.DMA);
-    } catch (err) {
-      logger.error(`Failed to load by rawfile: ${err?.code}, ${err?.message}`);
-    } finally {
-      try {
-        contextFaker.resourceManager.closeRawFd(path);
-        imageSource?.release();
-      } catch (error) {
-        logger.error(`closeRawFd error. Code: ${error?.code}, message: ${error?.message}`);
+      const httpRequest = http.createHttp();
+      const response = await httpRequest.request(url, {
+        method: http.RequestMethod.GET,
+        connectTimeout: 10000,
+        readTimeout: 10000,
+      });
+
+      if (response.responseCode === 200 && response.result instanceof ArrayBuffer) {
+        imageSource = image.createImageSource(response.result);
+        src = await imageSource.createPixelMapUsingAllocator({}, image.AllocatorType.DMA);
       }
+      httpRequest.destroy();
+    } catch (err) {
+      logger.error(`Failed to load by network: ${err?.code}, ${err?.message}`);
+    } finally {
+      imageSource?.release();
     }
+
     return {
       src: src,
       duration: Math.floor(1000 / (this.res.fps ?? 30)) +
@@ -167,8 +170,8 @@ export struct KnockShareSingleGuideCard {
     };
   }
 
-  private getPath(index: number): string {
-    return `${this.res.rawfilePrefix}${(index).toString().padStart(2, '0')}.webp`;
+  private getUrl(index: number): string {
+    return `${this.res.urlPrefix}${(index).toString().padStart(2, '0')}.png`;
   }
 }
 
