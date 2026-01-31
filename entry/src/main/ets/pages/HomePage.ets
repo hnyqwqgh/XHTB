@@ -2177,16 +2177,17 @@ export struct HomePage {
                           .onClick(async () => {
                             await this.selectVideo();
                           })
-                        if (this.shareVideoPath) {
-                          Button('裁剪视频')
-                            .height(50)
-                            .width('25%')
-                            .backgroundColor(0xFF66CC)
-                            .margin({ left: 5 })
-                            .onClick(() => {
-                              this.openVideoTrimmer();
-                            })
-                        }
+                        // 暂时屏蔽裁剪视频功能
+                        // if (this.shareVideoPath) {
+                        //   Button('裁剪视频')
+                        //     .height(50)
+                        //     .width('25%')
+                        //     .backgroundColor(0xFF66CC)
+                        //     .margin({ left: 5 })
+                        //     .onClick(() => {
+                        //       this.openVideoTrimmer();
+                        //     })
+                        // }
                       }
                       .width('100%')
                       // 显示选中的所有视频路径
@@ -2984,15 +2985,16 @@ export struct HomePage {
                       TextArea({ placeholder: `视频路径${index + 1}`, text: item })
                         .enabled(false)
                         .layoutWeight(1)
-                      if (this.shareVideoPath) {
-                        Button('裁剪视频')
-                          .height(50)
-                          .backgroundColor(0xFF66CC)
-                          .fontSize(12)
-                          .onClick(() => {
-                            this.openVideoTrimmer();
-                          })
-                      }
+                      // 暂时屏蔽裁剪视频功能
+                      // if (this.shareVideoPath) {
+                      //   Button('裁剪视频')
+                      //     .height(50)
+                      //     .backgroundColor(0xFF66CC)
+                      //     .fontSize(12)
+                      //     .onClick(() => {
+                      //       this.openVideoTrimmer();
+                      //     })
+                      // }
                     }
                     .width('100%')
                     .margin({ top: 5 })
